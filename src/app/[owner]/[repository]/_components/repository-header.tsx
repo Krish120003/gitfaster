@@ -16,14 +16,11 @@ export function RepositoryHeader({ owner, repository }: RepositoryHeaderProps) {
         <div className="flex items-center py-4 gap-2">
           <GitGraph className="h-5 w-5" />
           <div className="flex items-center text-md">
-            {/* <Link href="#" className="hover:underline text-white">
-              {owner}
-              </Link> */}
             {owner}
             <span className="mx-1">/</span>
             <Link
               href={`/${owner}/${repository}`}
-              className="hover:underline text-white"
+              className="hover:underline text-foreground"
             >
               {repository}
             </Link>

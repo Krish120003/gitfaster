@@ -36,7 +36,7 @@ export function RepositoryNav({ owner, repository }: RepositoryNavProps) {
         <Button
           variant="ghost"
           asChild
-          className="flex items-center gap-2 px-3 py-1 hover:bg-transparent hover:text-white text-white"
+          className="flex items-center gap-2 px-3 py-1 hover:bg-transparent hover:text-foreground text-foreground"
         >
           <div>
             <Code className="h-4 w-4" />
@@ -55,7 +55,7 @@ export function RepositoryNav({ owner, repository }: RepositoryNavProps) {
         <Button
           variant="ghost"
           asChild
-          className="flex items-center gap-2 px-3 py-1 hover:bg-transparent hover:text-white text-white"
+          className="flex items-center gap-2 px-3 py-1 hover:bg-transparent hover:text-foreground text-foreground"
         >
           <div className="flex items-center gap-2">
             <svg
