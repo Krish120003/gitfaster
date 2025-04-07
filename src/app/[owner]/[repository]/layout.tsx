@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { RepositoryHeader } from "./_components/repository-header";
 
 interface RepositoryLayoutProps {
   children: React.ReactNode;
@@ -27,12 +28,8 @@ export default async function RepositoryLayout({
   const { owner, repository } = awaitedParams;
 
   return (
-    <div className="container mx-auto px-4">
-      <header className="py-4 border-b">
-        <h1 className="text-2xl font-bold">
-          {owner}/{repository}
-        </h1>
-      </header>
+    <div className="">
+      <RepositoryHeader owner={owner} repository={repository} />
       <main className="py-4">{children}</main>
     </div>
   );
