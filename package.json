@@ -24,7 +24,10 @@
 		"@trpc/client": "^11.0.0",
 		"@trpc/react-query": "^11.0.0",
 		"@trpc/server": "^11.0.0",
+		"class-variance-authority": "^0.7.1",
+		"clsx": "^2.1.1",
 		"drizzle-orm": "^0.41.0",
+		"lucide-react": "^0.487.0",
 		"next": "^15.2.3",
 		"next-auth": "5.0.0-beta.25",
 		"postgres": "^3.4.4",
@@ -32,6 +35,8 @@
 		"react-dom": "^19.0.0",
 		"server-only": "^0.0.1",
 		"superjson": "^2.2.1",
+		"tailwind-merge": "^3.2.0",
+		"tw-animate-css": "^1.2.5",
 		"zod": "^3.24.2"
 	},
 	"devDependencies": {
