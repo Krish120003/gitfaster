@@ -25,12 +25,12 @@ export function RepositoryNav({ owner, repository }: RepositoryNavProps) {
   };
 
   return (
-    <div className="flex items-center overflow-x-auto">
+    <div className="flex items-center overflow-x-auto ">
       <Link
         href={basePath}
-        className={cn("border-b-2 pb-1 cursor-pointer", {
-          "border-[#f78166]": isActive("code"),
-          "border-transparent": !isActive("code"),
+        className={cn("border-b-2 pb-1 cursor-pointer border-transparent", {
+          "border-[#f78166]":
+            isActive("code") || isActive("tree") || isActive("blob"),
         })}
       >
         <Button
@@ -47,9 +47,8 @@ export function RepositoryNav({ owner, repository }: RepositoryNavProps) {
 
       <Link
         href={`${basePath}/issues`}
-        className={cn("border-b-2 pb-1 cursor-pointer", {
+        className={cn("border-b-2 pb-1 cursor-pointer border-transparent", {
           "border-[#f78166]": isActive("issues"),
-          "border-transparent": !isActive("issues"),
         })}
       >
         <Button
@@ -74,9 +73,8 @@ export function RepositoryNav({ owner, repository }: RepositoryNavProps) {
 
       <Link
         href={`${basePath}/pulls`}
-        className={cn("border-b-2 pb-1 cursor-pointer", {
+        className={cn("border-b-2 pb-1 cursor-pointer border-transparent", {
           "border-[#f78166]": isActive("pulls"),
-          "border-transparent": !isActive("pulls"),
         })}
       >
         <Button
