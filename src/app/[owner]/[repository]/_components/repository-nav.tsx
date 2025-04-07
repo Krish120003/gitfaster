@@ -68,9 +68,6 @@ export function RepositoryNav({ owner, repository }: RepositoryNavProps) {
               <path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0ZM1.5 8a6.5 6.5 0 1 0 13 0 6.5 6.5 0 0 0-13 0Z"></path>
             </svg>
             <span>Issues</span>
-            <span className="ml-1 px-2 py-0.5 text-xs rounded-full bg-[#30363d]">
-              895
-            </span>
           </div>
         </Button>
       </Link>
@@ -85,14 +82,11 @@ export function RepositoryNav({ owner, repository }: RepositoryNavProps) {
         <Button
           variant="ghost"
           asChild
-          className="flex items-center gap-2 px-3 py-1 hover:bg-transparent hover:text-white text-white"
+          className="flex items-center gap-2 px-3 py-1 hover:bg-transparent hover:text-foreground text-foreground"
         >
           <div className="flex items-center gap-2">
             <GitPullRequest className="h-4 w-4" />
             <span>Pull requests</span>
-            <span className="ml-1 px-2 py-0.5 text-xs rounded-full bg-[#30363d]">
-              844
-            </span>
           </div>
         </Button>
       </Link>
