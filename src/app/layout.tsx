@@ -16,7 +16,7 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body>
+      <body className="min-h-screen bg-accent text-foreground antialiased">
         <TRPCReactProvider>
           <ThemeProvider
             attribute="class"
