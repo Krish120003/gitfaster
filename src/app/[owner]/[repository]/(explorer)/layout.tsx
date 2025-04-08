@@ -7,7 +7,7 @@ const sampleData = {
     {
       path: ".gitignore",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "c93fc428859e4a61247218df4f75209d85e59431",
       size: 481,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/c93fc428859e4a61247218df4f75209d85e59431",
@@ -15,7 +15,7 @@ const sampleData = {
     {
       path: ".npmrc",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
       size: 0,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
@@ -23,14 +23,14 @@ const sampleData = {
     {
       path: ".vscode",
       mode: "040000",
-      type: "tree",
+      type: "tree" as const,
       sha: "f576683ca2c7d7e0cc6259e261e9758a1b33fe62",
       url: "https://api.github.com/repos/Krish120003/zercel/git/trees/f576683ca2c7d7e0cc6259e261e9758a1b33fe62",
     },
     {
       path: ".vscode/settings.json",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "44a73ec3a98ec7820a3e9e77aebbad0625626393",
       size: 74,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/44a73ec3a98ec7820a3e9e77aebbad0625626393",
@@ -38,7 +38,7 @@ const sampleData = {
     {
       path: "README.md",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "afcf71252495954af1c59a01911906f37b252ff1",
       size: 2134,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/afcf71252495954af1c59a01911906f37b252ff1",
@@ -46,21 +46,21 @@ const sampleData = {
     {
       path: "apps",
       mode: "040000",
-      type: "tree",
+      type: "tree" as const,
       sha: "9dfe4f00bb0184f54482284bc9b69eafa0ecaf70",
       url: "https://api.github.com/repos/Krish120003/zercel/git/trees/9dfe4f00bb0184f54482284bc9b69eafa0ecaf70",
     },
     {
       path: "apps/builder",
       mode: "040000",
-      type: "tree",
+      type: "tree" as const,
       sha: "9f7cc75bdaedbdc8daf5b92a3999f311f020c10a",
       url: "https://api.github.com/repos/Krish120003/zercel/git/trees/9f7cc75bdaedbdc8daf5b92a3999f311f020c10a",
     },
     {
       path: "apps/builder/.dockerignore",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "b512c09d476623ff4bf8d0d63c29b784925dbdf8",
       size: 12,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/b512c09d476623ff4bf8d0d63c29b784925dbdf8",
@@ -68,7 +68,7 @@ const sampleData = {
     {
       path: "apps/builder/Dockerfile",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "a9651046f4b00bad770ddeded7095399f4dc21a8",
       size: 1044,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/a9651046f4b00bad770ddeded7095399f4dc21a8",
@@ -76,7 +76,7 @@ const sampleData = {
     {
       path: "apps/builder/build.sh",
       mode: "100755",
-      type: "blob",
+      type: "blob" as const,
       sha: "8a5c0b0eab23325a2a7d6a6c48f7e3e55267255a",
       size: 6622,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/8a5c0b0eab23325a2a7d6a6c48f7e3e55267255a",
@@ -84,7 +84,7 @@ const sampleData = {
     {
       path: "apps/builder/package.json",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "c28239de54b89799d30161ffecbd3a1582c042dd",
       size: 176,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/c28239de54b89799d30161ffecbd3a1582c042dd",
@@ -92,14 +92,14 @@ const sampleData = {
     {
       path: "apps/router",
       mode: "040000",
-      type: "tree",
+      type: "tree" as const,
       sha: "245d428754e09f430070a00c40180d79244b3c76",
       url: "https://api.github.com/repos/Krish120003/zercel/git/trees/245d428754e09f430070a00c40180d79244b3c76",
     },
     {
       path: "apps/router/.dockerignore",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "1dcef2d9f2db74bf13c54f973f40239e00717423",
       size: 17,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/1dcef2d9f2db74bf13c54f973f40239e00717423",
@@ -107,7 +107,7 @@ const sampleData = {
     {
       path: "apps/router/.gitignore",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "36fabb6cb2c24771d95b66b1267dece4efe98551",
       size: 312,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/36fabb6cb2c24771d95b66b1267dece4efe98551",
@@ -115,7 +115,7 @@ const sampleData = {
     {
       path: "apps/router/Dockerfile",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "69339b78fed8935f78ab8ff8a5ed22c7388c395f",
       size: 607,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/69339b78fed8935f78ab8ff8a5ed22c7388c395f",
@@ -123,7 +123,7 @@ const sampleData = {
     {
       path: "apps/router/README.md",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "e12b31db70ab27a2d9daebf312ed48f09316dcc2",
       size: 68,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/e12b31db70ab27a2d9daebf312ed48f09316dcc2",
@@ -131,7 +131,7 @@ const sampleData = {
     {
       path: "apps/router/package.json",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "3e1b754f73389d3b9e340ee47bc6a74be5fc03bd",
       size: 398,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/3e1b754f73389d3b9e340ee47bc6a74be5fc03bd",
@@ -139,14 +139,14 @@ const sampleData = {
     {
       path: "apps/router/src",
       mode: "040000",
-      type: "tree",
+      type: "tree" as const,
       sha: "b310c9eeeca5aba118b7e734df63978f792ad28f",
       url: "https://api.github.com/repos/Krish120003/zercel/git/trees/b310c9eeeca5aba118b7e734df63978f792ad28f",
     },
     {
       path: "apps/router/src/env.js",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "2ea0941e4c58c39e6b722424d4e73e8acee5956e",
       size: 1368,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/2ea0941e4c58c39e6b722424d4e73e8acee5956e",
@@ -154,7 +154,7 @@ const sampleData = {
     {
       path: "apps/router/src/index.ts",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "8da7400c41e5c0a6d6139650f4d124ea9585b8d2",
       size: 4786,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/8da7400c41e5c0a6d6139650f4d124ea9585b8d2",
@@ -162,7 +162,7 @@ const sampleData = {
     {
       path: "apps/router/tsconfig.json",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "787b3cd0cb190d6947f7fd169092d8cc5ee9812c",
       size: 339,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/787b3cd0cb190d6947f7fd169092d8cc5ee9812c",
@@ -170,14 +170,14 @@ const sampleData = {
     {
       path: "apps/web",
       mode: "040000",
-      type: "tree",
+      type: "tree" as const,
       sha: "b7fe4e16c5e37316389d41c6e5943bfc27fb352a",
       url: "https://api.github.com/repos/Krish120003/zercel/git/trees/b7fe4e16c5e37316389d41c6e5943bfc27fb352a",
     },
     {
       path: "apps/web/.dockerignore",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "dd02b1b19a992b6aee9984405c3988550bac9810",
       size: 77,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/dd02b1b19a992b6aee9984405c3988550bac9810",
@@ -185,7 +185,7 @@ const sampleData = {
     {
       path: "apps/web/.env-e",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "be7ef389114748b88039d1830cd8387b450a683d",
       size: 245,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/be7ef389114748b88039d1830cd8387b450a683d",
@@ -193,7 +193,7 @@ const sampleData = {
     {
       path: "apps/web/.env.example",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "5bd2a4913aec32606017095cbf91248507d97295",
       size: 761,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/5bd2a4913aec32606017095cbf91248507d97295",
@@ -201,7 +201,7 @@ const sampleData = {
     {
       path: "apps/web/.eslintrc.cjs",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "88c180dda5d26fa309b1766a67dc3d5c93c5279c",
       size: 1314,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/88c180dda5d26fa309b1766a67dc3d5c93c5279c",
@@ -209,7 +209,7 @@ const sampleData = {
     {
       path: "apps/web/.gitignore",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "c24a8359cf9286f7f43beffe99b69b5f57a62ee8",
       size: 620,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/c24a8359cf9286f7f43beffe99b69b5f57a62ee8",
@@ -217,7 +217,7 @@ const sampleData = {
     {
       path: "apps/web/Dockerfile",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "cb1beca919ee1165be517bee5f18d1eeae67453f",
       size: 1723,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/cb1beca919ee1165be517bee5f18d1eeae67453f",
@@ -225,7 +225,7 @@ const sampleData = {
     {
       path: "apps/web/README.md",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "67943c7fb44cb7afea25a0d5ca36d3c4292b4e01",
       size: 1438,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/67943c7fb44cb7afea25a0d5ca36d3c4292b4e01",
@@ -233,7 +233,7 @@ const sampleData = {
     {
       path: "apps/web/components.json",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "f794a1c9f30c706e22b0309eb15ded694f7e0d89",
       size: 451,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/f794a1c9f30c706e22b0309eb15ded694f7e0d89",
@@ -241,7 +241,7 @@ const sampleData = {
     {
       path: "apps/web/drizzle.config.ts",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "02aa86cbe5dc06a2796798b3639adf6191040cf4",
       size: 253,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/02aa86cbe5dc06a2796798b3639adf6191040cf4",
@@ -249,7 +249,7 @@ const sampleData = {
     {
       path: "apps/web/next.config.js",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "eddfe04a69a060cd2042224fb570f235f570d7fe",
       size: 304,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/eddfe04a69a060cd2042224fb570f235f570d7fe",
@@ -257,7 +257,7 @@ const sampleData = {
     {
       path: "apps/web/package.json",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "f7df32cefce4b4db2d0dec618248bacb09c04088",
       size: 2965,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/f7df32cefce4b4db2d0dec618248bacb09c04088",
@@ -265,7 +265,7 @@ const sampleData = {
     {
       path: "apps/web/postcss.config.js",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "01bf7432f67fa9a4fd3ebe3ca0fb9b18d3b791cb",
       size: 59,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/01bf7432f67fa9a4fd3ebe3ca0fb9b18d3b791cb",
@@ -273,7 +273,7 @@ const sampleData = {
     {
       path: "apps/web/prettier.config.js",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "da332bd8982ce3569ce999cbb27ed97745b8c2a6",
       size: 159,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/da332bd8982ce3569ce999cbb27ed97745b8c2a6",
@@ -281,14 +281,14 @@ const sampleData = {
     {
       path: "apps/web/public",
       mode: "040000",
-      type: "tree",
+      type: "tree" as const,
       sha: "76415475923b96166ae5ee321de3f0e38d2e5178",
       url: "https://api.github.com/repos/Krish120003/zercel/git/trees/76415475923b96166ae5ee321de3f0e38d2e5178",
     },
     {
       path: "apps/web/public/favicon.ico",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "0fd62ef1650a59dc20dad803eb5a1ffaadb01970",
       size: 1084,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/0fd62ef1650a59dc20dad803eb5a1ffaadb01970",
@@ -296,7 +296,7 @@ const sampleData = {
     {
       path: "apps/web/public/logo.svg",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "f2c9d23a379951656904194235bad63f81964604",
       size: 213,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/f2c9d23a379951656904194235bad63f81964604",
@@ -304,7 +304,7 @@ const sampleData = {
     {
       path: "apps/web/public/placeholder_favicon.png",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "d3c6b828a1126c4898ab11769df5a049e4c0c164",
       size: 3537,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/d3c6b828a1126c4898ab11769df5a049e4c0c164",
@@ -312,28 +312,28 @@ const sampleData = {
     {
       path: "apps/web/src",
       mode: "040000",
-      type: "tree",
+      type: "tree" as const,
       sha: "e8a45c8a6d1115bc4d78e14bc5f2088b564c7fee",
       url: "https://api.github.com/repos/Krish120003/zercel/git/trees/e8a45c8a6d1115bc4d78e14bc5f2088b564c7fee",
     },
     {
       path: "apps/web/src/app",
       mode: "040000",
-      type: "tree",
+      type: "tree" as const,
       sha: "15aebf3a4998b3fc7e68813a72f418ead82ba061",
       url: "https://api.github.com/repos/Krish120003/zercel/git/trees/15aebf3a4998b3fc7e68813a72f418ead82ba061",
     },
     {
       path: "apps/web/src/app/404",
       mode: "040000",
-      type: "tree",
+      type: "tree" as const,
       sha: "692e4a79d34385a1c1d871a4662bc1675e27b59b",
       url: "https://api.github.com/repos/Krish120003/zercel/git/trees/692e4a79d34385a1c1d871a4662bc1675e27b59b",
     },
     {
       path: "apps/web/src/app/404/page.tsx",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "f36ed287aa91bb2394071e5d40338968e6e9381c",
       size: 1131,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/f36ed287aa91bb2394071e5d40338968e6e9381c",
@@ -341,14 +341,14 @@ const sampleData = {
     {
       path: "apps/web/src/app/_components",
       mode: "040000",
-      type: "tree",
+      type: "tree" as const,
       sha: "de3fe8c389194673e0677c0f1f9465f297f7e030",
       url: "https://api.github.com/repos/Krish120003/zercel/git/trees/de3fe8c389194673e0677c0f1f9465f297f7e030",
     },
     {
       path: "apps/web/src/app/_components/auth-button.tsx",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "1af31e44e8b96852a1e550e8b883423defc0a9a6",
       size: 525,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/1af31e44e8b96852a1e550e8b883423defc0a9a6",
@@ -356,7 +356,7 @@ const sampleData = {
     {
       path: "apps/web/src/app/_components/landing.tsx",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "f5873eaecffc25c933258425170386c070cc74b5",
       size: 4971,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/f5873eaecffc25c933258425170386c070cc74b5",
@@ -364,7 +364,7 @@ const sampleData = {
     {
       path: "apps/web/src/app/_components/project-item.tsx",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "786a377b358c14ae540d3ab156d8a06cf1c74695",
       size: 2620,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/786a377b358c14ae540d3ab156d8a06cf1c74695",
@@ -372,7 +372,7 @@ const sampleData = {
     {
       path: "apps/web/src/app/_components/repository-list.tsx",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "d3e480f157535058e86dabe381a9b5d627a40342",
       size: 4079,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/d3e480f157535058e86dabe381a9b5d627a40342",
@@ -380,28 +380,28 @@ const sampleData = {
     {
       path: "apps/web/src/app/api",
       mode: "040000",
-      type: "tree",
+      type: "tree" as const,
       sha: "5ed01c10e2eb8c2888df81f6725e2148ace449d0",
       url: "https://api.github.com/repos/Krish120003/zercel/git/trees/5ed01c10e2eb8c2888df81f6725e2148ace449d0",
     },
     {
       path: "apps/web/src/app/api/auth",
       mode: "040000",
-      type: "tree",
+      type: "tree" as const,
       sha: "1100befbdcad393b3d1b77b5dc0e5d8247fd0b5f",
       url: "https://api.github.com/repos/Krish120003/zercel/git/trees/1100befbdcad393b3d1b77b5dc0e5d8247fd0b5f",
     },
     {
       path: "apps/web/src/app/api/auth/[...nextauth]",
       mode: "040000",
-      type: "tree",
+      type: "tree" as const,
       sha: "77a9805e4fddc2e12c4e5da71670177677bf7a1f",
       url: "https://api.github.com/repos/Krish120003/zercel/git/trees/77a9805e4fddc2e12c4e5da71670177677bf7a1f",
     },
     {
       path: "apps/web/src/app/api/auth/[...nextauth]/route.ts",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "8e8302c8d864242e2d2ee1e487d8a33261062743",
       size: 82,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/8e8302c8d864242e2d2ee1e487d8a33261062743",
@@ -409,21 +409,21 @@ const sampleData = {
     {
       path: "apps/web/src/app/api/builder",
       mode: "040000",
-      type: "tree",
+      type: "tree" as const,
       sha: "fad4a151adce92691784799f7fdaee0150a84e7f",
       url: "https://api.github.com/repos/Krish120003/zercel/git/trees/fad4a151adce92691784799f7fdaee0150a84e7f",
     },
     {
       path: "apps/web/src/app/api/builder/callback",
       mode: "040000",
-      type: "tree",
+      type: "tree" as const,
       sha: "0ce6709769960a7a782cf3a71cb1088bc2792cdc",
       url: "https://api.github.com/repos/Krish120003/zercel/git/trees/0ce6709769960a7a782cf3a71cb1088bc2792cdc",
     },
     {
       path: "apps/web/src/app/api/builder/callback/route.ts",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "1079731f75303f72c3d9284accfa00760c1d81c9",
       size: 10126,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/1079731f75303f72c3d9284accfa00760c1d81c9",
@@ -431,14 +431,14 @@ const sampleData = {
     {
       path: "apps/web/src/app/api/builder/eventarc",
       mode: "040000",
-      type: "tree",
+      type: "tree" as const,
       sha: "0b4cc9e3b68ad9ee1382156548af811b2cce7482",
       url: "https://api.github.com/repos/Krish120003/zercel/git/trees/0b4cc9e3b68ad9ee1382156548af811b2cce7482",
     },
     {
       path: "apps/web/src/app/api/builder/eventarc/route.ts",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "69b43d6c2b2bcfcb02e3021051560e1fa33c01a2",
       size: 1025,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/69b43d6c2b2bcfcb02e3021051560e1fa33c01a2",
@@ -446,14 +446,14 @@ const sampleData = {
     {
       path: "apps/web/src/app/api/favicon",
       mode: "040000",
-      type: "tree",
+      type: "tree" as const,
       sha: "99fe2a0852a193ed71419e85364f3b3c2172c3f1",
       url: "https://api.github.com/repos/Krish120003/zercel/git/trees/99fe2a0852a193ed71419e85364f3b3c2172c3f1",
     },
     {
       path: "apps/web/src/app/api/favicon/route.ts",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "a1a5ea5e78a0fb56aaaad0c452016be86bcec449",
       size: 2143,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/a1a5ea5e78a0fb56aaaad0c452016be86bcec449",
@@ -461,21 +461,21 @@ const sampleData = {
     {
       path: "apps/web/src/app/api/github",
       mode: "040000",
-      type: "tree",
+      type: "tree" as const,
       sha: "99b7183eb0bcbeb5ec31681a681bc456a8e4ef0a",
       url: "https://api.github.com/repos/Krish120003/zercel/git/trees/99b7183eb0bcbeb5ec31681a681bc456a8e4ef0a",
     },
     {
       path: "apps/web/src/app/api/github/webhook",
       mode: "040000",
-      type: "tree",
+      type: "tree" as const,
       sha: "0c2b58addefafa9d46943274c42b61cd7530604a",
       url: "https://api.github.com/repos/Krish120003/zercel/git/trees/0c2b58addefafa9d46943274c42b61cd7530604a",
     },
     {
       path: "apps/web/src/app/api/github/webhook/route.ts",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "c815e9419137f5ed94ce26bc7493a9200257b2de",
       size: 4238,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/c815e9419137f5ed94ce26bc7493a9200257b2de",
@@ -483,21 +483,21 @@ const sampleData = {
     {
       path: "apps/web/src/app/api/trpc",
       mode: "040000",
-      type: "tree",
+      type: "tree" as const,
       sha: "416d05b9b17b5a2eddeb0bc61840b88d0ce8fff6",
       url: "https://api.github.com/repos/Krish120003/zercel/git/trees/416d05b9b17b5a2eddeb0bc61840b88d0ce8fff6",
     },
     {
       path: "apps/web/src/app/api/trpc/[trpc]",
       mode: "040000",
-      type: "tree",
+      type: "tree" as const,
       sha: "76ea230b904e10e6de55a950a04f4c544ea9fd47",
       url: "https://api.github.com/repos/Krish120003/zercel/git/trees/76ea230b904e10e6de55a950a04f4c544ea9fd47",
     },
     {
       path: "apps/web/src/app/api/trpc/[trpc]/route.ts",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "5fbd827d9041821c87d2719c2b6484e3c61e4a02",
       size: 1006,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/5fbd827d9041821c87d2719c2b6484e3c61e4a02",
@@ -505,21 +505,21 @@ const sampleData = {
     {
       path: "apps/web/src/app/deploy",
       mode: "040000",
-      type: "tree",
+      type: "tree" as const,
       sha: "ef14406ff87cde1b75850aac2537a1a64c60187f",
       url: "https://api.github.com/repos/Krish120003/zercel/git/trees/ef14406ff87cde1b75850aac2537a1a64c60187f",
     },
     {
       path: "apps/web/src/app/deploy/_components",
       mode: "040000",
-      type: "tree",
+      type: "tree" as const,
       sha: "b2ff16a42efd565de2b46c7ffd3e449728674111",
       url: "https://api.github.com/repos/Krish120003/zercel/git/trees/b2ff16a42efd565de2b46c7ffd3e449728674111",
     },
     {
       path: "apps/web/src/app/deploy/_components/deploy-form.tsx",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "b2b181e13a48e168e9ab73fce04bc3f0d1a465af",
       size: 7123,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/b2b181e13a48e168e9ab73fce04bc3f0d1a465af",
@@ -527,7 +527,7 @@ const sampleData = {
     {
       path: "apps/web/src/app/deploy/page.tsx",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "07e419a69434f666ad71349d471325707617190c",
       size: 2083,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/07e419a69434f666ad71349d471325707617190c",
@@ -535,7 +535,7 @@ const sampleData = {
     {
       path: "apps/web/src/app/layout.tsx",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "2d8ba120ff0cf261bb50f3157d358266050b1754",
       size: 1162,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/2d8ba120ff0cf261bb50f3157d358266050b1754",
@@ -543,7 +543,7 @@ const sampleData = {
     {
       path: "apps/web/src/app/page.tsx",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "51a9cbbac6f538d8ac5e48feeaf650ac2d5b2000",
       size: 3656,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/51a9cbbac6f538d8ac5e48feeaf650ac2d5b2000",
@@ -551,21 +551,21 @@ const sampleData = {
     {
       path: "apps/web/src/app/site",
       mode: "040000",
-      type: "tree",
+      type: "tree" as const,
       sha: "32b16c953bbb1081f1afed5e6948002f051b4824",
       url: "https://api.github.com/repos/Krish120003/zercel/git/trees/32b16c953bbb1081f1afed5e6948002f051b4824",
     },
     {
       path: "apps/web/src/app/site/_components",
       mode: "040000",
-      type: "tree",
+      type: "tree" as const,
       sha: "01ef3440772bd51e96612dae5b471ae11f0c7238",
       url: "https://api.github.com/repos/Krish120003/zercel/git/trees/01ef3440772bd51e96612dae5b471ae11f0c7238",
     },
     {
       path: "apps/web/src/app/site/_components/deployment-item.tsx",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "18ae3fd658f6febffcc296a9211e8ce18482641b",
       size: 5963,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/18ae3fd658f6febffcc296a9211e8ce18482641b",
@@ -573,7 +573,7 @@ const sampleData = {
     {
       path: "apps/web/src/app/site/_components/deployment-list.tsx",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "9955568d834af5db3b34adedf5fa4b61212abe15",
       size: 1262,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/9955568d834af5db3b34adedf5fa4b61212abe15",
@@ -581,7 +581,7 @@ const sampleData = {
     {
       path: "apps/web/src/app/site/_components/env-manager.tsx",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "e6a029128c8b6ad690a1ce46eeccb2b245cc1c89",
       size: 2693,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/e6a029128c8b6ad690a1ce46eeccb2b245cc1c89",
@@ -589,7 +589,7 @@ const sampleData = {
     {
       path: "apps/web/src/app/site/_components/subdomain-manager.tsx",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "3fa19cbffc416159b4630e60417a852afb5dd4d6",
       size: 3771,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/3fa19cbffc416159b4630e60417a852afb5dd4d6",
@@ -597,7 +597,7 @@ const sampleData = {
     {
       path: "apps/web/src/app/site/page.tsx",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "1d1379f3e5e04c9a85dc556c731a25785e0d8a8f",
       size: 6832,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/1d1379f3e5e04c9a85dc556c731a25785e0d8a8f",
@@ -605,14 +605,14 @@ const sampleData = {
     {
       path: "apps/web/src/components",
       mode: "040000",
-      type: "tree",
+      type: "tree" as const,
       sha: "806e29716b9ab991ddbdf292815dae91d02240cb",
       url: "https://api.github.com/repos/Krish120003/zercel/git/trees/806e29716b9ab991ddbdf292815dae91d02240cb",
     },
     {
       path: "apps/web/src/components/env-variable.tsx",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "19687e76ed96cbd304f9e1386af88535d9c21bb0",
       size: 5631,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/19687e76ed96cbd304f9e1386af88535d9c21bb0",
@@ -620,7 +620,7 @@ const sampleData = {
     {
       path: "apps/web/src/components/news-banner.tsx",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "a29f2de67c3cafec81af077669f84a349eb21b15",
       size: 981,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/a29f2de67c3cafec81af077669f84a349eb21b15",
@@ -628,7 +628,7 @@ const sampleData = {
     {
       path: "apps/web/src/components/theme-provider.tsx",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "189a2b1a12231255b53038166eb92d2d03bd0e9d",
       size: 299,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/189a2b1a12231255b53038166eb92d2d03bd0e9d",
@@ -636,7 +636,7 @@ const sampleData = {
     {
       path: "apps/web/src/components/theme-toggle.tsx",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "e30a6b779910833eb20b602abc6a7662b60ca186",
       size: 1244,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/e30a6b779910833eb20b602abc6a7662b60ca186",
@@ -644,14 +644,14 @@ const sampleData = {
     {
       path: "apps/web/src/components/ui",
       mode: "040000",
-      type: "tree",
+      type: "tree" as const,
       sha: "349b25071e96c8dd46b83c2cc5e082f153f36cab",
       url: "https://api.github.com/repos/Krish120003/zercel/git/trees/349b25071e96c8dd46b83c2cc5e082f153f36cab",
     },
     {
       path: "apps/web/src/components/ui/badge.tsx",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "9b213de3f317de923e7b4bc1e371c1421fdd23ba",
       size: 1128,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/9b213de3f317de923e7b4bc1e371c1421fdd23ba",
@@ -659,7 +659,7 @@ const sampleData = {
     {
       path: "apps/web/src/components/ui/button.tsx",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "65729daa12a6e80850afde8ec32db5445833b3eb",
       size: 1901,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/65729daa12a6e80850afde8ec32db5445833b3eb",
@@ -667,7 +667,7 @@ const sampleData = {
     {
       path: "apps/web/src/components/ui/card.tsx",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "08e7a1510de779305c4885be110fe7a3cf07a6ad",
       size: 1858,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/08e7a1510de779305c4885be110fe7a3cf07a6ad",
@@ -675,7 +675,7 @@ const sampleData = {
     {
       path: "apps/web/src/components/ui/collapsible.tsx",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "9fa48946afd1eb56bd932377fd888e3986304676",
       size: 329,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/9fa48946afd1eb56bd932377fd888e3986304676",
@@ -683,7 +683,7 @@ const sampleData = {
     {
       path: "apps/web/src/components/ui/dialog.tsx",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "9850daa418d6e1768ead1f47a5ceb1c9f9a3dbc2",
       size: 3849,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/9850daa418d6e1768ead1f47a5ceb1c9f9a3dbc2",
@@ -691,7 +691,7 @@ const sampleData = {
     {
       path: "apps/web/src/components/ui/dropdown-menu.tsx",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "e0a911dc786ce44246af982517c5b4bfa07176df",
       size: 7433,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/e0a911dc786ce44246af982517c5b4bfa07176df",
@@ -699,7 +699,7 @@ const sampleData = {
     {
       path: "apps/web/src/components/ui/form.tsx",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "37930795181abc98bcc846ac0f7adfb1b1534cba",
       size: 4099,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/37930795181abc98bcc846ac0f7adfb1b1534cba",
@@ -707,7 +707,7 @@ const sampleData = {
     {
       path: "apps/web/src/components/ui/input.tsx",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "876718347ff9579d79963cd6ca2f10ebe7db12f6",
       size: 791,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/876718347ff9579d79963cd6ca2f10ebe7db12f6",
@@ -715,7 +715,7 @@ const sampleData = {
     {
       path: "apps/web/src/components/ui/label.tsx",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "8f407389f3524e4cf9e6a2bc0361f7d32a132da2",
       size: 724,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/8f407389f3524e4cf9e6a2bc0361f7d32a132da2",
@@ -723,7 +723,7 @@ const sampleData = {
     {
       path: "apps/web/src/components/ui/select.tsx",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "1091153659a7a64c09eaa1e1840591f29eef2e01",
       size: 5629,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/1091153659a7a64c09eaa1e1840591f29eef2e01",
@@ -731,7 +731,7 @@ const sampleData = {
     {
       path: "apps/web/src/components/ui/skeleton.tsx",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "a01adc3e055d1cd70d02eeb138a7372671901c6d",
       size: 261,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/a01adc3e055d1cd70d02eeb138a7372671901c6d",
@@ -739,7 +739,7 @@ const sampleData = {
     {
       path: "apps/web/src/components/ui/sonner.tsx",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "452f4d9f0dde88611113632c1d759d60155fe4d3",
       size: 894,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/452f4d9f0dde88611113632c1d759d60155fe4d3",
@@ -747,7 +747,7 @@ const sampleData = {
     {
       path: "apps/web/src/components/ui/tabs.tsx",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "022d8b264912cc333272bc13fd2c5996a3361c5c",
       size: 1897,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/022d8b264912cc333272bc13fd2c5996a3361c5c",
@@ -755,7 +755,7 @@ const sampleData = {
     {
       path: "apps/web/src/components/ui/textarea.tsx",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "f88c139486dbe023e0b7fb98f6baa45f1f449de3",
       size: 689,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/f88c139486dbe023e0b7fb98f6baa45f1f449de3",
@@ -763,7 +763,7 @@ const sampleData = {
     {
       path: "apps/web/src/env.js",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "f4857c6920d1475bcd8f0c91448d1c4dd84feb7e",
       size: 3092,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/f4857c6920d1475bcd8f0c91448d1c4dd84feb7e",
@@ -771,14 +771,14 @@ const sampleData = {
     {
       path: "apps/web/src/lib",
       mode: "040000",
-      type: "tree",
+      type: "tree" as const,
       sha: "1bdc1d66ab5752bb8929bbb4ca0daee1df5f30da",
       url: "https://api.github.com/repos/Krish120003/zercel/git/trees/1bdc1d66ab5752bb8929bbb4ca0daee1df5f30da",
     },
     {
       path: "apps/web/src/lib/utils.ts",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "bd0c391ddd1088e9067844c48835bf4abcd61783",
       size: 166,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/bd0c391ddd1088e9067844c48835bf4abcd61783",
@@ -786,21 +786,21 @@ const sampleData = {
     {
       path: "apps/web/src/server",
       mode: "040000",
-      type: "tree",
+      type: "tree" as const,
       sha: "1d680ebdb7fdc73e941ccb1813582c07fbdca19b",
       url: "https://api.github.com/repos/Krish120003/zercel/git/trees/1d680ebdb7fdc73e941ccb1813582c07fbdca19b",
     },
     {
       path: "apps/web/src/server/api",
       mode: "040000",
-      type: "tree",
+      type: "tree" as const,
       sha: "0c747dafe61fc091b5d78b6189444d2b63f5cfa6",
       url: "https://api.github.com/repos/Krish120003/zercel/git/trees/0c747dafe61fc091b5d78b6189444d2b63f5cfa6",
     },
     {
       path: "apps/web/src/server/api/root.ts",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "00965c16e46c08d3bfc04eca048cf884e0cd2674",
       size: 700,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/00965c16e46c08d3bfc04eca048cf884e0cd2674",
@@ -808,14 +808,14 @@ const sampleData = {
     {
       path: "apps/web/src/server/api/routers",
       mode: "040000",
-      type: "tree",
+      type: "tree" as const,
       sha: "91377e2163d4a98f0e9243325e2ce7fc1f973d65",
       url: "https://api.github.com/repos/Krish120003/zercel/git/trees/91377e2163d4a98f0e9243325e2ce7fc1f973d65",
     },
     {
       path: "apps/web/src/server/api/routers/github.ts",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "fb8b38e79e91286baa20a0a4cd578f7e3b663cc1",
       size: 4443,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/fb8b38e79e91286baa20a0a4cd578f7e3b663cc1",
@@ -823,7 +823,7 @@ const sampleData = {
     {
       path: "apps/web/src/server/api/routers/sites.ts",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "e8dd21328d324c6de4da9852e247250132f02496",
       size: 19043,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/e8dd21328d324c6de4da9852e247250132f02496",
@@ -831,7 +831,7 @@ const sampleData = {
     {
       path: "apps/web/src/server/api/trpc.ts",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "22680583c19f5c7e4b7f42e9cc42c3e096f25404",
       size: 3972,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/22680583c19f5c7e4b7f42e9cc42c3e096f25404",
@@ -839,14 +839,14 @@ const sampleData = {
     {
       path: "apps/web/src/server/auth",
       mode: "040000",
-      type: "tree",
+      type: "tree" as const,
       sha: "39fc276f0d0f6c3e7956f4414e3fb6ccd4973024",
       url: "https://api.github.com/repos/Krish120003/zercel/git/trees/39fc276f0d0f6c3e7956f4414e3fb6ccd4973024",
     },
     {
       path: "apps/web/src/server/auth/config.ts",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "aac0db5c557dbada2aa7c42efe0947afc51b1322",
       size: 2250,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/aac0db5c557dbada2aa7c42efe0947afc51b1322",
@@ -854,7 +854,7 @@ const sampleData = {
     {
       path: "apps/web/src/server/auth/index.ts",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "76c146d34a821b75e52f855e918d596c9a793af0",
       size: 266,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/76c146d34a821b75e52f855e918d596c9a793af0",
@@ -862,14 +862,14 @@ const sampleData = {
     {
       path: "apps/web/src/server/db",
       mode: "040000",
-      type: "tree",
+      type: "tree" as const,
       sha: "483ac5381bc8a6ea9cf5670cc664b6ae7a07d2af",
       url: "https://api.github.com/repos/Krish120003/zercel/git/trees/483ac5381bc8a6ea9cf5670cc664b6ae7a07d2af",
     },
     {
       path: "apps/web/src/server/db/index.ts",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "1287189ac3f1cbbb640b2c41f7ce464570bea48d",
       size: 522,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/1287189ac3f1cbbb640b2c41f7ce464570bea48d",
@@ -877,7 +877,7 @@ const sampleData = {
     {
       path: "apps/web/src/server/db/schema.ts",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "b1edf0b088a01fdc7b060309e085a6efbadac42d",
       size: 6791,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/b1edf0b088a01fdc7b060309e085a6efbadac42d",
@@ -885,14 +885,14 @@ const sampleData = {
     {
       path: "apps/web/src/server/github",
       mode: "040000",
-      type: "tree",
+      type: "tree" as const,
       sha: "53a72b7622debc284fe9299c150e269771ad6b58",
       url: "https://api.github.com/repos/Krish120003/zercel/git/trees/53a72b7622debc284fe9299c150e269771ad6b58",
     },
     {
       path: "apps/web/src/server/github/index.ts",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "460d270ae3530476b1b6237fbf5818a6bf158098",
       size: 184,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/460d270ae3530476b1b6237fbf5818a6bf158098",
@@ -900,14 +900,14 @@ const sampleData = {
     {
       path: "apps/web/src/server/lib",
       mode: "040000",
-      type: "tree",
+      type: "tree" as const,
       sha: "2d5c77999449c5262e8e21d6fd6bfbe7bd5f2257",
       url: "https://api.github.com/repos/Krish120003/zercel/git/trees/2d5c77999449c5262e8e21d6fd6bfbe7bd5f2257",
     },
     {
       path: "apps/web/src/server/lib/build.ts",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "1095b281be40496c335439bb8621b0028e755a19",
       size: 2756,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/1095b281be40496c335439bb8621b0028e755a19",
@@ -915,7 +915,7 @@ const sampleData = {
     {
       path: "apps/web/src/server/lib/serverBuild.ts",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "ef5f72ce0b4520d4fef03af3555220c5d9d0d00e",
       size: 9198,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/ef5f72ce0b4520d4fef03af3555220c5d9d0d00e",
@@ -923,14 +923,14 @@ const sampleData = {
     {
       path: "apps/web/src/server/redis",
       mode: "040000",
-      type: "tree",
+      type: "tree" as const,
       sha: "7e0f51453c3ae810bcf6929dd759f5e03956f0cb",
       url: "https://api.github.com/repos/Krish120003/zercel/git/trees/7e0f51453c3ae810bcf6929dd759f5e03956f0cb",
     },
     {
       path: "apps/web/src/server/redis/index.ts",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "dbf4a883a367f48e4fc51b95b593992f4c35d46d",
       size: 405,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/dbf4a883a367f48e4fc51b95b593992f4c35d46d",
@@ -938,14 +938,14 @@ const sampleData = {
     {
       path: "apps/web/src/styles",
       mode: "040000",
-      type: "tree",
+      type: "tree" as const,
       sha: "74760cda6674df4bae1d3c110cefa2648e8252ca",
       url: "https://api.github.com/repos/Krish120003/zercel/git/trees/74760cda6674df4bae1d3c110cefa2648e8252ca",
     },
     {
       path: "apps/web/src/styles/globals.css",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "1e250195b380f81ba6f7b210fe4c0829cf90def1",
       size: 1776,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/1e250195b380f81ba6f7b210fe4c0829cf90def1",
@@ -953,14 +953,14 @@ const sampleData = {
     {
       path: "apps/web/src/trpc",
       mode: "040000",
-      type: "tree",
+      type: "tree" as const,
       sha: "686d6e7811b8372607317b26ab3bb5b0d8be54d4",
       url: "https://api.github.com/repos/Krish120003/zercel/git/trees/686d6e7811b8372607317b26ab3bb5b0d8be54d4",
     },
     {
       path: "apps/web/src/trpc/query-client.ts",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "bda64397cad9f6b3e58e8f8d276cccb2fa0489bf",
       size: 684,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/bda64397cad9f6b3e58e8f8d276cccb2fa0489bf",
@@ -968,7 +968,7 @@ const sampleData = {
     {
       path: "apps/web/src/trpc/react.tsx",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "8c0521a74e0968601afeaf856d496778b4f02341",
       size: 2337,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/8c0521a74e0968601afeaf856d496778b4f02341",
@@ -976,7 +976,7 @@ const sampleData = {
     {
       path: "apps/web/src/trpc/server.ts",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "91e557e45fee2b12250e509c267c5469f09907b3",
       size: 886,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/91e557e45fee2b12250e509c267c5469f09907b3",
@@ -984,7 +984,7 @@ const sampleData = {
     {
       path: "apps/web/start-database.sh",
       mode: "100755",
-      type: "blob",
+      type: "blob" as const,
       sha: "ce8881860400c05edf770882161767aa2d324013",
       size: 2058,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/ce8881860400c05edf770882161767aa2d324013",
@@ -992,7 +992,7 @@ const sampleData = {
     {
       path: "apps/web/tailwind.config.ts",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "0ec53e5700fd9d8bb2573450af4148c7a8271620",
       size: 2083,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/0ec53e5700fd9d8bb2573450af4148c7a8271620",
@@ -1000,7 +1000,7 @@ const sampleData = {
     {
       path: "apps/web/tsconfig.json",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "905062ded60c877a4aa4814efd445423a2a66896",
       size: 857,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/905062ded60c877a4aa4814efd445423a2a66896",
@@ -1008,7 +1008,7 @@ const sampleData = {
     {
       path: "package.json",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "b353fdc5d60aa95c559a29846bf13605011daac5",
       size: 427,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/b353fdc5d60aa95c559a29846bf13605011daac5",
@@ -1016,21 +1016,21 @@ const sampleData = {
     {
       path: "packages",
       mode: "040000",
-      type: "tree",
+      type: "tree" as const,
       sha: "8beeee37ffc97a52a1d120610e5a0a2ae235a465",
       url: "https://api.github.com/repos/Krish120003/zercel/git/trees/8beeee37ffc97a52a1d120610e5a0a2ae235a465",
     },
     {
       path: "packages/eslint-config",
       mode: "040000",
-      type: "tree",
+      type: "tree" as const,
       sha: "f8154be28014a695cd5e539fc243242abb5b3381",
       url: "https://api.github.com/repos/Krish120003/zercel/git/trees/f8154be28014a695cd5e539fc243242abb5b3381",
     },
     {
       path: "packages/eslint-config/README.md",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "8b42d901b0e8dee2e21313ec0442c50e9fef038a",
       size: 72,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/8b42d901b0e8dee2e21313ec0442c50e9fef038a",
@@ -1038,7 +1038,7 @@ const sampleData = {
     {
       path: "packages/eslint-config/base.js",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "31f5f43d5c3684a9ba361454e7b607a988d3c21f",
       size: 651,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/31f5f43d5c3684a9ba361454e7b607a988d3c21f",
@@ -1046,7 +1046,7 @@ const sampleData = {
     {
       path: "packages/eslint-config/next.js",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "1997af7b6469e91967f0cd47b461c9eaf3fb7a77",
       size: 1311,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/1997af7b6469e91967f0cd47b461c9eaf3fb7a77",
@@ -1054,7 +1054,7 @@ const sampleData = {
     {
       path: "packages/eslint-config/package.json",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "e72a3b957d416f66b61cca02e18093484a42fd0f",
       size: 635,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/e72a3b957d416f66b61cca02e18093484a42fd0f",
@@ -1062,7 +1062,7 @@ const sampleData = {
     {
       path: "packages/eslint-config/react-internal.js",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "0cc8b1d39af761fd40af13e0d04ceb0b20194abe",
       size: 1088,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/0cc8b1d39af761fd40af13e0d04ceb0b20194abe",
@@ -1070,14 +1070,14 @@ const sampleData = {
     {
       path: "packages/typescript-config",
       mode: "040000",
-      type: "tree",
+      type: "tree" as const,
       sha: "4ac12dadfb98442d2f96b2dee2ae25b3405d13fe",
       url: "https://api.github.com/repos/Krish120003/zercel/git/trees/4ac12dadfb98442d2f96b2dee2ae25b3405d13fe",
     },
     {
       path: "packages/typescript-config/base.json",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "5117f2a3d1c5fe54a344a7152acbe366fe63cdda",
       size: 500,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/5117f2a3d1c5fe54a344a7152acbe366fe63cdda",
@@ -1085,7 +1085,7 @@ const sampleData = {
     {
       path: "packages/typescript-config/nextjs.json",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "e6defa48fce860cf5570f268d4880161a74789c8",
       size: 272,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/e6defa48fce860cf5570f268d4880161a74789c8",
@@ -1093,7 +1093,7 @@ const sampleData = {
     {
       path: "packages/typescript-config/package.json",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "27c0e60436aac79bd14661e016c8c5721c5db6d6",
       size: 150,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/27c0e60436aac79bd14661e016c8c5721c5db6d6",
@@ -1101,7 +1101,7 @@ const sampleData = {
     {
       path: "packages/typescript-config/react-library.json",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "c3a1b26fbb3b6ad5d606836247a8ca3a1be051c6",
       size: 136,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/c3a1b26fbb3b6ad5d606836247a8ca3a1be051c6",
@@ -1109,14 +1109,14 @@ const sampleData = {
     {
       path: "packages/ui",
       mode: "040000",
-      type: "tree",
+      type: "tree" as const,
       sha: "b47ab0abd34bad75fd5e8afcc54a9e002be22f79",
       url: "https://api.github.com/repos/Krish120003/zercel/git/trees/b47ab0abd34bad75fd5e8afcc54a9e002be22f79",
     },
     {
       path: "packages/ui/eslint.config.mjs",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "19170f88edaf8893fdc80d2c616c081f2d838861",
       size: 131,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/19170f88edaf8893fdc80d2c616c081f2d838861",
@@ -1124,7 +1124,7 @@ const sampleData = {
     {
       path: "packages/ui/package.json",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "62ced1ce308d63e21b3c3feb67f0a1b3a78ec9bc",
       size: 701,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/62ced1ce308d63e21b3c3feb67f0a1b3a78ec9bc",
@@ -1132,14 +1132,14 @@ const sampleData = {
     {
       path: "packages/ui/src",
       mode: "040000",
-      type: "tree",
+      type: "tree" as const,
       sha: "f6528679db044170012c33994dec7e9c1b39b793",
       url: "https://api.github.com/repos/Krish120003/zercel/git/trees/f6528679db044170012c33994dec7e9c1b39b793",
     },
     {
       path: "packages/ui/src/button.tsx",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "78e5420c3f606fcc5959ef45cf9c930148d1ec73",
       size: 376,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/78e5420c3f606fcc5959ef45cf9c930148d1ec73",
@@ -1147,7 +1147,7 @@ const sampleData = {
     {
       path: "packages/ui/src/card.tsx",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "7b988937b9a1d98eca18d2b87fdba837a4fe3dd0",
       size: 502,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/7b988937b9a1d98eca18d2b87fdba837a4fe3dd0",
@@ -1155,7 +1155,7 @@ const sampleData = {
     {
       path: "packages/ui/src/code.tsx",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "f7cbd22a8618fcb6dca4341cc15dccfb48c0e74d",
       size: 215,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/f7cbd22a8618fcb6dca4341cc15dccfb48c0e74d",
@@ -1163,7 +1163,7 @@ const sampleData = {
     {
       path: "packages/ui/tsconfig.json",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "ca86687c4bb77d8aed541bc31f9e81156880764a",
       size: 172,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/ca86687c4bb77d8aed541bc31f9e81156880764a",
@@ -1171,21 +1171,21 @@ const sampleData = {
     {
       path: "packages/ui/turbo",
       mode: "040000",
-      type: "tree",
+      type: "tree" as const,
       sha: "c5e150ec764f1ec2277a0ce1a3306b060a42b646",
       url: "https://api.github.com/repos/Krish120003/zercel/git/trees/c5e150ec764f1ec2277a0ce1a3306b060a42b646",
     },
     {
       path: "packages/ui/turbo/generators",
       mode: "040000",
-      type: "tree",
+      type: "tree" as const,
       sha: "76d785210d80cd66901a9c7993ca6b9bfa67db5d",
       url: "https://api.github.com/repos/Krish120003/zercel/git/trees/76d785210d80cd66901a9c7993ca6b9bfa67db5d",
     },
     {
       path: "packages/ui/turbo/generators/config.ts",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "40100baa62a61cc7156438194d5e5079482b9397",
       size: 900,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/40100baa62a61cc7156438194d5e5079482b9397",
@@ -1193,14 +1193,14 @@ const sampleData = {
     {
       path: "packages/ui/turbo/generators/templates",
       mode: "040000",
-      type: "tree",
+      type: "tree" as const,
       sha: "9f336784ba4bb208170630b0c7c10e3d093ef0b1",
       url: "https://api.github.com/repos/Krish120003/zercel/git/trees/9f336784ba4bb208170630b0c7c10e3d093ef0b1",
     },
     {
       path: "packages/ui/turbo/generators/templates/component.hbs",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "d968b9e3a84521fce4547d220beba178f67ec9eb",
       size: 192,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/d968b9e3a84521fce4547d220beba178f67ec9eb",
@@ -1208,7 +1208,7 @@ const sampleData = {
     {
       path: "pnpm-lock.yaml",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "744649ec7b96db5d02cd18bd8262cd230cafead9",
       size: 299724,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/744649ec7b96db5d02cd18bd8262cd230cafead9",
@@ -1216,7 +1216,7 @@ const sampleData = {
     {
       path: "pnpm-workspace.yaml",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "3ff5faaaf5f139c707e338e7e89e51606e9e0ace",
       size: 40,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/3ff5faaaf5f139c707e338e7e89e51606e9e0ace",
@@ -1224,14 +1224,14 @@ const sampleData = {
     {
       path: "static",
       mode: "040000",
-      type: "tree",
+      type: "tree" as const,
       sha: "6fdfcef45a65e61b1d88266441bf65b46e8b6c5b",
       url: "https://api.github.com/repos/Krish120003/zercel/git/trees/6fdfcef45a65e61b1d88266441bf65b46e8b6c5b",
     },
     {
       path: "static/cover_zercel.png",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "a2672da049dd7b395e6f2dfe009099b7b10fa0f0",
       size: 883256,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/a2672da049dd7b395e6f2dfe009099b7b10fa0f0",
@@ -1239,7 +1239,7 @@ const sampleData = {
     {
       path: "static/zercel_banner.png",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "17f8ea79e8523bf0ea157bfe3540687f2f82695a",
       size: 1772680,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/17f8ea79e8523bf0ea157bfe3540687f2f82695a",
@@ -1247,7 +1247,7 @@ const sampleData = {
     {
       path: "static/zercel_home.png",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "81cdc3545ee6e96f6a6e17c5c934fdbf65efb216",
       size: 251428,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/81cdc3545ee6e96f6a6e17c5c934fdbf65efb216",
@@ -1255,14 +1255,14 @@ const sampleData = {
     {
       path: "terraform",
       mode: "040000",
-      type: "tree",
+      type: "tree" as const,
       sha: "c6403a6e1c247a8061cd1279e44edef9aef7d10e",
       url: "https://api.github.com/repos/Krish120003/zercel/git/trees/c6403a6e1c247a8061cd1279e44edef9aef7d10e",
     },
     {
       path: "terraform/.terraform.lock.hcl",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "cc4a51d38b47bdc8339be6ff03dcaaee7a5f7c20",
       size: 2261,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/cc4a51d38b47bdc8339be6ff03dcaaee7a5f7c20",
@@ -1270,7 +1270,7 @@ const sampleData = {
     {
       path: "terraform/main.tf",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "284108efc03372f69a2501180f637e8f2bb0d9f5",
       size: 17119,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/284108efc03372f69a2501180f637e8f2bb0d9f5",
@@ -1278,7 +1278,7 @@ const sampleData = {
     {
       path: "terraform/setup_env.sh",
       mode: "100755",
-      type: "blob",
+      type: "blob" as const,
       sha: "a2ed55277ad59201e04e253cdd430684c33f4e46",
       size: 831,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/a2ed55277ad59201e04e253cdd430684c33f4e46",
@@ -1286,7 +1286,7 @@ const sampleData = {
     {
       path: "terraform/variables.tf",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "707a669b50896e031386e8c89b71ca02cab78ae6",
       size: 1437,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/707a669b50896e031386e8c89b71ca02cab78ae6",
@@ -1294,7 +1294,7 @@ const sampleData = {
     {
       path: "turbo.json",
       mode: "100644",
-      type: "blob",
+      type: "blob" as const,
       sha: "4dedd82bc5b08ec329ecaf73c13aa0108e2424dd",
       size: 541,
       url: "https://api.github.com/repos/Krish120003/zercel/git/blobs/4dedd82bc5b08ec329ecaf73c13aa0108e2424dd",
@@ -1311,7 +1311,7 @@ export default function ExplorerLayout({
   return (
     <div className="grid grid-cols-12 gap-4 w-full h-screen">
       <div className="col-span-3 border-r-2 overflow-y-auto">
-        <FileTree data={sampleData} branch="main" />
+        <FileTree data={sampleData} />
       </div>
       <div className="col-span-9">
         actual files?
