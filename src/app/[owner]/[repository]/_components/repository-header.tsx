@@ -10,20 +10,17 @@ interface RepositoryHeaderProps {
 
 export function RepositoryHeader({ owner, repository }: RepositoryHeaderProps) {
   return (
-    <div className="border-b">
+    <header className="border-b bg-background border-foreground/40">
       <div className="px-4">
         {/* Top bar with logo and repo name */}
         <div className="flex items-center py-4 gap-2">
           <GitGraph className="h-5 w-5" />
           <div className="flex items-center text-md">
-            {/* <Link href="#" className="hover:underline text-white">
-              {owner}
-              </Link> */}
             {owner}
             <span className="mx-1">/</span>
             <Link
               href={`/${owner}/${repository}`}
-              className="hover:underline text-white"
+              className="hover:underline text-foreground"
             >
               {repository}
             </Link>
@@ -32,6 +29,6 @@ export function RepositoryHeader({ owner, repository }: RepositoryHeaderProps) {
         {/* Navigation tabs - now using the client component */}
         <RepositoryNav owner={owner} repository={repository} />
       </div>
-    </div>
+    </header>
   );
 }
