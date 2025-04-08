@@ -6,6 +6,7 @@ import { useParams, usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { api } from "@/trpc/react";
+import ShallowLink from "@/components/shallow-link";
 
 // ----------- Types -----------
 
@@ -185,14 +186,13 @@ function TreeNode({
           )}
 
           {/* Folder link */}
-          <Link
+          <ShallowLink
             href={linkPath}
             className="flex items-center flex-1 no-underline cursor-pointer"
-            onClick={() => setSelectedFile(node.path)}
           >
             <Folder className="h-4 w-4 text-[#6b9eff] mr-2" />
             <span className="text-sm">{node.name}</span>
-          </Link>
+          </ShallowLink>
         </div>
 
         {/* CHILDREN */}
@@ -217,7 +217,7 @@ function TreeNode({
 
   // FILE NODE
   return (
-    <Link
+    <ShallowLink
       href={linkPath}
       className={cn(
         "flex items-center py-1 px-2 relative no-underline group"
@@ -225,7 +225,6 @@ function TreeNode({
         // !isSelected && "hover:bg-accent-foreground/20"
       )}
       style={{ paddingLeft: `${level * 16 + 8}px` }}
-      onClick={() => setSelectedFile(node.path)}
     >
       {/* Guide lines on hover */}
       {level > 0 && (
@@ -248,7 +247,7 @@ function TreeNode({
       <span className="mr-1 h-4 w-4" />
       <File className="h-4 w-4 text-gray-400 mr-2" />
       <span className="text-sm hover:underline">{node.name}</span>
-    </Link>
+    </ShallowLink>
   );
 }
 
