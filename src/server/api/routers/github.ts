@@ -9,7 +9,9 @@ import path from "path";
 
 // Instantiate Octokit
 // const octokit = new Octokit({ auth: env.GITHUB_TOKEN });
-const octokit = new Octokit();
+const octokit = new Octokit({
+  auth: env.GITHUB_TOKEN,
+});
 
 const TreeNodeSchema = z.object({
   path: z.string(),
@@ -52,6 +54,15 @@ const GqlFileContentResponseSchema = z.object({
   }),
 });
 
+const GqlFileEntrySchema = z.object({
+  name: z.string(),
+  type: z.enum(["blob", "tree"]),
+  oid: z.string(),
+  object: z.object({
+    text: z.string().nullish(),
+  }),
+});
+
 async function fetchRepoTree(
   params: {
     owner: string;
@@ -84,7 +95,7 @@ async function fetchRepoTree(
     console.log("Response headers:", response.headers);
 
     fileTree = TreeDataSchema.parse(response.data);
-    await redis.set(key, fileTree);
+    await redis.set(key, fileTree, 3600);
     console.log("Cached file tree");
   }
 
@@ -154,33 +165,58 @@ export const githubRouter = createTRPCRouter({
     )
     .output(z.string())
     .query(async ({ ctx, input: { owner, repository, branch, path } }) => {
-      // const response = await octokit.rest.repos.getContent({
-      //     owner,
-      //     repo: repository,
-      //     path,
-      //     ref: branch,
-      // });
-
       const key = `file:${owner}/${repository}/${branch}/${path}`;
-
-      let fileContent;
       if (await ctx.redis.has(key)) {
         console.log("Cache Hit!");
-        fileContent = z
-          .object({
-            fileContent: z.string(),
-          })
-          .parse(await ctx.redis.get(key));
       } else {
-        fileContent = z
-          .object({
-            fileContent: z.string(),
-          })
-          .parse({ fileContent: "TODO PROPERLY FETCH?" });
-
-        await ctx.redis.set(key, fileContent);
+        console.log("Cache miss for file content, fetching from GitHub API");
+        const fileParentDirectoryPath = path.split("/").slice(0, -1).join("/");
+        const response = await octokit.graphql(
+          `
+          query ($owner: String!, $repo: String!, $expression: String!) {
+            rateLimit {
+              limit
+              remaining
+              used
+              resetAt
+              cost
+            }
+            repository(owner: $owner, name: $repo) {
+              object(expression: $expression) {
+                ... on Tree {
+                  entries {
+                    name
+                    type
+                    oid
+                    object {
+                      ... on Blob {
+                        text
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        `,
+          {
+            owner,
+            repo: repository,
+            expression: `${branch}:${fileParentDirectoryPath}`,
+          }
+        );
+        const data = GqlFileContentResponseSchema.parse(response);
+        for (const item of data.repository.object.entries.filter(
+          (e) => e.type === "blob"
+        )) {
+          const blobKey = `file:${owner}/${repository}/${branch}/${
+            fileParentDirectoryPath ? fileParentDirectoryPath + "/" : ""
+          }${item.name}`;
+          await ctx.redis.set(blobKey, item, 3600);
+        }
         console.log("Cached file content");
       }
-      return fileContent.fileContent;
+      const storedItem = GqlFileEntrySchema.parse(await ctx.redis.get(key));
+      return storedItem.object.text ?? "";
     }),
 });

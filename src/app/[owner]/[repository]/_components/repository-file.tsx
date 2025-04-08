@@ -1,18 +1,37 @@
 "use client";
+import { api } from "@/trpc/react";
 import { File } from "lucide-react";
 import type { ReactNode } from "react";
-
+import { Skeleton } from "@/components/ui/skeleton";
 interface FileContentViewProps {
-  fileName: string;
-  lastCommitDate?: string;
-  children: ReactNode;
+  owner: string;
+  repository: string;
+  branch: string;
+  path: string;
 }
 
+const skeletons = Array.from({
+  length: Math.floor(Math.random() * 15) + 15,
+}).map((_, i) => {
+  const randomWidth = `${Math.floor(Math.random() * 40) + 20}%`; // random width between 20% and 60%
+  return <Skeleton key={i} className="h-4" style={{ width: randomWidth }} />;
+});
+
 export function FileContentView({
-  fileName,
-  lastCommitDate = "3 days ago",
-  children,
+  owner,
+  repository,
+  branch,
+  path,
 }: FileContentViewProps) {
+  const { data, isLoading } = api.github.getFileContent.useQuery({
+    owner,
+    repository,
+    branch,
+    path,
+  });
+
+  const fileName = path.split("/").pop() || "File";
+
   return (
     <div className="rounded-lg border border-border bg-background flex flex-col">
       {/* Header section similar to FolderView */}
@@ -22,13 +41,17 @@ export function FileContentView({
           <span>{fileName}</span>
         </div>
         <div className="p-3 text-right text-muted-foreground">
-          {lastCommitDate}
+          {/* {lastCommitDate} */}
         </div>
       </div>
 
       {/* Content section with pre tags */}
       <div className="p-4 overflow-auto">
-        <pre className="text-sm font-mono whitespace-pre-wrap">{children}</pre>
+        {isLoading ? (
+          <div className="flex flex-col gap-2">{skeletons}</div>
+        ) : (
+          <pre className="text-sm font-mono whitespace-pre-wrap">{data}</pre>
+        )}
       </div>
     </div>
   );
