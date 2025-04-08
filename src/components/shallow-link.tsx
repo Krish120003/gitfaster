@@ -27,7 +27,7 @@ const ShallowLink: React.FC<ShallowLinkProps> = ({
   };
 
   return (
-    <a {...props} onClick={handleClick} onMouseDown={onMouseOver}>
+    <a {...props} onClick={handleClick} onMouseOver={onMouseOver}>
       {props.children}
     </a>
   );
