@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { ChevronDown, ChevronRight, File, Folder } from "lucide-react";
 import { useParams, usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
@@ -263,6 +263,8 @@ export function FileTree({ className }: FileTreeProps) {
     recursive: true,
   });
 
+  const pathname = usePathname();
+
   const [selectedFile, setSelectedFile] = useState<string | null>(null);
   const [expandedFolders, setExpandedFolders] = useState<
     Record<string, boolean>
@@ -273,6 +275,23 @@ export function FileTree({ className }: FileTreeProps) {
 
     return buildTree(data.tree);
   }, [data, data?.tree]);
+
+  useEffect(() => {
+    if (!processedTree || !pathname) return;
+    const splitted = pathname.split("/");
+    const index = splitted.findIndex(
+      (part) => part === "blob" || part === "tree"
+    );
+    if (index === -1 || splitted.length <= index + 2) return;
+    // Expand each segment in the path
+    const subPath = splitted.slice(index + 2).join("/");
+    if (!subPath) return;
+    let currentPath = "";
+    for (const segment of subPath.split("/")) {
+      currentPath = currentPath ? `${currentPath}/${segment}` : segment;
+      setExpandedFolders((prev) => ({ ...prev, [currentPath]: true }));
+    }
+  }, [pathname, processedTree]);
 
   if (isLoading || !processedTree) {
     return <div className="text-center">Loading...</div>;
