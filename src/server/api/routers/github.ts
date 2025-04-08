@@ -19,6 +19,8 @@ const TreeNodeSchema = z.object({
   url: z.string(),
 });
 
+export type TreeNode = z.infer<typeof TreeNodeSchema>;
+
 const TreeDataSchema = z.object({
   sha: z.string(),
   url: z.string(),
@@ -113,6 +115,7 @@ export const githubRouter = createTRPCRouter({
         path: z.string(),
       })
     )
+    .output(TreeNodeSchema.array())
     .query(
       async ({ ctx, input: { owner, repository, branch, path: dirPath } }) => {
         const tree = await fetchRepoTree(
