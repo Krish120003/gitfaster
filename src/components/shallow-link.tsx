@@ -22,7 +22,6 @@ const ShallowLink: React.FC<ShallowLinkProps> = ({
 
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
-    props.onClick?.(e);
     router.push(props.href);
   };
 

@@ -1,5 +1,6 @@
+"use client";
 import { FileContentView } from "@/app/[owner]/[repository]/_components/repository-file";
-import { api } from "@/trpc/server";
+import { useParams } from "next/navigation";
 
 interface PageProps {
   params: Promise<{
@@ -10,17 +11,20 @@ interface PageProps {
   }>;
 }
 
-export default async function Page({ params }: PageProps) {
-  const { owner, repository, branch, path } = await params;
+export default function Page({ params }: PageProps) {
+  // const { owner, repository, branch, path } = await params;
 
+  // const formattedPath = (Array.isArray(path) ? path.join("/") : path) ?? "";
+
+  const { owner, repository, branch, path } = useParams();
   const formattedPath = (Array.isArray(path) ? path.join("/") : path) ?? "";
 
   return (
     <div>
       <FileContentView
-        owner={owner}
-        repository={repository}
-        branch={branch}
+        owner={owner as string}
+        repository={repository as string}
+        branch={branch as string}
         path={formattedPath}
       />
     </div>
