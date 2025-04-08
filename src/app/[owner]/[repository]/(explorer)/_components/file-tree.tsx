@@ -4,7 +4,6 @@ import React, { useState, useMemo, useEffect } from "react";
 import { ChevronDown, ChevronRight, File, Folder } from "lucide-react";
 import { useParams, usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import Link from "next/link";
 import { api } from "@/trpc/react";
 import ShallowLink from "@/components/shallow-link";
 
@@ -114,6 +113,8 @@ function TreeNode({
   }/${branch}`;
   const linkPath = `${linkBase}/${node.path}`;
   const isSelected = pathname === linkPath;
+
+  const trpc = api.useUtils();
 
   // Skip the "root" node and just render its children
   if (node.name === "root") {
@@ -225,6 +226,15 @@ function TreeNode({
         // !isSelected && "hover:bg-accent-foreground/20"
       )}
       style={{ paddingLeft: `${level * 16 + 8}px` }}
+      onMouseOver={async () => {
+        console.log("Prefetching file content...");
+        await trpc.github.getFileContent.prefetch({
+          branch: branch as string,
+          owner: owner as string,
+          repository: repository as string,
+          path: node.path,
+        });
+      }}
     >
       {/* Guide lines on hover */}
       {level > 0 && (
