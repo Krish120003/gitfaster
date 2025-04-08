@@ -1,3 +1,4 @@
+import { FileContentView } from "@/app/[owner]/[repository]/_components/repository-file";
 import { api } from "@/trpc/server";
 
 interface PageProps {
@@ -23,9 +24,11 @@ export default async function Page({ params }: PageProps) {
 
   return (
     <div>
-      <code>
-        <pre>{data}</pre>
-      </code>
+      <FileContentView fileName={formattedPath ?? ""}>
+        <code>
+          <pre>{data}</pre>
+        </code>
+      </FileContentView>
     </div>
   );
 }
