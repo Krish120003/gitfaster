@@ -5,10 +5,10 @@ import superjson from "superjson";
 const redis = new Redis(env.REDIS_URL ?? "redis://localhost:6379");
 
 class RedisCache {
-  async set(key: string, value: object): Promise<void> {
+  async set(key: string, value: object, expiry?: number): Promise<void> {
     try {
       const serialized = superjson.stringify(value);
-      await redis.set(key, serialized);
+      await redis.set(key, serialized, "EX", expiry ?? 60 * 60 * 24); // Default expiry is 1 day
     } catch (error) {
       console.error("Error setting cache:", error);
       throw error;
