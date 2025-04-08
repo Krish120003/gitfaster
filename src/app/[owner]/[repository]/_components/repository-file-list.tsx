@@ -11,7 +11,7 @@ import {
 } from "../../../../components/ui/table";
 import { Folder, File } from "lucide-react";
 import ShallowLink from "@/components/shallow-link";
-import { useParams } from "next/navigation";
+import { useParams, usePathname } from "next/navigation";
 
 interface FolderViewProps {
   data: TreeNode[];
@@ -24,6 +24,10 @@ export function FolderView({ data, branch }: FolderViewProps) {
   const basePath = `/${owner}/${repository}/`;
   const folderBasePath = `${basePath}tree/${branch}/`;
   const fileBasePath = `${basePath}blob/${branch}/`;
+
+  const pathname = usePathname();
+  const isRoot = pathname === `/${owner}/${repository}/tree/${branch}`;
+  const parentPath = pathname.split("/").slice(0, -1).join("/");
 
   const nodesWithCommitInfo = data.map((node) => ({
     ...node,
@@ -49,20 +53,26 @@ export function FolderView({ data, branch }: FolderViewProps) {
         </TableHeader>
         <TableBody>
           {/* Parent directory row */}
-          <TableRow className="hover:bg-muted/30">
-            <TableCell className="font-medium">
-              <div className="flex items-center gap-2">
-                <Folder
-                  className="h-5 w-5 text-muted-foreground"
-                  stroke=""
-                  fill="currentColor"
-                />
-                <span>..</span>
-              </div>
-            </TableCell>
-            <TableCell></TableCell>
-            <TableCell className="text-right"></TableCell>
-          </TableRow>
+          {isRoot ? null : (
+            <TableRow className="hover:bg-muted/30">
+              <TableCell className="font-medium">
+                <ShallowLink
+                  className="flex items-center gap-2"
+                  prefetch={true}
+                  href={parentPath}
+                >
+                  <Folder
+                    className="h-5 w-5 text-muted-foreground"
+                    stroke=""
+                    fill="currentColor"
+                  />
+                  <span>..</span>
+                </ShallowLink>
+              </TableCell>
+              <TableCell></TableCell>
+              <TableCell className="text-right"></TableCell>
+            </TableRow>
+          )}
 
           {/* Sort directories first, then files */}
           {nodesWithCommitInfo
