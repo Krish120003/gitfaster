@@ -9,14 +9,11 @@ export default async function ExplorerLayout({
   params: Promise<{ owner: string; repository: string; branch: string }>;
 }) {
   return (
-    <div className="grid grid-cols-12 gap-4 w-full h-screen">
+    <div className="grid grid-cols-12 w-full h-screen">
       <div className="col-span-3 border-r-2 overflow-y-auto">
         <FileTree />
       </div>
-      <div className="col-span-9">
-        actual files?
-        {children}
-      </div>
+      <div className="col-span-9 p-4">{children}</div>
     </div>
   );
 }

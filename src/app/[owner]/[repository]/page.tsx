@@ -1,5 +1,3 @@
-import RepositoryFileList from "./_components/repository-file-list";
-
 export default function Page() {
   // somehow get data
 
@@ -8,8 +6,6 @@ export default function Page() {
       <div className="w-full grid grid-cols-4 gap-8">
         {/* File Browser and README */}
         <div className="col-span-3 flex flex-col gap-4">
-          <RepositoryFileList />
-
           <section>Readme goes here i think</section>
         </div>
 
