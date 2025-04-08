@@ -28,9 +28,11 @@ export default async function RepositoryLayout({
   const { owner, repository } = awaitedParams;
 
   return (
-    <div className="">
+    <div className="h-full min-h-screen flex flex-col items-stretch">
       <RepositoryHeader owner={owner} repository={repository} />
-      <main className="py-4">{children}</main>
+      <main className="flex-1 flex items-stretch justify-stretch">
+        {children}
+      </main>
     </div>
   );
 }
