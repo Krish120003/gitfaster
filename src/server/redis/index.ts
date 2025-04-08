@@ -68,4 +68,6 @@ class RedisCache {
 // Create singleton instance
 export const rediscache = new RedisCache();
 
+export type RedisCacheType = typeof rediscache;
+
 export { rediscache as redis };
