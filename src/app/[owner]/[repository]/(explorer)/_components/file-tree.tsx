@@ -5,6 +5,7 @@ import { ChevronDown, ChevronRight, File, Folder } from "lucide-react";
 import { useParams, usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
+import { api } from "@/trpc/react";
 
 // ----------- Types -----------
 
@@ -32,7 +33,6 @@ interface ProcessedTreeNode {
 }
 
 interface FileTreeProps {
-  data: TreeData;
   className?: string;
 }
 
@@ -254,13 +254,30 @@ function TreeNode({
 
 // ----------- Main FileTree Component -----------
 
-export function FileTree({ data, className }: FileTreeProps) {
+export function FileTree({ className }: FileTreeProps) {
+  const { owner, repository, branch } = useParams();
+
+  const { data, isLoading } = api.github.getRepoTree.useQuery({
+    owner: owner as string,
+    repository: repository as string,
+    branch: branch as string,
+    recursive: true,
+  });
+
   const [selectedFile, setSelectedFile] = useState<string | null>(null);
   const [expandedFolders, setExpandedFolders] = useState<
     Record<string, boolean>
   >({});
 
-  const processedTree = useMemo(() => buildTree(data.tree), [data.tree]);
+  const processedTree = useMemo(() => {
+    if (!data || !data.tree) return null;
+
+    return buildTree(data.tree);
+  }, [data, data?.tree]);
+
+  if (isLoading || !processedTree) {
+    return <div className="text-center">Loading...</div>;
+  }
 
   const toggleFolder = (path: string) => {
     setExpandedFolders((prev) => ({ ...prev, [path]: !prev[path] }));
