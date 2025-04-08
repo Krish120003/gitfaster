@@ -1,3 +1,4 @@
+import FolderView from "@/components/repository-file-list";
 import { api } from "@/trpc/server";
 
 interface PageProps {
@@ -22,22 +23,7 @@ export default async function Page({ params }: PageProps) {
 
   return (
     <div>
-      <div>
-        params are:
-        <code>
-          <pre>{JSON.stringify(await params, null, 2)}</pre>
-          <pre>{formattedPath}</pre>
-        </code>
-      </div>
-      <ul>
-        {data.map((item) => (
-          <li key={item.path}>
-            <a href={`/${owner}/${repository}/blob/${branch}/${item.path}`}>
-              {item.path}
-            </a>
-          </li>
-        ))}
-      </ul>
+      <FolderView data={data} />
     </div>
   );
 }
