@@ -93,4 +93,62 @@ export const githubRouter = createTRPCRouter({
 
       return fileTree;
     }),
+
+  getFileContent: publicProcedure
+    .input(
+      z.object({
+        owner: z.string(),
+        repository: z.string(),
+        branch: z.string(),
+        path: z.string(),
+      })
+    )
+    .output(z.string())
+    .query(async ({ ctx, input: { owner, repository, branch, path } }) => {
+      // const response = await octokit.rest.repos.getContent({
+      //     owner,
+      //     repo: repository,
+      //     path,
+      //     ref: branch,
+      // });
+
+      const key = `file:${owner}/${repository}/${branch}/${path}`;
+
+      let fileContent;
+      if (await ctx.redis.has(key)) {
+        console.log("Cache Hit!");
+        fileContent = z
+          .object({
+            fileContent: z.string(),
+          })
+          .parse(await ctx.redis.get(key));
+      } else {
+        console.log("Query GitHub API for file content");
+        // const response = await octokit.graphql(
+        //   `query ($owner: String!, $repository: String!, $branch: String!, $path: String!) {
+        //             repository(owner: $owner, name: $repository) {
+        //                 object(expression: "$branch:$path") {
+        //                     ... on Blob {
+        //                         text
+        //                     }
+        //                 }
+        //             }
+        //         }`,
+        //   { owner, repository, branch, path }
+        // );
+
+        // fileContent =
+        //   GqlFileContentResponseSchema.parse(response).repository.object.text;
+
+        fileContent = z
+          .object({
+            fileContent: z.string(),
+          })
+          .parse({ fileContent: "TODO PROPERLY FETCH?" });
+
+        await ctx.redis.set(key, fileContent);
+        console.log("Cached file content");
+      }
+      return fileContent.fileContent;
+    }),
 });
