@@ -1,4 +1,4 @@
-import FolderView from "@/components/repository-file-list";
+import FolderView from "@/app/[owner]/[repository]/_components/repository-file-list";
 import { api } from "@/trpc/server";
 
 interface PageProps {
@@ -23,7 +23,7 @@ export default async function Page({ params }: PageProps) {
 
   return (
     <div>
-      <FolderView data={data} />
+      <FolderView data={data} branch={branch} />
     </div>
   );
 }

@@ -1,3 +1,4 @@
+"use client";
 import type { TreeNode } from "@/server/api/routers/github";
 import React from "react";
 import {
@@ -7,16 +8,23 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "./ui/table";
+} from "../../../../components/ui/table";
 import { Folder, File } from "lucide-react";
+import ShallowLink from "@/components/shallow-link";
+import { useParams } from "next/navigation";
 
 interface FolderViewProps {
   data: TreeNode[];
+  branch: string;
 }
 
-export function FolderView({ data }: FolderViewProps) {
-  // In a real implementation, you would fetch commit data
-  // Here we're adding mock commit data for demonstration
+export function FolderView({ data, branch }: FolderViewProps) {
+  const { owner, repository } = useParams();
+
+  const basePath = `/${owner}/${repository}/`;
+  const folderBasePath = `${basePath}tree/${branch}/`;
+  const fileBasePath = `${basePath}blob/${branch}/`;
+
   const nodesWithCommitInfo = data.map((node) => ({
     ...node,
     lastCommitMessage: getMockCommitMessage(node.path),
@@ -66,28 +74,38 @@ export function FolderView({ data }: FolderViewProps) {
               // Then sort by path
               return a.path.localeCompare(b.path);
             })
-            .map((node) => (
-              <TableRow key={node.path} className="hover:bg-muted/30">
-                <TableCell className="font-medium">
-                  <div className="flex items-center gap-2">
-                    {node.type === "tree" ? (
-                      <Folder
-                        className="h-5 w-5 text-muted-foreground"
-                        stroke="none"
-                        fill="currentColor"
-                      />
-                    ) : (
-                      <File className="h-5 w-5 text-muted-foreground" />
-                    )}
-                    <span>{getFileName(node.path)}</span>
-                  </div>
-                </TableCell>
-                <TableCell>{node.lastCommitMessage}</TableCell>
-                <TableCell className="text-right">
-                  {node.lastCommitDate}
-                </TableCell>
-              </TableRow>
-            ))}
+            .map((node) => {
+              const link = node.path;
+
+              return (
+                <TableRow key={node.path} className="hover:bg-muted/30">
+                  <TableCell className="font-medium">
+                    <ShallowLink
+                      className="flex items-center gap-2"
+                      href={`${
+                        node.type === "tree" ? folderBasePath : fileBasePath
+                      }${link}`}
+                      prefetch={true}
+                    >
+                      {node.type === "tree" ? (
+                        <Folder
+                          className="h-5 w-5 text-muted-foreground"
+                          stroke="none"
+                          fill="currentColor"
+                        />
+                      ) : (
+                        <File className="h-5 w-5 text-muted-foreground" />
+                      )}
+                      <span>{getFileName(node.path)}</span>
+                    </ShallowLink>
+                  </TableCell>
+                  <TableCell>{node.lastCommitMessage}</TableCell>
+                  <TableCell className="text-right">
+                    {node.lastCommitDate}
+                  </TableCell>
+                </TableRow>
+              );
+            })}
         </TableBody>
       </Table>
     </div>
