@@ -206,6 +206,7 @@ export const githubRouter = createTRPCRouter({
           }
         );
         const data = GqlFileContentResponseSchema.parse(response);
+        console.log("Received file content from GitHub API", data);
         for (const item of data.repository.object.entries.filter(
           (e) => e.type === "blob"
         )) {
