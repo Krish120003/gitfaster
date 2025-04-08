@@ -10,7 +10,7 @@ export default async function ExplorerLayout({
 }) {
   return (
     <div className="grid grid-cols-12 w-full h-screen">
-      <div className="col-span-3 border-r-2 overflow-y-auto">
+      <div className="col-span-3 border-r border-foreground/20 overflow-y-auto">
         <FileTree />
       </div>
       <div className="col-span-9 p-4">{children}</div>

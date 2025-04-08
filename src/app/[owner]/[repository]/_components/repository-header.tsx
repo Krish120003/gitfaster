@@ -10,7 +10,7 @@ interface RepositoryHeaderProps {
 
 export function RepositoryHeader({ owner, repository }: RepositoryHeaderProps) {
   return (
-    <header className="border-b bg-background border-foreground/40">
+    <header className="border-b bg-background border-foreground/20">
       <div className="px-4">
         {/* Top bar with logo and repo name */}
         <div className="flex items-center py-4 gap-2">
