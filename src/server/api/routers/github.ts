@@ -1,12 +1,11 @@
 import "server-only";
 
 import { z } from "zod";
-// Remove fs and path imports
-// import path from "path";
-// import fs from "fs/promises";
 import { Octokit } from "octokit";
 import { env } from "@/env.js";
 import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
+import type { redis, RedisCacheType } from "@/server/redis";
+import path from "path";
 
 // Instantiate Octokit
 // const octokit = new Octokit({ auth: env.GITHUB_TOKEN });
@@ -51,6 +50,45 @@ const GqlFileContentResponseSchema = z.object({
   }),
 });
 
+async function fetchRepoTree(
+  params: {
+    owner: string;
+    repository: string;
+    branch: string;
+    recursive: boolean;
+  },
+  redis: RedisCacheType,
+  octokit: Octokit
+): Promise<z.infer<typeof TreeDataSchema>> {
+  const { owner, repository, branch, recursive } = params;
+  const key = `tree:${owner}/${repository}/${branch}/${recursive}`;
+
+  console.log("Fetching file tree for path:", branch);
+
+  let fileTree;
+  if (await redis.has(key)) {
+    console.log("Cache Hit!");
+    fileTree = TreeDataSchema.parse(await redis.get(key));
+  } else {
+    console.log("Query GitHub API for file tree");
+    const response = await octokit.rest.git.getTree({
+      owner: owner,
+      repo: repository,
+      tree_sha: branch,
+      recursive: recursive ? "1" : undefined,
+    });
+
+    console.log("Received file tree from GitHub API");
+    console.log("Response headers:", response.headers);
+
+    fileTree = TreeDataSchema.parse(response.data);
+    await redis.set(key, fileTree);
+    console.log("Cached file tree");
+  }
+
+  return fileTree;
+}
+
 export const githubRouter = createTRPCRouter({
   getRepoTree: publicProcedure
     .input(
@@ -62,37 +100,45 @@ export const githubRouter = createTRPCRouter({
       })
     )
     .output(TreeDataSchema)
-    .query(async ({ ctx, input: { owner, repository, branch, recursive } }) => {
-      const key = `tree:${owner}/${repository}/${branch}/${recursive}`;
+    .query(async ({ ctx, input }) => {
+      return fetchRepoTree(input, ctx.redis, octokit);
+    }),
 
-      console.log("Fetching file tree for path:", branch);
-      console.log("Cache keys:", await ctx.redis.keys());
+  getFolderView: publicProcedure
+    .input(
+      z.object({
+        owner: z.string(),
+        repository: z.string(),
+        branch: z.string(),
+        path: z.string(),
+      })
+    )
+    .query(
+      async ({ ctx, input: { owner, repository, branch, path: dirPath } }) => {
+        const tree = await fetchRepoTree(
+          {
+            owner,
+            repository,
+            branch,
+            recursive: true,
+          },
+          ctx.redis,
+          octokit
+        );
 
-      let fileTree;
-      if (await ctx.redis.has(key)) {
-        console.log("Cache Hit!");
-        fileTree = TreeDataSchema.parse(await ctx.redis.get(key));
-      } else {
-        // Fetch the tree from GitHub API
-        console.log("Query GitHub API for file tree");
-        const response = await octokit.rest.git.getTree({
-          owner: owner,
-          repo: repository,
-          tree_sha: branch,
-          recursive: recursive ? "1" : undefined,
+        console.log("Filtering for path:", dirPath);
+
+        // filter to find all files that are direct children of the path
+        const filteredTree = tree.tree.filter((node) => {
+          return (
+            node.path.startsWith(dirPath) &&
+            node.path.split("/").length === dirPath.split("/").length + 1
+          );
         });
 
-        console.log("Received file tree from GitHub API");
-        console.log("Response headers:", response.headers);
-
-        fileTree = TreeDataSchema.parse(response.data);
-        await ctx.redis.set(key, fileTree);
-        console.log("Cached file tree");
-        console.log(await ctx.redis.keys());
+        return filteredTree;
       }
-
-      return fileTree;
-    }),
+    ),
 
   getFileContent: publicProcedure
     .input(
@@ -123,23 +169,6 @@ export const githubRouter = createTRPCRouter({
           })
           .parse(await ctx.redis.get(key));
       } else {
-        console.log("Query GitHub API for file content");
-        // const response = await octokit.graphql(
-        //   `query ($owner: String!, $repository: String!, $branch: String!, $path: String!) {
-        //             repository(owner: $owner, name: $repository) {
-        //                 object(expression: "$branch:$path") {
-        //                     ... on Blob {
-        //                         text
-        //                     }
-        //                 }
-        //             }
-        //         }`,
-        //   { owner, repository, branch, path }
-        // );
-
-        // fileContent =
-        //   GqlFileContentResponseSchema.parse(response).repository.object.text;
-
         fileContent = z
           .object({
             fileContent: z.string(),
