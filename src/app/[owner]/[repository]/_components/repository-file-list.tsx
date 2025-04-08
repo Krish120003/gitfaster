@@ -12,6 +12,7 @@ import {
 import { Folder, File } from "lucide-react";
 import ShallowLink from "@/components/shallow-link";
 import { useParams, usePathname } from "next/navigation";
+import { api } from "@/trpc/react";
 
 interface FolderViewProps {
   data: TreeNode[];
@@ -20,6 +21,7 @@ interface FolderViewProps {
 
 export function FolderView({ data, branch }: FolderViewProps) {
   const { owner, repository } = useParams();
+  const trpc = api.useUtils();
 
   const basePath = `/${owner}/${repository}/`;
   const folderBasePath = `${basePath}tree/${branch}/`;
@@ -96,6 +98,18 @@ export function FolderView({ data, branch }: FolderViewProps) {
                         node.type === "tree" ? folderBasePath : fileBasePath
                       }${link}`}
                       prefetch={true}
+                      onMouseOver={
+                        node.type === "blob"
+                          ? () => {
+                              trpc.github.getFileContent.prefetch({
+                                branch: branch,
+                                owner: owner as string,
+                                repository: repository as string,
+                                path: node.path,
+                              });
+                            }
+                          : undefined
+                      }
                     >
                       {node.type === "tree" ? (
                         <Folder
