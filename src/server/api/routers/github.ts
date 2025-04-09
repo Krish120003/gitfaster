@@ -149,7 +149,7 @@ async function fetchRepoTree(
   octokit: Octokit
 ): Promise<z.infer<typeof TreeDataSchema>> {
   const { owner, repository, branch, recursive } = params;
-  const key = `tree:${owner}/${repository}/${branch}/${recursive}`;
+  const key = `tree:${owner}:${repository}:${branch}:${recursive}`;
 
   console.log("Fetching file tree for path:", branch);
 
@@ -322,7 +322,7 @@ export const githubRouter = createTRPCRouter({
     )
     .output(z.string())
     .query(async ({ ctx, input: { owner, repository, branch, path } }) => {
-      const key = `file:${owner}/${repository}/${branch}/${path}`;
+      const key = `file:${owner}:${repository}:${branch}:${path}`;
       if (await ctx.redis.has(key)) {
         console.log("Cache Hit!");
       } else {
@@ -367,7 +367,7 @@ export const githubRouter = createTRPCRouter({
         for (const item of data.repository.object.entries.filter(
           (e) => e.type === "blob"
         )) {
-          const blobKey = `file:${owner}/${repository}/${branch}/${
+          const blobKey = `file:${owner}:${repository}:${branch}:${
             fileParentDirectoryPath ? fileParentDirectoryPath + "/" : ""
           }${item.name}`;
           await ctx.redis.set(blobKey, item, 3600);
