@@ -27,7 +27,7 @@ const BinaryViewer: React.FC<ContentProp> = ({ file, url }) => {
       </video>
     );
   } else if (pdfFormats.includes(fileExtension)) {
-    return <PDFViewer url={url} width={600} />;
+    return <PDFViewer url={url} />;
   }
 
   // Default fallback for unsupported binary files
