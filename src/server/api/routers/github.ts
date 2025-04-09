@@ -175,7 +175,7 @@ export const githubRouter = createTRPCRouter({
       })
     )
     .query(async ({ ctx, input: { owner, repository } }) => {
-      const key = `overview:${owner}${repository}`;
+      const key = `overview:${owner}:${repository}`;
       if (await ctx.redis.has(key)) {
         console.log("Cache Hit for repo overview");
         return RepositoryOverviewResponseSchema.parse(await ctx.redis.get(key))
@@ -221,7 +221,7 @@ export const githubRouter = createTRPCRouter({
                 name
               }
             }
-            mentionableUsers(first: 14) {
+            mentionableUsers(first: 30) {
               totalCount
               nodes {
                 login
