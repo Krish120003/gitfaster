@@ -69,6 +69,7 @@ const TextViewer: React.FC<ContentProp> = ({ file, url }) => {
   return (
     <ShikiHighlighter
       language={fileExtension}
+      className="text-sm"
       theme={
         theme === "system"
           ? isDarkTheme

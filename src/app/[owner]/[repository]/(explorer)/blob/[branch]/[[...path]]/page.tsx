@@ -34,7 +34,7 @@ export default async function Page({ params }: PageProps) {
       <div className="flex border-b border-border justify-between">
         <div className="p-3 text-muted-foreground font-medium flex gap-2 items-center">
           <File className="h-5 w-5 text-muted-foreground" />
-          <span>{file.name}</span>
+          <span className="text-sm">{file.name}</span>
         </div>
         <div className="p-3 text-right text-muted-foreground">
           {/* {lastCommitDate} */}
@@ -42,7 +42,7 @@ export default async function Page({ params }: PageProps) {
       </div>
 
       {/* Content section with pre tags */}
-      <div className="p-4 overflow-auto ">
+      <div className="overflow-auto ">
         {file ? (
           <ContentViewer file={file} url={url} />
         ) : (

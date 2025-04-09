@@ -10,7 +10,7 @@ function FilenameFromParams() {
 
   const filename = formattedPath.split("/").pop() || "";
 
-  return <div>{filename}</div>;
+  return <div className="text-sm">{filename}</div>;
 }
 
 export default FilenameFromParams;
