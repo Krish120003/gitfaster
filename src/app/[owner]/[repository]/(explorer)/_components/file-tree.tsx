@@ -228,15 +228,6 @@ function TreeNode({
       )}
       style={{ paddingLeft: `${level * 16 + 8}px` }}
       prefetch={true}
-      onMouseOver={async () => {
-        console.log("Prefetching file content...");
-        await trpc.github.getFileContent.prefetch({
-          branch: branch as string,
-          owner: owner as string,
-          repository: repository as string,
-          path: node.path,
-        });
-      }}
     >
       {/* Guide lines on hover */}
       {level > 0 && (
