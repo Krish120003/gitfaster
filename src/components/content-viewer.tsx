@@ -36,9 +36,21 @@ const BinaryViewer: React.FC<ContentProp> = ({ file, url }) => {
   return <div>Binary file not supported for preview: {file.name}</div>;
 };
 
+const TextViewer: React.FC<ContentProp> = ({ file, url }) => {
+  const fileExtension = file.name.split(".").pop()?.toLowerCase() || "";
+
+  if (fileExtension === "svg") {
+    return <img src={url} alt={file.name} />;
+  }
+
+  return (
+    <pre className="text-sm font-mono whitespace-pre-wrap">{file.text}</pre>
+  );
+};
+
 const ContentViewer: React.FC<ContentProp> = ({ file, url }) => {
   return file.isBinary === false ? (
-    <pre className="text-sm font-mono whitespace-pre-wrap">{file.text}</pre> //this should be component to handle stuff like svg
+    <TextViewer file={file} url={url} />
   ) : (
     <BinaryViewer file={file} url={url} />
   );
