@@ -1,11 +1,8 @@
 import "server-only";
-
 import { z } from "zod";
 import { Octokit } from "octokit";
-import { env } from "@/env.js";
-import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
+import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import type { redis, RedisCacheType } from "@/server/redis";
-import path from "path";
 import type { Context } from "@/app/api/trpc/[trpc]/route";
 import { eq } from "drizzle-orm";
 import { users } from "@/server/db/schema";
@@ -216,7 +213,7 @@ async function getOctokit(ctx: Context) {
 }
 
 export const githubRouter = createTRPCRouter({
-  getRepositoryOverview: publicProcedure
+  getRepositoryOverview: protectedProcedure
     .input(
       z.object({
         owner: z.string(),
@@ -301,7 +298,7 @@ export const githubRouter = createTRPCRouter({
       return data.repository;
     }),
 
-  getRepoTree: publicProcedure
+  getRepoTree: protectedProcedure
     .input(
       z.object({
         owner: z.string(),
@@ -315,7 +312,7 @@ export const githubRouter = createTRPCRouter({
       return fetchRepoTree(input, ctx.redis, ctx);
     }),
 
-  getFolderView: publicProcedure
+  getFolderView: protectedProcedure
     .input(
       z.object({
         owner: z.string(),
@@ -356,7 +353,7 @@ export const githubRouter = createTRPCRouter({
       }
     ),
 
-  getFileContent: publicProcedure
+  getFileContent: protectedProcedure
     .input(
       z.object({
         owner: z.string(),
@@ -429,7 +426,7 @@ export const githubRouter = createTRPCRouter({
       };
     }),
 
-  getRepositoryReadme: publicProcedure
+  getRepositoryReadme: protectedProcedure
     .input(
       z.object({
         owner: z.string(),
