@@ -73,7 +73,7 @@ const TextViewer: React.FC<ContentProp> = ({ file, url }) => {
       theme={
         theme === "system"
           ? isDarkTheme
-            ? "github-dark"
+            ? "github-dark-default"
             : "github-light"
           : theme ?? "github-light"
       }
