@@ -1,5 +1,4 @@
 import type { FileType } from "@/server/api/routers/github";
-import { PDFViewer } from "./pdf-viewer";
 
 interface ContentProp {
   file: FileType;
@@ -13,13 +12,9 @@ const BinaryViewer: React.FC<ContentProp> = ({ file, url }) => {
   const videoFormats = ["mp4", "webm", "ogg"];
   const pdfFormats = ["pdf"];
 
-  console.log("DEBUG FILE", file);
-
-  //TODO: pdf don't work rn
   if (imageFormats.includes(fileExtension)) {
     return <img src={url} alt={file.name} />;
   } else if (videoFormats.includes(fileExtension)) {
-    console.log("THIS IS A VIDEO");
     return (
       <video controls className="max-w-full">
         <source src={url} type={`video/${fileExtension}`} />
@@ -27,7 +22,14 @@ const BinaryViewer: React.FC<ContentProp> = ({ file, url }) => {
       </video>
     );
   } else if (pdfFormats.includes(fileExtension)) {
-    return <PDFViewer url={url} />;
+    return (
+      <iframe
+        src={`https://docs.google.com/gview?embedded=true&url=${encodeURIComponent(
+          url
+        )}`}
+        className="w-full h-full min-h-[80vh] border-none"
+      />
+    );
   }
 
   // Default fallback for unsupported binary files
@@ -35,7 +37,6 @@ const BinaryViewer: React.FC<ContentProp> = ({ file, url }) => {
 };
 
 const ContentViewer: React.FC<ContentProp> = ({ file, url }) => {
-  console.log("DEBUG FILE", file);
   return file.isBinary === false ? (
     <pre className="text-sm font-mono whitespace-pre-wrap">{file.text}</pre> //this should be component to handle stuff like svg
   ) : (
