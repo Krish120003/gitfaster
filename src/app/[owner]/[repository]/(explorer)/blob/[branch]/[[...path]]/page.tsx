@@ -17,7 +17,9 @@ export default function Page({ params }: PageProps) {
   // const formattedPath = (Array.isArray(path) ? path.join("/") : path) ?? "";
 
   const { owner, repository, branch, path } = useParams();
-  const formattedPath = (Array.isArray(path) ? path.join("/") : path) ?? "";
+  const formattedPath = decodeURIComponent(
+    (Array.isArray(path) ? path.join("/") : path) ?? ""
+  );
 
   return (
     <div>

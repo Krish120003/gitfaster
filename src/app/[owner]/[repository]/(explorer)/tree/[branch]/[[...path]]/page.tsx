@@ -13,7 +13,9 @@ interface PageProps {
 export default async function Page({ params }: PageProps) {
   const { owner, repository, branch, path } = await params;
 
-  const formattedPath = Array.isArray(path) ? path.join("/") : path;
+  const formattedPath = decodeURIComponent(
+    (Array.isArray(path) ? path.join("/") : path) ?? ""
+  );
   const data = await api.github.getFolderView({
     owner,
     repository,
