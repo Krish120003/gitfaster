@@ -63,6 +63,70 @@ const GqlFileEntrySchema = z.object({
   }),
 });
 
+// New schemas for repository overview response
+const RepositoryOverviewRateLimitSchema = z.object({
+  limit: z.number(),
+  remaining: z.number(),
+  used: z.number(),
+  resetAt: z.string(),
+  cost: z.number(),
+});
+const RepositoryOverviewLicenseSchema = z
+  .object({
+    name: z.string(),
+  })
+  .nullable();
+const RepositoryOverviewDefaultBranchSchema = z.object({
+  name: z.string(),
+  target: z.object({
+    history: z.object({
+      totalCount: z.number(),
+    }),
+  }),
+});
+const RepositoryOverviewLanguagesSchema = z.object({
+  totalSize: z.number(),
+  nodes: z.array(z.object({ name: z.string() })),
+});
+const RepositoryOverviewRefsSchema = z.object({
+  nodes: z.array(z.object({ name: z.string() })),
+});
+const RepositoryOverviewMentionableUsersSchema = z.object({
+  totalCount: z.number(),
+  nodes: z.array(
+    z.object({
+      login: z.string(),
+      avatarUrl: z.string(),
+    })
+  ),
+});
+const RepositoryOverviewTopicNodeSchema = z.object({
+  topic: z.object({
+    name: z.string(),
+  }),
+});
+const RepositoryOverviewTopicsSchema = z.object({
+  totalCount: z.number(),
+  nodes: z.array(RepositoryOverviewTopicNodeSchema),
+});
+const RepositoryOverviewRepositorySchema = z.object({
+  name: z.string(),
+  isPrivate: z.boolean(),
+  description: z.string().nullable(),
+  homepageUrl: z.string().nullable(),
+  licenseInfo: RepositoryOverviewLicenseSchema,
+  stargazerCount: z.number(),
+  defaultBranchRef: RepositoryOverviewDefaultBranchSchema.nullable(),
+  languages: RepositoryOverviewLanguagesSchema,
+  refs: RepositoryOverviewRefsSchema,
+  mentionableUsers: RepositoryOverviewMentionableUsersSchema,
+  repositoryTopics: RepositoryOverviewTopicsSchema,
+});
+const RepositoryOverviewResponseSchema = z.object({
+  rateLimit: RepositoryOverviewRateLimitSchema,
+  repository: RepositoryOverviewRepositorySchema,
+});
+
 async function fetchRepoTree(
   params: {
     owner: string;
@@ -103,6 +167,88 @@ async function fetchRepoTree(
 }
 
 export const githubRouter = createTRPCRouter({
+  getRepositoryOverview: publicProcedure
+    .input(
+      z.object({
+        owner: z.string(),
+        repository: z.string(),
+      })
+    )
+    .query(async ({ ctx, input: { owner, repository } }) => {
+      const key = `overview:${owner}${repository}`;
+      if (await ctx.redis.has(key)) {
+        console.log("Cache Hit for repo overview");
+        return RepositoryOverviewResponseSchema.parse(await ctx.redis.get(key))
+          .repository;
+      }
+      console.log("Fetching repository overview from GitHub GraphQL API");
+      const query = `
+        query ($owner: String!, $repo: String!) {
+          rateLimit {
+            limit
+            remaining
+            used
+            resetAt
+            cost
+          }
+          repository(owner: $owner, name: $repo) {
+            name
+            isPrivate
+            description
+            homepageUrl
+            licenseInfo {
+              name
+            }
+            stargazerCount
+            defaultBranchRef {
+              name
+              target {
+                ... on Commit {
+                  history(first: 0) {
+                    totalCount
+                  }
+                }
+              }
+            }
+            languages(first: 10) {
+              totalSize
+              nodes {
+                name
+              }
+            }
+            refs(refPrefix: "refs/heads/", first: 100) {
+              nodes {
+                name
+              }
+            }
+            mentionableUsers(first: 14) {
+              totalCount
+              nodes {
+                login
+                avatarUrl
+              }
+            }
+            repositoryTopics(first: 10) {
+              totalCount
+              nodes {
+                topic {
+                  name
+                }
+              }
+            }
+          }
+        }
+      `;
+      const response = await octokit.graphql(query, {
+        owner,
+        repo: repository,
+      });
+      const data = RepositoryOverviewResponseSchema.parse(response);
+      await ctx.redis.set(key, data, 3600);
+      console.log("Cached repository overview");
+      return data.repository;
+    }),
+
   getRepoTree: publicProcedure
     .input(
       z.object({
