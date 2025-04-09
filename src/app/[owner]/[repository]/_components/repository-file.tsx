@@ -3,6 +3,7 @@ import { api } from "@/trpc/react";
 import { File } from "lucide-react";
 import type { ReactNode } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
+import ContentViewer from "@/components/content-viewer";
 interface FileContentViewProps {
   owner: string;
   repository: string;
@@ -23,7 +24,7 @@ export function FileContentView({
   branch,
   path,
 }: FileContentViewProps) {
-  const { data, isLoading } = api.github.getFileContent.useQuery({
+  const { data: file, isLoading } = api.github.getFileContent.useQuery({
     owner,
     repository,
     branch,
@@ -31,6 +32,8 @@ export function FileContentView({
   });
 
   const fileName = path.split("/").pop() || "File";
+
+  const url = `https://raw.githubusercontent.com/${owner}/${repository}/${branch}/${path}`;
 
   return (
     <div className="rounded-lg border border-border bg-background flex flex-col">
@@ -46,11 +49,15 @@ export function FileContentView({
       </div>
 
       {/* Content section with pre tags */}
-      <div className="p-4 overflow-auto">
+      <div className="p-4 overflow-auto ">
         {isLoading ? (
           <div className="flex flex-col gap-2">{skeletons}</div>
+        ) : file ? (
+          <ContentViewer file={file} url={url} />
         ) : (
-          <pre className="text-sm font-mono whitespace-pre-wrap">{data}</pre>
+          <pre className="text-sm font-mono whitespace-pre-wrap">
+            No content available
+          </pre>
         )}
       </div>
     </div>
