@@ -143,6 +143,10 @@ const ReadmeResponseSchema = z.object({
   }),
 });
 
+const TokenSchema = z.object({
+  token: z.string(),
+});
+
 async function fetchRepoTree(
   params: {
     owner: string;
@@ -189,7 +193,15 @@ async function getOctokit(ctx: Context) {
     throw new Error("User not authenticated");
   }
 
-  // get user's github token
+  const tokenKey = `githubToken:${ctx.session.user.id}`;
+  const tokenData = await ctx.redis.get(tokenKey);
+  const parsedToken = TokenSchema.safeParse(tokenData);
+  if (parsedToken.success) {
+    return new Octokit({
+      auth: parsedToken.data.token,
+    });
+  }
+
   const user = await ctx.db.query.users.findFirst({
     where: eq(users.id, ctx.session.user.id),
     with: {
@@ -206,6 +218,7 @@ async function getOctokit(ctx: Context) {
     throw new Error("Account not found");
   }
   const accessToken = account.access_token;
+  await ctx.redis.set(tokenKey, { token: accessToken }, 3600);
 
   return new Octokit({
     auth: accessToken,
