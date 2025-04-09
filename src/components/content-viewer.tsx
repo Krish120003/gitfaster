@@ -1,4 +1,7 @@
+"use client";
+
 import type { FileType } from "@/server/api/routers/github";
+import CodeBlock from "./codeblock";
 
 interface ContentProp {
   file: FileType;
@@ -44,7 +47,12 @@ const TextViewer: React.FC<ContentProp> = ({ file, url }) => {
   }
 
   return (
-    <pre className="text-sm font-mono whitespace-pre-wrap">{file.text}</pre>
+    // <pre className="text-sm font-mono whitespace-pre-wrap">{file.text}</pre>
+    <CodeBlock
+      code={file.text || ""}
+      language={fileExtension}
+      theme="github-light"
+    />
   );
 };
 
