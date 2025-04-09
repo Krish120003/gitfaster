@@ -21,6 +21,14 @@ const TreeNodeSchema = z.object({
   url: z.string(),
 });
 
+const fileSchema = z.object({
+  name: z.string(),
+  text: z.string().nullable(),
+  isBinary: z.boolean().nullish(),
+});
+
+export type FileType = z.infer<typeof fileSchema>;
+
 export type TreeNode = z.infer<typeof TreeNodeSchema>;
 
 const TreeDataSchema = z.object({
@@ -47,6 +55,7 @@ const GqlFileContentResponseSchema = z.object({
           oid: z.string(),
           object: z.object({
             text: z.string().nullish(),
+            isBinary: z.boolean().nullish(), //will be null if encoding is not recognized
           }),
         })
       ),
@@ -60,6 +69,7 @@ const GqlFileEntrySchema = z.object({
   oid: z.string(),
   object: z.object({
     text: z.string().nullish(),
+    isBinary: z.boolean().nullish(), //will be null if encoding is not recognized
   }),
 });
 
@@ -135,6 +145,7 @@ const ReadmeResponseSchema = z.object({
         text: z.string().nullish(),
       })
       .nullable(),
+    isBinary: z.boolean().nullable(),
   }),
 });
 
@@ -320,7 +331,7 @@ export const githubRouter = createTRPCRouter({
         path: z.string(),
       })
     )
-    .output(z.string())
+    .output(fileSchema)
     .query(async ({ ctx, input: { owner, repository, branch, path } }) => {
       const key = `file:${owner}:${repository}:${branch}:${path}`;
       if (await ctx.redis.has(key)) {
@@ -348,6 +359,7 @@ export const githubRouter = createTRPCRouter({
                     object {
                       ... on Blob {
                         text
+                        isBinary
                       }
                     }
                   }
@@ -375,7 +387,11 @@ export const githubRouter = createTRPCRouter({
         console.log("Cached file content");
       }
       const storedItem = GqlFileEntrySchema.parse(await ctx.redis.get(key));
-      return storedItem.object.text ?? "";
+      return {
+        name: storedItem.name,
+        text: storedItem.object.text ?? null,
+        isBinary: storedItem.object.isBinary,
+      };
     }),
 
   getRepositoryReadme: publicProcedure
