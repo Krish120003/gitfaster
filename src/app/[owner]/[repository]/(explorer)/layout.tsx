@@ -4,10 +4,8 @@ import { FileTree } from "./_components/file-tree";
 
 export default function ExplorerLayout({
   children,
-  params,
 }: {
   children: React.ReactNode;
-  params: Promise<{ owner: string; repository: string; branch: string }>;
 }) {
   return (
     <div className="grid grid-cols-12 w-full h-screen">

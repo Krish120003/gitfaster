@@ -4,12 +4,7 @@ import { File } from "lucide-react";
 import type { ReactNode } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import ContentViewer from "@/components/content-viewer";
-interface FileContentViewProps {
-  owner: string;
-  repository: string;
-  branch: string;
-  path: string;
-}
+import { useParams } from "next/navigation";
 
 const skeletons = Array.from({
   length: Math.floor(Math.random() * 15) + 15,
@@ -18,20 +13,20 @@ const skeletons = Array.from({
   return <Skeleton key={i} className="h-4" style={{ width: randomWidth }} />;
 });
 
-export function FileContentView({
-  owner,
-  repository,
-  branch,
-  path,
-}: FileContentViewProps) {
+export function FileContentView() {
+  const { owner, repository, branch, path } = useParams();
+  const formattedPath = decodeURIComponent(
+    (Array.isArray(path) ? path.join("/") : path) ?? ""
+  );
+
   const { data: file, isLoading } = api.github.getFileContent.useQuery({
-    owner,
-    repository,
-    branch,
-    path,
+    owner: owner as string,
+    repository: repository as string,
+    branch: branch as string,
+    path: formattedPath,
   });
 
-  const fileName = path.split("/").pop() || "File";
+  const fileName = formattedPath.split("/").pop() || "File";
 
   const url = `https://raw.githubusercontent.com/${owner}/${repository}/${branch}/${path}`;
 
