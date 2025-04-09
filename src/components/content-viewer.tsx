@@ -1,4 +1,9 @@
+"use client";
+
 import type { FileType } from "@/server/api/routers/github";
+import ShikiHighlighter from "react-shiki";
+import { useTheme } from "next-themes";
+import { useEffect, useState } from "react";
 
 interface ContentProp {
   file: FileType;
@@ -36,9 +41,50 @@ const BinaryViewer: React.FC<ContentProp> = ({ file, url }) => {
   return <div>Binary file not supported for preview: {file.name}</div>;
 };
 
+const useThemeDetector = () => {
+  const getCurrentTheme = () =>
+    window.matchMedia("(prefers-color-scheme: dark)").matches;
+  const [isDarkTheme, setIsDarkTheme] = useState(getCurrentTheme());
+  const mqListener = (e: MediaQueryListEvent) => {
+    setIsDarkTheme(e.matches);
+  };
+
+  useEffect(() => {
+    const darkThemeMq = window.matchMedia("(prefers-color-scheme: dark)");
+    darkThemeMq.addEventListener("change", mqListener);
+    return () => darkThemeMq.removeEventListener("change", mqListener);
+  }, []);
+  return isDarkTheme;
+};
+
+const TextViewer: React.FC<ContentProp> = ({ file, url }) => {
+  const fileExtension = file.name.split(".").pop()?.toLowerCase() || "";
+  const { theme } = useTheme();
+  const isDarkTheme = useThemeDetector();
+
+  if (fileExtension === "svg") {
+    return <img src={url} alt={file.name} />;
+  }
+
+  return (
+    <ShikiHighlighter
+      language={fileExtension}
+      theme={
+        theme === "system"
+          ? isDarkTheme
+            ? "github-dark"
+            : "github-light"
+          : theme ?? "github-light"
+      }
+    >
+      {file.text || ""}
+    </ShikiHighlighter>
+  );
+};
+
 const ContentViewer: React.FC<ContentProp> = ({ file, url }) => {
   return file.isBinary === false ? (
-    <pre className="text-sm font-mono whitespace-pre-wrap">{file.text}</pre> //this should be component to handle stuff like svg
+    <TextViewer file={file} url={url} />
   ) : (
     <BinaryViewer file={file} url={url} />
   );
