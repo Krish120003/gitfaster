@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { RepositoryHeader } from "./_components/repository-header";
+import { auth } from "@/server/auth";
+import { redirect } from "next/navigation";
 
 interface RepositoryLayoutProps {
   children: React.ReactNode;
@@ -26,6 +28,14 @@ export default async function RepositoryLayout({
 }: RepositoryLayoutProps) {
   const awaitedParams = await params;
   const { owner, repository } = awaitedParams;
+
+  // get session
+  const session = await auth();
+
+  if (!session) {
+    // redirect to /
+    redirect("/");
+  }
 
   return (
     <div className="h-full min-h-screen flex flex-col items-stretch">

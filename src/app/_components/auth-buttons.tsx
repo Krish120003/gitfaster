@@ -12,7 +12,11 @@ export default function AuthButtons() {
       <Button onClick={() => signIn()}>Sign In</Button>
       <Button onClick={() => signOut()}>Sign Out</Button>
 
-      {JSON.stringify(session, null, 2)}
+      {session && session.data ? (
+        <div>
+          <p>Welcome, {session.data.user?.name}</p>
+        </div>
+      ) : null}
     </div>
   );
 }
