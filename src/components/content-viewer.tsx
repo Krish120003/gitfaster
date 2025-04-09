@@ -1,7 +1,7 @@
 "use client";
 
 import type { FileType } from "@/server/api/routers/github";
-import CodeBlock from "./codeblock";
+import ShikiHighlighter from "react-shiki";
 
 interface ContentProp {
   file: FileType;
@@ -48,11 +48,9 @@ const TextViewer: React.FC<ContentProp> = ({ file, url }) => {
 
   return (
     // <pre className="text-sm font-mono whitespace-pre-wrap">{file.text}</pre>
-    <CodeBlock
-      code={file.text || ""}
-      language={fileExtension}
-      theme="github-light"
-    />
+    <ShikiHighlighter language={fileExtension} theme="github-light">
+      {file.text || ""}
+    </ShikiHighlighter>
   );
 };
 
