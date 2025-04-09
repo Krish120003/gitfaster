@@ -27,7 +27,8 @@ export function FolderView({ data, branch }: FolderViewProps) {
   const folderBasePath = `${basePath}tree/${branch}/`;
   const fileBasePath = `${basePath}blob/${branch}/`;
 
-  const pathname = usePathname();
+  const pathname = decodeURIComponent(usePathname());
+
   const isRoot = pathname === `/${owner}/${repository}/tree/${branch}`;
   const parentPath = pathname.split("/").slice(0, -1).join("/");
 
