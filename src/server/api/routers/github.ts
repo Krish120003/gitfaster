@@ -55,7 +55,7 @@ const GqlFileContentResponseSchema = z.object({
           oid: z.string(),
           object: z.object({
             text: z.string().nullish(),
-            isBinary: z.boolean().nullish(), //will be null if encoding is not recognzied
+            isBinary: z.boolean().nullish(), //will be null if encoding is not recognized
           }),
         })
       ),
