@@ -312,6 +312,10 @@ export const githubRouter = createTRPCRouter({
 
         // filter to find all files that are direct children of the path
         const filteredTree = tree.tree.filter((node) => {
+          if (dirPath === "") {
+            return node.path.split("/").length === 1;
+          }
+
           return (
             node.path.startsWith(dirPath) &&
             node.path.split("/").length === dirPath.split("/").length + 1
