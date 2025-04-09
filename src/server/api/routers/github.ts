@@ -127,6 +127,17 @@ const RepositoryOverviewResponseSchema = z.object({
   repository: RepositoryOverviewRepositorySchema,
 });
 
+const ReadmeResponseSchema = z.object({
+  // Schema for GitHub API response when fetching a repository readme
+  repository: z.object({
+    object: z
+      .object({
+        text: z.string().nullish(),
+      })
+      .nullable(),
+  }),
+});
+
 async function fetchRepoTree(
   params: {
     owner: string;
@@ -365,5 +376,60 @@ export const githubRouter = createTRPCRouter({
       }
       const storedItem = GqlFileEntrySchema.parse(await ctx.redis.get(key));
       return storedItem.object.text ?? "";
+    }),
+
+  getRepositoryReadme: publicProcedure
+    .input(
+      z.object({
+        owner: z.string(),
+        repository: z.string(),
+        branch: z.string(),
+        folder: z.string().optional(),
+      })
+    )
+    .output(z.string())
+    .query(async ({ ctx, input: { owner, repository, branch, folder } }) => {
+      const folderPath = folder
+        ? folder.endsWith("/")
+          ? folder
+          : folder + "/"
+        : "";
+      const key = `readme:${owner}:${repository}:${branch}:${folderPath}`;
+      if (await ctx.redis.has(key)) {
+        console.log("Cache Hit for repository readme");
+        const content = z
+          .object({
+            content: z.string(),
+          })
+          .parse(await ctx.redis.get(key));
+        return content.content;
+      }
+      console.log("Cache miss for repository readme, fetching from GitHub API");
+
+      let response;
+      try {
+        if (folderPath) {
+          response = await octokit.rest.repos.getReadmeInDirectory({
+            owner,
+            repo: repository,
+            ref: branch,
+            dir: folderPath, // Fixed parameter name from 'directory' to 'dir'
+          });
+        } else {
+          response = await octokit.rest.repos.getReadme({
+            owner,
+            repo: repository,
+            ref: branch,
+          });
+        }
+
+        const buff = Buffer.from(response.data.content, "base64");
+        const text = buff.toString("utf-8");
+        await ctx.redis.set(key, { content: text }, 3600); // Store as object
+        return text;
+      } catch (error) {
+        console.error("Error fetching readme:", error);
+        return "";
+      }
     }),
 });

@@ -2,6 +2,9 @@ import { api } from "@/trpc/server";
 import { Badge } from "@/components/ui/badge";
 import { StarIcon } from "lucide-react";
 import FolderView from "./_components/repository-file-list";
+import Markdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import rehypeRaw from "rehype-raw";
 
 export const dynamic = "force-dynamic";
 
@@ -12,6 +15,25 @@ interface PageProps {
   }>;
 }
 
+// Add a helper function to transform image URLs.
+function transformImgUrl(
+  src: string | undefined,
+  owner: string,
+  repository: string,
+  branch?: string
+): string {
+  // Your logic to change the image URL.
+  if (!src) return "";
+
+  if (src.startsWith("http")) {
+    return src;
+  }
+
+  const baseUrl = `https://raw.githubusercontent.com/${owner}/${repository}/`;
+
+  return `${baseUrl}${branch ? `${branch}/` : ""}${src}`;
+}
+
 export default async function Page({ params }: PageProps) {
   const { owner, repository } = await params;
 
@@ -20,11 +42,19 @@ export default async function Page({ params }: PageProps) {
     repository,
   });
 
+  const branch = data.defaultBranchRef?.name ?? "main";
+
   const folderData = await api.github.getFolderView({
     owner,
     repository,
-    branch: data.defaultBranchRef?.name ?? "main",
+    branch: branch,
     path: "",
+  });
+
+  const readmeData = await api.github.getRepositoryReadme({
+    owner,
+    repository,
+    branch: branch,
   });
 
   return (
@@ -36,6 +66,26 @@ export default async function Page({ params }: PageProps) {
             data={folderData}
             branch={data.defaultBranchRef?.name ?? "main"}
           />
+
+          <div className="border rounded bg-background p-4 w-full">
+            <div className="prose dark:prose-invert max-w-none">
+              <Markdown
+                remarkPlugins={[remarkGfm]}
+                rehypePlugins={[rehypeRaw]}
+                components={{
+                  img: ({ src, alt, ...props }) => (
+                    <img
+                      src={transformImgUrl(src, owner, repository, branch)}
+                      alt={alt}
+                      {...props}
+                    />
+                  ),
+                }}
+              >
+                {readmeData}
+              </Markdown>
+            </div>
+          </div>
         </div>
 
         {/* Description / Metadata */}
