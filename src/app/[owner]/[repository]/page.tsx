@@ -1,6 +1,7 @@
 import { api } from "@/trpc/server";
 import { Badge } from "@/components/ui/badge";
 import { StarIcon } from "lucide-react";
+import FolderView from "./_components/repository-file-list";
 
 export const dynamic = "force-dynamic";
 
@@ -19,13 +20,22 @@ export default async function Page({ params }: PageProps) {
     repository,
   });
 
+  const folderData = await api.github.getFolderView({
+    owner,
+    repository,
+    branch: data.defaultBranchRef?.name ?? "main",
+    path: "",
+  });
+
   return (
     <div className="p-4 mx-auto md:max-w-7xl w-full">
       <div className="w-full grid grid-cols-4 gap-8">
         {/* File Browser and README */}
         <div className="col-span-3 flex flex-col gap-4">
-          {/* Placeholder for file explorer */}
-          <div className="w-full h-[400px] bg-red-100 rounded-lg border"></div>
+          <FolderView
+            data={folderData}
+            branch={data.defaultBranchRef?.name ?? "main"}
+          />
         </div>
 
         {/* Description / Metadata */}

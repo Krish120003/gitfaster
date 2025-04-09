@@ -29,7 +29,9 @@ export function FolderView({ data, branch }: FolderViewProps) {
 
   const pathname = decodeURIComponent(usePathname());
 
-  const isRoot = pathname === `/${owner}/${repository}/tree/${branch}`;
+  const isRoot =
+    pathname === `/${owner}/${repository}/tree/${branch}` ||
+    pathname === `/${owner}/${repository}`;
   const parentPath = pathname.split("/").slice(0, -1).join("/");
 
   const nodesWithCommitInfo = data.map((node) => ({
@@ -94,7 +96,7 @@ export function FolderView({ data, branch }: FolderViewProps) {
                 <TableRow key={node.path} className="hover:bg-muted/30">
                   <TableCell className="font-medium">
                     <ShallowLink
-                      className="flex items-center gap-2"
+                      className="flex items-center gap-2 hover:underline"
                       href={`${
                         node.type === "tree" ? folderBasePath : fileBasePath
                       }${link}`}
