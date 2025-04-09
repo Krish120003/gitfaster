@@ -1,7 +1,8 @@
+"use client";
 import { api } from "@/trpc/server";
 import { FileTree } from "./_components/file-tree";
 
-export default async function ExplorerLayout({
+export default function ExplorerLayout({
   children,
   params,
 }: {

@@ -6,12 +6,9 @@ import { env } from "@/env.js";
 import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
 import type { redis, RedisCacheType } from "@/server/redis";
 import path from "path";
-
-// Instantiate Octokit
-// const octokit = new Octokit({ auth: env.GITHUB_TOKEN });
-const octokit = new Octokit({
-  auth: env.GITHUB_TOKEN,
-});
+import type { Context } from "@/app/api/trpc/[trpc]/route";
+import { eq } from "drizzle-orm";
+import { users } from "@/server/db/schema";
 
 const TreeNodeSchema = z.object({
   path: z.string(),
@@ -157,8 +154,10 @@ async function fetchRepoTree(
     recursive: boolean;
   },
   redis: RedisCacheType,
-  octokit: Octokit
+  ctx: Context
 ): Promise<z.infer<typeof TreeDataSchema>> {
+  const octokit = await getOctokit(ctx);
+
   const { owner, repository, branch, recursive } = params;
   const key = `tree:${owner}:${repository}:${branch}:${recursive}`;
 
@@ -188,6 +187,34 @@ async function fetchRepoTree(
   return fileTree;
 }
 
+async function getOctokit(ctx: Context) {
+  if (!ctx.session || !ctx.session.user || !ctx.session.user.id) {
+    throw new Error("User not authenticated");
+  }
+
+  // get user's github token
+  const user = await ctx.db.query.users.findFirst({
+    where: eq(users.id, ctx.session.user.id),
+    with: {
+      accounts: true,
+    },
+  });
+
+  if (!user || user.accounts.length === 0) {
+    throw new Error("User does not have a GitHub account linked");
+  }
+
+  const account = user.accounts[0];
+  if (!account) {
+    throw new Error("Account not found");
+  }
+  const accessToken = account.access_token;
+
+  return new Octokit({
+    auth: accessToken,
+  });
+}
+
 export const githubRouter = createTRPCRouter({
   getRepositoryOverview: publicProcedure
     .input(
@@ -203,6 +230,9 @@ export const githubRouter = createTRPCRouter({
         return RepositoryOverviewResponseSchema.parse(await ctx.redis.get(key))
           .repository;
       }
+
+      const octokit = await getOctokit(ctx);
+
       console.log("Fetching repository overview from GitHub GraphQL API");
       const query = `
         query ($owner: String!, $repo: String!) {
@@ -282,7 +312,7 @@ export const githubRouter = createTRPCRouter({
     )
     .output(TreeDataSchema)
     .query(async ({ ctx, input }) => {
-      return fetchRepoTree(input, ctx.redis, octokit);
+      return fetchRepoTree(input, ctx.redis, ctx);
     }),
 
   getFolderView: publicProcedure
@@ -305,7 +335,7 @@ export const githubRouter = createTRPCRouter({
             recursive: true,
           },
           ctx.redis,
-          octokit
+          ctx
         );
 
         console.log("Filtering for path:", dirPath);
@@ -338,6 +368,7 @@ export const githubRouter = createTRPCRouter({
     .output(fileSchema)
     .query(async ({ ctx, input: { owner, repository, branch, path } }) => {
       const key = `file:${owner}:${repository}:${branch}:${path}`;
+      const octokit = await getOctokit(ctx);
       if (await ctx.redis.has(key)) {
         console.log("Cache Hit!");
       } else {
@@ -409,6 +440,7 @@ export const githubRouter = createTRPCRouter({
     )
     .output(z.string())
     .query(async ({ ctx, input: { owner, repository, branch, folder } }) => {
+      const octokit = await getOctokit(ctx);
       const folderPath = folder
         ? folder.endsWith("/")
           ? folder
