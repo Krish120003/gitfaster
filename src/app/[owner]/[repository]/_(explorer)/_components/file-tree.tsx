@@ -5,7 +5,7 @@ import { ChevronDown, ChevronRight, File, Folder } from "lucide-react";
 import { useParams, usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { api } from "@/trpc/react";
-import ShallowLink from "@/components/shallow-link";
+import { Link, useLocation } from "react-router-dom";
 
 // ----------- Types -----------
 
@@ -100,28 +100,42 @@ function TreeNode({
   selectedFile,
   setSelectedFile,
 }: TreeNodeProps) {
-  const { owner, repository, branch } = useParams();
-  const pathname = usePathname();
+  const { owner, repository } = useParams();
+  const location = useLocation();
+  const pathParts = location.pathname.split("/").filter(Boolean);
+  const urlBranch = pathParts[1]; // After tree/ or blob/
+  const trpc = api.useUtils();
+
+  // Get repository overview for default branch
+  const { data: repoOverview } = api.github.getRepositoryOverview.useQuery(
+    {
+      owner: owner as string,
+      repository: repository as string,
+    },
+    {
+      enabled: !!owner && !!repository,
+    }
+  );
+
+  const defaultBranch = repoOverview?.defaultBranchRef?.name ?? "main";
+  const activeBranch = urlBranch || defaultBranch;
 
   const isFolder = node.type === "folder";
   const isExpanded = expandedFolders[node.path];
   const hasChildren = Object.keys(node.children).length > 0;
   const childrenArray = Object.values(node.children);
 
-  // Construct link path for the node
-  const linkBase = `/${owner}/${repository}/${
-    isFolder ? "tree" : "blob"
-  }/${branch}`;
-  const linkPath = `${linkBase}/${node.path}`;
-  const isSelected = pathname === linkPath;
-
-  const trpc = api.useUtils();
+  // Use activeBranch for link path
+  const linkPath = `/${isFolder ? "tree" : "blob"}/${activeBranch}/${
+    node.path
+  }`;
+  const isSelected = location.pathname === linkPath;
 
   // Skip the "root" node and just render its children
   if (node.name === "root") {
     return (
       <>
-        {childrenArray.map((child, index) => (
+        {childrenArray.map((child) => (
           <TreeNode
             key={child.path}
             node={child}
@@ -141,13 +155,7 @@ function TreeNode({
       <div className="select-none group">
         {/* FOLDER ROW */}
         <div
-          className={cn(
-            "flex items-center py-1 px-2 relative"
-            // isSelected &&
-            //   "bg-accent-foreground/20 border-r-2 border-r-[#0078d4]",
-            // !isSelected && "hover:bg-accent-foreground/10"
-          )}
-          // Dynamic left padding for indentation
+          className={cn("flex items-center py-1 px-2 relative")}
           style={{ paddingLeft: `${level * 16 + 8}px` }}
         >
           {/* Guide lines on hover */}
@@ -188,20 +196,19 @@ function TreeNode({
           )}
 
           {/* Folder link */}
-          <ShallowLink
-            href={linkPath}
+          <Link
+            to={linkPath}
             className="flex items-center flex-1 no-underline cursor-pointer"
-            prefetch={true}
           >
             <Folder className="h-4 w-4 text-[#6b9eff] mr-2" />
             <span className="text-sm">{node.name}</span>
-          </ShallowLink>
+          </Link>
         </div>
 
         {/* CHILDREN */}
         {isExpanded && hasChildren && (
           <div className="relative">
-            {childrenArray.map((child, index) => (
+            {childrenArray.map((child) => (
               <TreeNode
                 key={child.path}
                 node={child}
@@ -220,15 +227,18 @@ function TreeNode({
 
   // FILE NODE
   return (
-    <ShallowLink
-      href={linkPath}
-      className={cn(
-        "flex items-center py-1 px-2 relative no-underline group"
-        // isSelected && "bg-accent-foreground/10 border-l-2 border-l-blue-500",
-        // !isSelected && "hover:bg-accent-foreground/20"
-      )}
+    <Link
+      to={linkPath}
+      className={cn("flex items-center py-1 px-2 relative no-underline group")}
       style={{ paddingLeft: `${level * 16 + 8}px` }}
-      prefetch={true}
+      onMouseEnter={() => {
+        trpc.github.getFileContent.prefetch({
+          owner: owner as string,
+          repository: repository as string,
+          branch: activeBranch,
+          path: node.path,
+        });
+      }}
     >
       {/* Guide lines on hover */}
       {level > 0 && (
@@ -251,27 +261,47 @@ function TreeNode({
       <span className="mr-1 h-4 w-4" />
       <File className="h-4 w-4 text-gray-400 mr-2" />
       <span className="text-sm hover:underline">{node.name}</span>
-    </ShallowLink>
+    </Link>
   );
 }
 
 // ----------- Main FileTree Component -----------
 
 export function FileTree({ className, initialData }: FileTreeProps) {
-  const { owner, repository, branch } = useParams();
+  const { owner, repository } = useParams();
+  const location = useLocation();
+  const pathParts = location.pathname.split("/").filter(Boolean);
+  const urlBranch = pathParts[1]; // After tree/ or blob/
+  const trpc = api.useUtils();
 
-  const { data: newData, isLoading: l } = api.github.getRepoTree.useQuery({
-    owner: owner as string,
-    repository: repository as string,
-    branch: branch as string,
-    recursive: true,
-  });
+  const { data: repoOverview } = api.github.getRepositoryOverview.useQuery(
+    {
+      owner: owner as string,
+      repository: repository as string,
+    },
+    {
+      enabled: !!owner && !!repository,
+    }
+  );
+
+  const defaultBranch = repoOverview?.defaultBranchRef?.name ?? "main";
+  const activeBranch = urlBranch || defaultBranch;
+
+  const { data: newData, isLoading: l } = api.github.getRepoTree.useQuery(
+    {
+      owner: owner as string,
+      repository: repository as string,
+      branch: activeBranch,
+      recursive: true,
+    },
+    {
+      enabled: !!owner && !!repository && !!activeBranch,
+    }
+  );
 
   const isLoading = false;
 
   const data = newData ?? initialData;
-
-  const pathname = usePathname();
 
   const [selectedFile, setSelectedFile] = useState<string | null>(null);
   const [expandedFolders, setExpandedFolders] = useState<
@@ -285,8 +315,8 @@ export function FileTree({ className, initialData }: FileTreeProps) {
   }, [data, data?.tree]);
 
   useEffect(() => {
-    if (!processedTree || !pathname) return;
-    const splitted = pathname.split("/");
+    if (!processedTree || !location.pathname) return;
+    const splitted = location.pathname.split("/");
     const index = splitted.findIndex(
       (part) => part === "blob" || part === "tree"
     );
@@ -299,7 +329,7 @@ export function FileTree({ className, initialData }: FileTreeProps) {
       currentPath = currentPath ? `${currentPath}/${segment}` : segment;
       setExpandedFolders((prev) => ({ ...prev, [currentPath]: true }));
     }
-  }, [pathname, processedTree]);
+  }, [location.pathname, processedTree]);
 
   if (isLoading || !processedTree) {
     return <div className="text-center">Loading...</div>;

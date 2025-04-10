@@ -1,5 +1,5 @@
 "use client";
-import type { TreeNode } from "@/server/api/routers/github";
+
 import React from "react";
 import {
   Table,
@@ -10,29 +10,72 @@ import {
   TableRow,
 } from "../../../../components/ui/table";
 import { Folder, File } from "lucide-react";
-import ShallowLink from "@/components/shallow-link";
-import { useParams, usePathname } from "next/navigation";
+import { useLocation, Link } from "react-router-dom";
+import { useParams } from "next/navigation";
 import { api } from "@/trpc/react";
 
 interface FolderViewProps {
-  data: TreeNode[];
-  branch: string;
+  // Props are inferred from router
 }
 
-export function FolderView({ data, branch }: FolderViewProps) {
-  const { owner, repository } = useParams();
+export function FolderView() {
+  const params = useParams();
+  const owner = params.owner as string;
+  const repository = params.repository as string;
   const trpc = api.useUtils();
 
-  const basePath = `/${owner}/${repository}/`;
-  const folderBasePath = `${basePath}tree/${branch}/`;
-  const fileBasePath = `${basePath}blob/${branch}/`;
+  const location = useLocation();
+  const pathParts = location.pathname.split("/").filter(Boolean);
 
-  const pathname = decodeURIComponent(usePathname());
+  // Get branch and path from URL
+  const type = pathParts[0]; // 'tree' or 'blob'
+  const branch = pathParts[1];
+  const fullPath = pathParts.slice(2).join("/");
 
-  const isRoot =
-    pathname === `/${owner}/${repository}/tree/${branch}` ||
-    pathname === `/${owner}/${repository}`;
-  const parentPath = pathname.split("/").slice(0, -1).join("/");
+  const { data: repoOverview } = api.github.getRepositoryOverview.useQuery(
+    {
+      owner,
+      repository,
+    },
+    {
+      enabled: !!owner && !!repository,
+    }
+  );
+
+  const defaultBranch = repoOverview?.defaultBranchRef?.name ?? "main";
+  const activeBranch = branch || defaultBranch;
+
+  const { data: resp, isLoading } = api.github.getRepoTree.useQuery(
+    {
+      owner,
+      repository,
+      branch: activeBranch,
+      recursive: true,
+    },
+    {
+      enabled: !!owner && !!repository && !!activeBranch,
+    }
+  );
+
+  const rawData = resp?.tree || [];
+
+  const data = rawData.filter((node) => {
+    if (fullPath === "") {
+      return node.path.split("/").length === 1;
+    }
+
+    return (
+      node.path.startsWith(fullPath) &&
+      node.path.split("/").length === fullPath.split("/").length + 1
+    );
+  });
+
+  const isRoot = fullPath === "";
+  const parentPath = fullPath.split("/").slice(0, -1).join("/");
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   const nodesWithCommitInfo = data.map((node) => ({
     ...node,
@@ -58,13 +101,12 @@ export function FolderView({ data, branch }: FolderViewProps) {
         </TableHeader>
         <TableBody>
           {/* Parent directory row */}
-          {isRoot ? null : (
+          {!isRoot && (
             <TableRow className="hover:bg-muted/30">
               <TableCell className="font-medium">
-                <ShallowLink
-                  className="flex items-center gap-2"
-                  prefetch={true}
-                  href={parentPath}
+                <Link
+                  to={`/tree/${activeBranch}/${parentPath}`}
+                  className="flex items-center gap-2 cursor-pointer"
                 >
                   <Folder
                     className="h-5 w-5 text-muted-foreground"
@@ -72,7 +114,7 @@ export function FolderView({ data, branch }: FolderViewProps) {
                     fill="currentColor"
                   />
                   <span>..</span>
-                </ShallowLink>
+                </Link>
               </TableCell>
               <TableCell></TableCell>
               <TableCell className="text-right"></TableCell>
@@ -82,49 +124,45 @@ export function FolderView({ data, branch }: FolderViewProps) {
           {/* Sort directories first, then files */}
           {nodesWithCommitInfo
             .sort((a, b) => {
-              // Sort by type first (tree before blob)
               if (a.type !== b.type) {
                 return a.type === "tree" ? -1 : 1;
               }
-              // Then sort by path
               return a.path.localeCompare(b.path);
             })
             .map((node) => {
-              const link = node.path;
+              const isFolder = node.type === "tree";
+              const newPath = isFolder
+                ? `/tree/${activeBranch}/${node.path}`
+                : `/blob/${activeBranch}/${node.path}`;
 
               return (
                 <TableRow key={node.path} className="hover:bg-muted/30">
                   <TableCell className="font-medium">
-                    <ShallowLink
-                      className="flex items-center gap-2 hover:underline"
-                      href={`${
-                        node.type === "tree" ? folderBasePath : fileBasePath
-                      }${link}`}
-                      prefetch={true}
-                      onMouseOver={
-                        node.type === "blob"
-                          ? () => {
-                              trpc.github.getFileContent.prefetch({
-                                branch: branch,
-                                owner: owner as string,
-                                repository: repository as string,
-                                path: node.path,
-                              });
-                            }
-                          : undefined
-                      }
+                    <Link
+                      to={newPath}
+                      className="flex items-center gap-2 cursor-pointer"
+                      onMouseEnter={() => {
+                        if (!isFolder) {
+                          trpc.github.getFileContent.prefetch({
+                            owner,
+                            repository,
+                            branch: activeBranch,
+                            path: node.path,
+                          });
+                        }
+                      }}
                     >
-                      {node.type === "tree" ? (
+                      {isFolder ? (
                         <Folder
                           className="h-5 w-5 text-muted-foreground"
-                          stroke="none"
+                          stroke=""
                           fill="currentColor"
                         />
                       ) : (
                         <File className="h-5 w-5 text-muted-foreground" />
                       )}
                       <span>{getFileName(node.path)}</span>
-                    </ShallowLink>
+                    </Link>
                   </TableCell>
                   <TableCell>{node.lastCommitMessage}</TableCell>
                   <TableCell className="text-right">

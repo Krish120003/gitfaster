@@ -60,7 +60,8 @@ const useThemeDetector = () => {
 const TextViewer: React.FC<ContentProp> = ({ file, url }) => {
   const fileExtension = file.name.split(".").pop()?.toLowerCase() || "";
   const { theme } = useTheme();
-  const isDarkTheme = useThemeDetector();
+  // const isDarkTheme = useThemeDetector();
+  const isDarkTheme = true;
 
   if (fileExtension === "svg") {
     return <img src={url} alt={file.name} />;
