@@ -34,6 +34,7 @@ interface ProcessedTreeNode {
 
 interface FileTreeProps {
   className?: string;
+  initialData?: TreeData;
 }
 
 // ----------- Helper to build hierarchical tree -----------
@@ -256,15 +257,19 @@ function TreeNode({
 
 // ----------- Main FileTree Component -----------
 
-export function FileTree({ className }: FileTreeProps) {
+export function FileTree({ className, initialData }: FileTreeProps) {
   const { owner, repository, branch } = useParams();
 
-  const { data, isLoading } = api.github.getRepoTree.useQuery({
+  const { data: newData, isLoading: l } = api.github.getRepoTree.useQuery({
     owner: owner as string,
     repository: repository as string,
     branch: branch as string,
     recursive: true,
   });
+
+  const isLoading = false;
+
+  const data = newData ?? initialData;
 
   const pathname = usePathname();
 
