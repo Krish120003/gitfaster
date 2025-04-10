@@ -36,8 +36,13 @@ export default async function Page({ params }: PageProps) {
           <File className="h-5 w-5 text-muted-foreground" />
           <span className="text-sm">{file.name}</span>
         </div>
-        <div className="p-3 text-right text-muted-foreground">
+        <div className="p-3 text-right text-muted-foreground opacity-50">
           {/* {lastCommitDate} */}
+          {file.isCached ? (
+            <span className="text-xs text-green-500">Cached</span>
+          ) : (
+            <span className="text-xs text-red-500">Not Cached</span>
+          )}
         </div>
       </div>
 

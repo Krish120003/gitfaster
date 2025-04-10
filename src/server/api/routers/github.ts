@@ -20,6 +20,7 @@ const fileSchema = z.object({
   name: z.string(),
   text: z.string().nullable(),
   isBinary: z.boolean().nullish(),
+  isCached: z.boolean().default(false),
 });
 
 export type FileType = z.infer<typeof fileSchema>;
@@ -399,7 +400,8 @@ export const githubRouter = createTRPCRouter({
     .query(async ({ ctx, input: { owner, repository, branch, path } }) => {
       const key = `file:${owner}:${repository}:${branch}:${path}`;
       const octokit = await getOctokit(ctx);
-      if (await ctx.redis.has(key)) {
+      const cacheHit = await ctx.redis.has(key);
+      if (cacheHit) {
         console.log(`[Cache Hit] ${key}`);
       } else {
         console.log("Cache miss for file content, fetching from GitHub API");
@@ -501,6 +503,7 @@ export const githubRouter = createTRPCRouter({
         name: storedItem.name,
         text: storedItem.object.text ?? null,
         isBinary: storedItem.object.isBinary,
+        isCached: cacheHit,
       };
     }),
 
