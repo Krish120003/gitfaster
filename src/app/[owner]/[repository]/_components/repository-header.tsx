@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Menu, Github, GitGraph } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { RepositoryNav } from "./repository-nav";
+import ShallowLink from "@/components/shallow-link";
 
 interface RepositoryHeaderProps {
   owner: string;
@@ -18,12 +19,13 @@ export function RepositoryHeader({ owner, repository }: RepositoryHeaderProps) {
           <div className="flex items-center text-md">
             {owner}
             <span className="mx-1">/</span>
-            <Link
+            <ShallowLink
               href={`/${owner}/${repository}`}
               className="hover:underline text-foreground"
+              prefetch={true}
             >
               {repository}
-            </Link>
+            </ShallowLink>
           </div>
         </div>
         {/* Navigation tabs - now using the client component */}
