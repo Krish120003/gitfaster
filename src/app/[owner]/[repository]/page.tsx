@@ -1,6 +1,6 @@
 import { api } from "@/trpc/server";
 import { Badge } from "@/components/ui/badge";
-import { StarIcon } from "lucide-react";
+
 import FolderView from "./_components/repository-file-list";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -36,26 +36,31 @@ function transformImgUrl(
 
 export default async function Page({ params }: PageProps) {
   const { owner, repository } = await params;
-
-  const data = await api.github.getRepositoryOverview({
+  const repoOverviewPromise = api.github.getRepositoryOverview({
     owner,
     repository,
   });
 
-  const branch = data.defaultBranchRef?.name ?? "main";
-
-  const folderData = await api.github.getFolderView({
+  const folderDataPromise = api.github.getFolderView({
     owner,
     repository,
-    branch: branch,
+    branch: "HEAD",
     path: "",
   });
 
-  const readmeData = await api.github.getRepositoryReadme({
+  const readmeDataPromise = api.github.getRepositoryReadme({
     owner,
     repository,
-    branch: branch,
+    branch: "HEAD",
   });
+
+  const [data, folderData, readmeData] = await Promise.all([
+    repoOverviewPromise,
+    folderDataPromise,
+    readmeDataPromise,
+  ]);
+
+  const branch = data.defaultBranchRef?.name ?? "main";
 
   return (
     <div className="p-4 mx-auto md:max-w-7xl w-full">
