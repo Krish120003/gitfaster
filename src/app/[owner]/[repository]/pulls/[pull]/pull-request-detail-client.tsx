@@ -1,12 +1,11 @@
 "use client";
 
 import { api } from "@/trpc/react";
-import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { formatDistanceToNow } from "date-fns";
 import { Markdown } from "@/components/markdown";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Separator } from "@/components/ui/separator";
-import { GitPullRequest, MessageSquare } from "lucide-react";
+import { MessageSquare } from "lucide-react";
+import { PullRequestLayout } from "./pull-request-layout";
 
 interface PullRequestDetailClientProps {
   owner: string;
@@ -32,48 +31,11 @@ export function PullRequestDetailClient({
   const commentsData = pr.commentsData ?? [];
 
   return (
-    <div className="space-y-8">
-      <div>
-        <div className="flex items-start justify-between">
-          <div className="space-y-1">
-            <div className="flex items-center gap-2">
-              <GitPullRequest className="h-5 w-5" />
-              <h1 className="text-2xl font-bold">{pr.title}</h1>
-              <Badge variant={pr.state === "open" ? "default" : "secondary"}>
-                {pr.state}
-              </Badge>
-            </div>
-            <div className="text-sm text-muted-foreground">
-              <span>#{pr.number}</span>
-              {" • "}
-              <span>
-                opened{" "}
-                {formatDistanceToNow(new Date(pr.createdAt), {
-                  addSuffix: true,
-                })}
-              </span>
-              {" • "}
-              <span>by {pr.author.login}</span>
-            </div>
-          </div>
-        </div>
-        {pr.labels.length > 0 && (
-          <div className="mt-4 flex flex-wrap gap-1">
-            {pr.labels.map((label) => (
-              <Badge
-                key={label.name}
-                variant="outline"
-                style={{ backgroundColor: `#${label.color}` }}
-              >
-                {label.name}
-              </Badge>
-            ))}
-          </div>
-        )}
-      </div>
-
-      <Separator />
-
+    <PullRequestLayout
+      owner={owner}
+      repository={repository}
+      pullNumber={pullNumber}
+    >
       <div className="grid grid-cols-4 gap-8">
         <div className="col-span-3 space-y-8">
           <div className="rounded-lg border p-4">
@@ -178,6 +140,6 @@ export function PullRequestDetailClient({
           </div>
         </div>
       </div>
-    </div>
+    </PullRequestLayout>
   );
 }

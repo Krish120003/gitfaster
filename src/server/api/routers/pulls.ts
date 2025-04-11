@@ -56,6 +56,24 @@ export type PullRequest = {
   }>;
 };
 
+export type PullRequestFile = {
+  sha: string;
+  filename: string;
+  status:
+    | "added"
+    | "removed"
+    | "modified"
+    | "renamed"
+    | "copied"
+    | "changed"
+    | "unchanged";
+  additions: number;
+  deletions: number;
+  changes: number;
+  patch?: string;
+  previous_filename?: string;
+};
+
 export const pullsRouter = createTRPCRouter({
   list: protectedProcedure
     .input(
@@ -328,6 +346,55 @@ export const pullsRouter = createTRPCRouter({
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
           message: "Failed to fetch pull request",
+          cause: error,
+        });
+      }
+    }),
+
+  getFiles: protectedProcedure
+    .input(
+      z.object({
+        owner: z.string(),
+        repository: z.string(),
+        number: z.number(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const octokit = await getOctokit(ctx);
+      const { owner, repository, number } = input;
+      const cacheKey = `pulls:${owner}:${repository}:${number}:files`;
+
+      // Try to get from cache first
+      const cached = await redis.get(cacheKey);
+      if (cached) {
+        return cached as PullRequestFile[];
+      }
+
+      try {
+        const response = await octokit.rest.pulls.listFiles({
+          owner,
+          repo: repository,
+          pull_number: number,
+          per_page: 100, // Get maximum items per page
+        });
+
+        const files = response.data.map((file) => ({
+          sha: file.sha,
+          filename: file.filename,
+          status: file.status as PullRequestFile["status"],
+          additions: file.additions,
+          deletions: file.deletions,
+          changes: file.changes,
+          patch: file.patch,
+          previous_filename: file.previous_filename,
+        }));
+
+        await redis.set(cacheKey, files, CACHE_TTL);
+        return files;
+      } catch (error) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Failed to fetch pull request files",
           cause: error,
         });
       }
