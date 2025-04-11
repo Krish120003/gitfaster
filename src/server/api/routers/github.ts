@@ -141,6 +141,7 @@ const RepositoryOverviewRepositorySchema = z.object({
   homepageUrl: z.string().nullable(),
   licenseInfo: RepositoryOverviewLicenseSchema,
   stargazerCount: z.number(),
+  viewerHasStarred: z.boolean(),
   defaultBranchRef: RepositoryOverviewDefaultBranchSchema.nullable(),
   languages: RepositoryOverviewLanguagesSchema,
   refs: RepositoryOverviewRefsSchema,
@@ -258,8 +259,9 @@ export const githubRouter = createTRPCRouter({
       const key = `overview:${owner}:${repository}`;
       if (await ctx.redis.has(key)) {
         console.log("Cache Hit for repo overview");
-        return RepositoryOverviewResponseSchema.parse(await ctx.redis.get(key))
-          .repository;
+        const cachedData = await ctx.redis.get(key);
+        console.log("Cached data:", cachedData);
+        return RepositoryOverviewResponseSchema.parse(cachedData).repository;
       }
 
       const octokit = await getOctokit(ctx);
@@ -283,6 +285,7 @@ export const githubRouter = createTRPCRouter({
               name
             }
             stargazerCount
+            viewerHasStarred
             defaultBranchRef {
               name
               target {
@@ -326,10 +329,56 @@ export const githubRouter = createTRPCRouter({
         owner,
         repo: repository,
       });
+      console.log("GraphQL response:", response);
       const data = RepositoryOverviewResponseSchema.parse(response);
       await ctx.redis.set(key, data, 3600);
       console.log("Cached repository overview");
       return data.repository;
+    }),
+
+  toggleStar: protectedProcedure
+    .input(
+      z.object({
+        owner: z.string(),
+        repository: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input: { owner, repository } }) => {
+      const octokit = await getOctokit(ctx);
+
+      // First check if the repository is starred
+      const query = `
+        query ($owner: String!, $name: String!) {
+          repository(owner: $owner, name: $name) {
+            viewerHasStarred
+          }
+        }
+      `;
+      const { repository: repoData } = (await octokit.graphql(query, {
+        owner,
+        name: repository,
+      })) as { repository: { viewerHasStarred: boolean } };
+
+      // Toggle the star status
+      if (repoData.viewerHasStarred) {
+        await octokit.request("DELETE /user/starred/{owner}/{repo}", {
+          owner,
+          repo: repository,
+        });
+      } else {
+        await octokit.request("PUT /user/starred/{owner}/{repo}", {
+          owner,
+          repo: repository,
+        });
+      }
+
+      // Invalidate the cache for this repository
+      const key = `overview:${owner}:${repository}`;
+      await ctx.redis.delete(key);
+
+      return {
+        isStarred: !repoData.viewerHasStarred,
+      };
     }),
 
   getRepoTree: protectedProcedure
@@ -561,5 +610,18 @@ export const githubRouter = createTRPCRouter({
         console.error("Error fetching readme:", error);
         return "";
       }
+    }),
+
+  clearCache: protectedProcedure
+    .input(
+      z.object({
+        owner: z.string(),
+        repository: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input: { owner, repository } }) => {
+      const key = `overview:${owner}:${repository}`;
+      await ctx.redis.delete(key);
+      return { success: true };
     }),
 });

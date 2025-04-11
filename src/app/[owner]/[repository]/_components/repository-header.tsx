@@ -1,8 +1,12 @@
+"use client";
+
 import Link from "next/link";
 import { Menu, Github, GitGraph } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { RepositoryNav } from "./repository-nav";
 import ShallowLink from "@/components/shallow-link";
+import { StarButton } from "@/components/star-button";
+import { api } from "@/trpc/react";
 
 interface RepositoryHeaderProps {
   owner: string;
@@ -10,6 +14,11 @@ interface RepositoryHeaderProps {
 }
 
 export function RepositoryHeader({ owner, repository }: RepositoryHeaderProps) {
+  const { data } = api.github.getRepositoryOverview.useQuery({
+    owner,
+    repository,
+  });
+
   return (
     <header className="border-b bg-background border-foreground/20">
       <div className="px-4">
@@ -26,6 +35,16 @@ export function RepositoryHeader({ owner, repository }: RepositoryHeaderProps) {
             >
               {repository}
             </ShallowLink>
+          </div>
+          <div className="ml-auto">
+            {data && (
+              <StarButton
+                owner={owner}
+                repository={repository}
+                initialStarred={data.viewerHasStarred}
+                stargazerCount={data.stargazerCount}
+              />
+            )}
           </div>
         </div>
         {/* Navigation tabs - now using the client component */}
