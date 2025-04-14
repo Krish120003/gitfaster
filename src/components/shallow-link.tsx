@@ -1,32 +1,19 @@
 "use client";
-import { useRouter } from "next/navigation";
+
 import React from "react";
 
 interface ShallowLinkProps extends React.ComponentProps<"a"> {
   href: string;
-  prefetch?: boolean;
 }
 
-const ShallowLink: React.FC<ShallowLinkProps> = ({
-  prefetch = false,
-  ...props
-}) => {
-  const router = useRouter();
-
-  const onMouseOver = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    if (prefetch) {
-      router.prefetch(props.href);
-    }
-    props.onMouseOver?.(e);
-  };
-
+const ShallowLink: React.FC<ShallowLinkProps> = ({ ...props }) => {
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
-    router.push(props.href);
+    window.history.pushState(null, "", props.href);
   };
 
   return (
-    <a {...props} onClick={handleClick} onMouseOver={onMouseOver}>
+    <a {...props} onClick={handleClick}>
       {props.children}
     </a>
   );

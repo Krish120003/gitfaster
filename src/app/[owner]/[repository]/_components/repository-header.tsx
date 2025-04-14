@@ -22,7 +22,6 @@ export function RepositoryHeader({ owner, repository }: RepositoryHeaderProps) {
             <ShallowLink
               href={`/${owner}/${repository}`}
               className="hover:underline text-foreground"
-              prefetch={true}
             >
               {repository}
             </ShallowLink>
