@@ -124,7 +124,6 @@ export function IssuesClient({
   return (
     <>
       <div className="mb-8 flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Issues</h1>
         <div className="flex items-center gap-4">
           <SearchBar
             placeholder="Search issues..."

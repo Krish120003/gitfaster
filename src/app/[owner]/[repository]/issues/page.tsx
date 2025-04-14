@@ -1,4 +1,3 @@
-import { Suspense } from "react";
 import { IssuesClient } from "./issues-client";
 import type { Issue } from "@/server/api/routers/issues";
 
@@ -20,15 +19,11 @@ export default async function Page({ params, searchParams }: PageProps) {
   ]);
 
   return (
-    <div className="container mx-auto py-8">
-      <Suspense fallback={<div>Loading issues...</div>}>
-        <IssuesClient
-          owner={owner}
-          repository={repository}
-          initialState={resolvedSearchParams.state ?? "open"}
-          initialSearch={resolvedSearchParams.search}
-        />
-      </Suspense>
-    </div>
+    <IssuesClient
+      owner={owner}
+      repository={repository}
+      initialState={resolvedSearchParams.state ?? "open"}
+      initialSearch={resolvedSearchParams.search}
+    />
   );
 }

@@ -2,7 +2,7 @@ import { createCallerFactory, createTRPCRouter } from "@/server/api/trpc";
 import { githubRouter } from "./routers/github";
 import { postRouter } from "./routers/post";
 import { issuesRouter } from "./routers/issues";
-import { pullsRouter } from "./routers/pulls";
+
 import { pullRequestsRouter } from "./routers/pull-requests";
 
 /**
@@ -14,7 +14,6 @@ export const appRouter = createTRPCRouter({
   github: githubRouter,
   post: postRouter,
   issues: issuesRouter,
-  pulls: pullsRouter,
   pullRequests: pullRequestsRouter,
 });
 

@@ -2,7 +2,11 @@ import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import { TRPCError } from "@trpc/server";
 import { redis } from "@/server/redis";
-import { getOctokit } from "@/server/github/auth";
+import {
+  getOctokit,
+  userHasAccessToRepository,
+  throwIfNoAccess,
+} from "@/server/github/auth";
 
 const CACHE_TTL = 60 * 60 * 24 * 7; // 1 week, since PRs are immutable and changes are infrequent
 
@@ -46,6 +50,13 @@ export const pullRequestsRouter = createTRPCRouter({
       })
     )
     .query(async ({ ctx, input }) => {
+      const hasAccess = await userHasAccessToRepository(
+        ctx,
+        input.owner,
+        input.repository
+      );
+      throwIfNoAccess(hasAccess);
+
       const octokit = await getOctokit(ctx);
       const { owner, repository, cursor = 1, limit, state, search } = input;
 
@@ -218,6 +229,13 @@ export const pullRequestsRouter = createTRPCRouter({
       })
     )
     .query(async ({ ctx, input }) => {
+      const hasAccess = await userHasAccessToRepository(
+        ctx,
+        input.owner,
+        input.repository
+      );
+      throwIfNoAccess(hasAccess);
+
       const octokit = await getOctokit(ctx);
       const { owner, repository, number } = input;
       const cacheKey = `pull-requests:${owner}:${repository}:${number}`;

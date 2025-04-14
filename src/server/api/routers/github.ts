@@ -8,6 +8,11 @@ import { eq } from "drizzle-orm";
 import { users } from "@/server/db/schema";
 import { after } from "next/server";
 import { TRPCError } from "@trpc/server";
+import {
+  getOctokit,
+  userHasAccessToRepository,
+  throwIfNoAccess,
+} from "@/server/github/auth";
 
 const TreeNodeSchema = z.object({
   path: z.string(),
@@ -218,72 +223,6 @@ async function fetchRepoTree(
   return fileTree;
 }
 
-async function getOctokit(ctx: Context) {
-  if (!ctx.session || !ctx.session.user || !ctx.session.user.id) {
-    throw new Error("User not authenticated");
-  }
-
-  const tokenKey = `githubToken:${ctx.session.user.id}`;
-  const tokenData = await ctx.redis.get(tokenKey);
-  const parsedToken = TokenSchema.safeParse(tokenData);
-  if (parsedToken.success) {
-    return new Octokit({
-      auth: parsedToken.data.token,
-    });
-  }
-
-  const user = await ctx.db.query.users.findFirst({
-    where: eq(users.id, ctx.session.user.id),
-    with: {
-      accounts: true,
-    },
-  });
-
-  if (!user || user.accounts.length === 0) {
-    throw new Error("User does not have a GitHub account linked");
-  }
-
-  const account = user.accounts[0];
-  if (!account) {
-    throw new Error("Account not found");
-  }
-  const accessToken = account.access_token;
-  await ctx.redis.set(tokenKey, { token: accessToken }, 3600);
-
-  return new Octokit({
-    auth: accessToken,
-  });
-}
-
-async function userHasAccessToRepository(
-  ctx: Context,
-  owner: string,
-  repository: string
-) {
-  const key = `repoAccess:${owner}:${repository}:${ctx.session?.user?.id}`;
-
-  // Check cache first
-  const cachedAccess = await ctx.redis.get(key);
-  if (cachedAccess !== null) {
-    const parsed = hasAccessSchema.safeParse(cachedAccess);
-    if (parsed.success) {
-      return parsed.data.hasAccess;
-    }
-  }
-
-  const octokit = await getOctokit(ctx);
-
-  const response = await octokit.rest.repos.get({
-    owner,
-    repo: repository,
-  });
-
-  const hasAccess = response.status === 200;
-  await ctx.redis.set(key, { hasAccess }, 3600);
-
-  return hasAccess;
-}
-
 export const githubRouter = createTRPCRouter({
   getRepositoryOverview: protectedProcedure
     .input(
@@ -294,12 +233,7 @@ export const githubRouter = createTRPCRouter({
     )
     .query(async ({ ctx, input: { owner, repository } }) => {
       const hasAccess = await userHasAccessToRepository(ctx, owner, repository);
-      if (!hasAccess) {
-        throw new TRPCError({
-          message: "Repository not found",
-          code: "NOT_FOUND",
-        });
-      }
+      throwIfNoAccess(hasAccess);
 
       const key = `overview:${owner}:${repository}`;
       if (await ctx.redis.has(key)) {
