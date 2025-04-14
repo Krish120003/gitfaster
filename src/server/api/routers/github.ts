@@ -173,6 +173,11 @@ const hasAccessSchema = z.object({
   hasAccess: z.boolean(),
 });
 
+const GithubStarSchema = z.object({
+  stargazerCount: z.number(),
+  viewerHasStarred: z.boolean(),
+});
+
 async function fetchRepoTree(
   params: {
     owner: string;
@@ -638,6 +643,90 @@ export const githubRouter = createTRPCRouter({
       } catch (error) {
         console.error("Error fetching readme:", error);
         return "";
+      }
+    }),
+
+  getStarInfo: protectedProcedure
+    .input(
+      z.object({
+        owner: z.string(),
+        repository: z.string(),
+      })
+    )
+    .output(GithubStarSchema)
+    .query(async ({ ctx, input: { owner, repository } }) => {
+      const hasAccess = await userHasAccessToRepository(ctx, owner, repository);
+      if (!hasAccess) {
+        throw new TRPCError({
+          message: "Repository not found",
+          code: "NOT_FOUND",
+        });
+      }
+
+      const octokit = await getOctokit(ctx);
+
+      // GitHub GraphQL query for stargazer count and viewerHasStarred
+      const query = `
+        query($owner: String!, $name: String!) {
+          repository(owner: $owner, name: $name) {
+            stargazerCount
+            viewerHasStarred
+          }
+        }
+      `;
+
+      let response = await octokit.graphql(query, { owner, name: repository });
+
+      console.log(response);
+
+      const data = z.object({ repository: GithubStarSchema }).parse(response);
+
+      return {
+        stargazerCount: data.repository.stargazerCount,
+        viewerHasStarred: data.repository.viewerHasStarred,
+      };
+    }),
+
+  setStar: protectedProcedure
+    .input(
+      z.object({
+        owner: z.string(),
+        repository: z.string(),
+        value: z.boolean(),
+      })
+    )
+    .mutation(async ({ ctx, input: { owner, repository, value } }) => {
+      const hasAccess = await userHasAccessToRepository(ctx, owner, repository);
+      if (!hasAccess) {
+        throw new TRPCError({
+          message: "Repository not found",
+          code: "NOT_FOUND",
+        });
+      }
+
+      const octokit = await getOctokit(ctx);
+
+      // Toggle the star status
+      if (!value) {
+        const resp = await octokit.request(
+          "DELETE /user/starred/{owner}/{repo}",
+          {
+            owner,
+            repo: repository,
+          }
+        );
+
+        if (resp.status === 204) {
+          console.log("Successfully unstarred the repository");
+        }
+      } else {
+        const resp = await octokit.request("PUT /user/starred/{owner}/{repo}", {
+          owner,
+          repo: repository,
+        });
+        if (resp.status === 204) {
+          console.log("Successfully starred the repository");
+        }
       }
     }),
 });

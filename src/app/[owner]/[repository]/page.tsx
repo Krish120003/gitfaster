@@ -6,6 +6,7 @@ import FolderView from "./_components/repository-file-list";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
+import StarButton from "./_components/star-button";
 
 export const dynamic = "force-dynamic";
 
@@ -70,10 +71,12 @@ export default async function Page({ params }: PageProps) {
       <div className="flex flex-col gap-2">
         <h1 className="text-xl font-semibold text-foreground ">{repository}</h1>
         <div className="flex items-center justify-between">
-          <div className="w-64 bg-white rounded border">
+          <div className="w-64 bg-white dark:bg-transparent rounded-md border">
             <BranchSelector />
           </div>
-          <div className="">star button etc</div>
+          <div className="">
+            <StarButton owner={owner} repository={repository} />
+          </div>
         </div>
       </div>
 
