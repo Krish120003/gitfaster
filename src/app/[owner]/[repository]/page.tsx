@@ -70,7 +70,7 @@ export default async function Page({ params }: PageProps) {
       <div className="flex flex-col gap-2">
         <h1 className="text-xl font-semibold text-foreground ">{repository}</h1>
         <div className="flex items-center justify-between">
-          <div className="w-64">
+          <div className="w-64 bg-white rounded border">
             <BranchSelector />
           </div>
           <div className="">star button etc</div>
