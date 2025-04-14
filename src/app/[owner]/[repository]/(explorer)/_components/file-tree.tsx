@@ -227,6 +227,15 @@ function TreeNode({
         // !isSelected && "hover:bg-accent-foreground/20"
       )}
       style={{ paddingLeft: `${level * 16 + 8}px` }}
+      onMouseOver={() => {
+        // Prefetch file content on hover
+        trpc.github.getFileContent.prefetch({
+          owner: owner as string, // Cast might be needed depending on useParams return type
+          repository: repository as string,
+          branch: branch as string,
+          path: node.path,
+        });
+      }}
     >
       {/* Guide lines on hover */}
       {level > 0 && (
