@@ -9,8 +9,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ChevronsUpDown, GitBranch } from "lucide-react";
-import { Skeleton } from "@/components/ui/skeleton";
+import { GitBranch } from "lucide-react";
 
 export function BranchSelector() {
   const params = useParams<{
