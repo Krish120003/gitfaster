@@ -71,7 +71,7 @@ export function RepositoryNav({ owner, repository }: RepositoryNavProps) {
         </Button>
       </Link>
 
-      <Link
+      {/* <Link
         href={`${basePath}/pulls`}
         className={cn("border-b-2 pb-1 cursor-pointer border-transparent", {
           "border-[#f78166]": isActive("pulls"),
@@ -87,7 +87,7 @@ export function RepositoryNav({ owner, repository }: RepositoryNavProps) {
             <span>Pull requests</span>
           </div>
         </Button>
-      </Link>
+      </Link> */}
     </div>
   );
 }
