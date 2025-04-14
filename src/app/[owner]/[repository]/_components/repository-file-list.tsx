@@ -12,6 +12,7 @@ import {
 import { Folder, File } from "lucide-react";
 import ShallowLink from "@/components/shallow-link";
 import { api } from "@/trpc/react";
+import Link from "next/link";
 
 // Define props interface
 interface FolderViewProps {
@@ -19,6 +20,7 @@ interface FolderViewProps {
   branch: string;
   owner: string;
   repository: string;
+  hardnav?: boolean;
 }
 
 export function FolderView({
@@ -26,6 +28,7 @@ export function FolderView({
   branch,
   owner,
   repository,
+  hardnav = false,
 }: FolderViewProps) {
   const trpc = api.useUtils();
 
@@ -61,6 +64,8 @@ export function FolderView({
     lastCommitDate: getMockCommitDate(node.path),
   }));
 
+  const LinkComponent = hardnav ? Link : ShallowLink;
+
   return (
     <div className="rounded-lg border border-border bg-background">
       <Table>
@@ -82,7 +87,7 @@ export function FolderView({
           {isRoot ? null : (
             <TableRow className="hover:bg-muted/30">
               <TableCell className="font-medium">
-                <ShallowLink
+                <LinkComponent
                   className="flex items-center gap-2"
                   href={parentPath} // Link to calculated parent folder path
                 >
@@ -92,7 +97,7 @@ export function FolderView({
                     fill="currentColor"
                   />
                   <span>..</span>
-                </ShallowLink>
+                </LinkComponent>
               </TableCell>
               <TableCell></TableCell>
               <TableCell className="text-right"></TableCell>
@@ -117,7 +122,7 @@ export function FolderView({
               return (
                 <TableRow key={node.path} className="hover:bg-muted/30">
                   <TableCell className="font-medium">
-                    <ShallowLink
+                    <LinkComponent
                       className="flex items-center gap-2 hover:underline"
                       href={href} // Use constructed href
                       onMouseOver={
@@ -144,7 +149,7 @@ export function FolderView({
                         <File className="h-5 w-5 text-muted-foreground" />
                       )}
                       <span>{getFileName(node.path)}</span>
-                    </ShallowLink>
+                    </LinkComponent>
                   </TableCell>
                   <TableCell>{node.lastCommitMessage}</TableCell>
                   <TableCell className="text-right">
