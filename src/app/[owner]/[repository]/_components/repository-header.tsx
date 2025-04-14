@@ -5,7 +5,7 @@ import { Menu, Github, GitGraph } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { RepositoryNav } from "./repository-nav";
 import ShallowLink from "@/components/shallow-link";
-import { StarButton } from "@/components/star-button";
+
 import { api } from "@/trpc/react";
 
 interface RepositoryHeaderProps {
@@ -35,16 +35,6 @@ export function RepositoryHeader({ owner, repository }: RepositoryHeaderProps) {
             >
               {repository}
             </Link>
-          </div>
-          <div className="ml-auto">
-            {data && (
-              <StarButton
-                owner={owner}
-                repository={repository}
-                initialStarred={data.viewerHasStarred}
-                stargazerCount={data.stargazerCount}
-              />
-            )}
           </div>
         </div>
         {/* Navigation tabs - now using the client component */}

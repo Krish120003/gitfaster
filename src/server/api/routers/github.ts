@@ -141,8 +141,6 @@ const RepositoryOverviewRepositorySchema = z.object({
   description: z.string().nullable(),
   homepageUrl: z.string().nullable(),
   licenseInfo: RepositoryOverviewLicenseSchema,
-  stargazerCount: z.number(),
-  viewerHasStarred: z.boolean(),
   defaultBranchRef: RepositoryOverviewDefaultBranchSchema.nullable(),
   languages: RepositoryOverviewLanguagesSchema,
   refs: RepositoryOverviewRefsSchema,
