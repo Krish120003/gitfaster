@@ -2,6 +2,7 @@
 
 import { useParams, usePathname } from "next/navigation";
 import Link from "next/link";
+import ShallowLink from "@/components/shallow-link";
 
 export function Breadcrumbs() {
   const params = useParams();
@@ -26,14 +27,14 @@ export function Breadcrumbs() {
       {path.map((segment, index) => (
         <div key={index} className="flex items-center gap-2">
           <span>/</span>
-          <Link
+          <ShallowLink
             href={`/${owner}/${repository}/tree/${path
               .slice(0, index + 1)
               .join("/")}`}
             className="hover:text-foreground transition-colors"
           >
             {decodeURIComponent(segment)}
-          </Link>
+          </ShallowLink>
         </div>
       ))}
     </div>
