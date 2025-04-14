@@ -9,8 +9,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ChevronsUpDown } from "lucide-react";
-import { Skeleton } from "@/components/ui/skeleton";
+import { GitBranch } from "lucide-react";
 
 export function BranchSelector() {
   const params = useParams<{
@@ -33,11 +32,16 @@ export function BranchSelector() {
         enabled: !!owner && !!repository,
         staleTime: 5 * 60 * 1000, // 5 minutes
         refetchOnWindowFocus: false,
+        refetchOnMount: false,
       }
     );
 
-  const branches = repoOverview?.refs?.nodes ?? [];
   const defaultBranch = repoOverview?.defaultBranchRef?.name ?? "main";
+  const branches = repoOverview?.refs?.nodes ?? [
+    {
+      name: currentBranch,
+    },
+  ];
   // The branch might not be in the URL if the user is at the root explorer path
   // We need to determine the selected branch based on the path or default
   const pathSegments = pathname.split("/");
@@ -73,10 +77,6 @@ export function BranchSelector() {
     }
   };
 
-  if (isLoading) {
-    return <Skeleton className="h-8 w-full" />;
-  }
-
   if (!branches.length) {
     return (
       <div className="p-2 text-sm text-muted-foreground">No branches found</div>
@@ -85,20 +85,21 @@ export function BranchSelector() {
 
   return (
     <Select value={selectedBranch} onValueChange={handleBranchChange}>
-      <SelectTrigger className="w-full h-8 focus:ring-0 focus:ring-offset-0 border-none shadow-none">
+      <SelectTrigger className="w-full h-8 focus:ring-0 focus:ring-offset-0 border-none shadow-none ">
         <div className="flex items-center gap-1 overflow-hidden text-ellipsis whitespace-nowrap">
-          <ChevronsUpDown className="h-4 w-4 text-muted-foreground flex-shrink-0" />
-          <span className="truncate font-medium max-w-48">
+          <span className="truncate font-medium max-w-48 flex items-center">
+            <GitBranch className="mr-2 h-4 w-4" />
             {selectedBranch}
           </span>
         </div>
       </SelectTrigger>
-      <SelectContent>
+      <SelectContent className="w-[var(--radix-select-trigger-width)] min-w-[var(--radix-select-trigger-width)]">
         {branches.map((branch) => (
           <SelectItem
             key={branch.name}
             value={branch.name}
-            className="max-w-48 truncate"
+            className="w-full truncate"
+            title={branch.name}
           >
             {branch.name}
           </SelectItem>

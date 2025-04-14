@@ -13,6 +13,7 @@ import { Folder, File } from "lucide-react";
 import ShallowLink from "@/components/shallow-link";
 import { api } from "@/trpc/react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 // Define props interface
 interface FolderViewProps {
@@ -31,13 +32,10 @@ export function FolderView({
   hardnav = false,
 }: FolderViewProps) {
   const trpc = api.useUtils();
+  const pathname = usePathname();
 
-  // Get current path segments from window location (since usePathname is removed)
-  // This might need adjustment depending on how ExplorerView manages the canonical path
-  const pathSegments =
-    typeof window !== "undefined"
-      ? window.location.pathname.split("/").slice(5)
-      : [];
+  // Get path segments from pathname
+  const pathSegments = pathname ? pathname.split("/").slice(5) : [];
   const currentRelativePath = decodeURIComponent(pathSegments.join("/"));
 
   // Use props for base paths
@@ -51,18 +49,9 @@ export function FolderView({
     ? folderBasePath
     : folderBasePath + currentRelativePath.split("/").slice(0, -1).join("/");
 
-  // Removed isLoading check as data is now a prop
   if (!data) {
     return <div>No data available.</div>; // Handle case where data might be null/undefined initially
   }
-
-  // Use passed data directly
-  const nodesWithCommitInfo = data.map((node) => ({
-    ...node,
-    // Keep mock data for now
-    lastCommitMessage: getMockCommitMessage(node.path),
-    lastCommitDate: getMockCommitDate(node.path),
-  }));
 
   const LinkComponent = hardnav ? Link : ShallowLink;
 
@@ -71,15 +60,7 @@ export function FolderView({
       <Table>
         <TableHeader>
           <TableRow className="hover:bg-transparent">
-            <TableHead className="w-[40%] text-muted-foreground">
-              Name
-            </TableHead>
-            <TableHead className="text-muted-foreground">
-              Last commit message
-            </TableHead>
-            <TableHead className="text-right text-muted-foreground">
-              Last commit date
-            </TableHead>
+            <TableHead className="w-full text-muted-foreground">Name</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -99,13 +80,11 @@ export function FolderView({
                   <span>..</span>
                 </LinkComponent>
               </TableCell>
-              <TableCell></TableCell>
-              <TableCell className="text-right"></TableCell>
             </TableRow>
           )}
 
           {/* Sort directories first, then files */}
-          {nodesWithCommitInfo
+          {data
             .sort((a, b) => {
               if (a.type !== b.type) {
                 return a.type === "tree" ? -1 : 1;
@@ -151,10 +130,6 @@ export function FolderView({
                       <span>{getFileName(node.path)}</span>
                     </LinkComponent>
                   </TableCell>
-                  <TableCell>{node.lastCommitMessage}</TableCell>
-                  <TableCell className="text-right">
-                    {node.lastCommitDate}
-                  </TableCell>
                 </TableRow>
               );
             })}
@@ -168,37 +143,6 @@ export function FolderView({
 function getFileName(path: string): string {
   const parts = path.split("/");
   return parts[parts.length - 1] ?? "wrong";
-}
-
-// Mock data functions for demonstration
-function getMockCommitMessage(path: string): string {
-  const messages = {
-    app: "fix: sample files as const",
-    components: "fix: update text colors for themes",
-    lib: "feat: scaffold pages, install shadcn",
-    server: "feat: init",
-    styles: "feat: update theme",
-    trpc: "feat: init",
-    "env.js": "feat: scaffold pages, install shadcn",
-  };
-
-  const fileName = getFileName(path);
-  return messages[fileName as keyof typeof messages] || "Initial commit";
-}
-
-function getMockCommitDate(path: string): string {
-  const dates = {
-    app: "12 hours ago",
-    components: "12 hours ago",
-    lib: "20 hours ago",
-    server: "yesterday",
-    styles: "12 hours ago",
-    trpc: "yesterday",
-    "env.js": "20 hours ago",
-  };
-
-  const fileName = getFileName(path);
-  return dates[fileName as keyof typeof dates] || "3 days ago";
 }
 
 export default FolderView;

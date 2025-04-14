@@ -1,10 +1,12 @@
 import { api } from "@/trpc/server";
 import { Badge } from "@/components/ui/badge";
+import { BranchSelector } from "./(explorer)/_components/branch-selector";
 
 import FolderView from "./_components/repository-file-list";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
+import StarButton from "./_components/star-button";
 
 export const dynamic = "force-dynamic";
 
@@ -63,7 +65,21 @@ export default async function Page({ params }: PageProps) {
   const branch = data.defaultBranchRef?.name ?? "main";
 
   return (
-    <div className="p-4 mx-auto md:max-w-7xl w-full">
+    <div className="p-4 mx-auto md:max-w-7xl w-full flex flex-col gap-4">
+      {/* Branch selector and repo name row */}
+
+      <div className="flex flex-col gap-2">
+        <h1 className="text-xl font-semibold text-foreground ">{repository}</h1>
+        <div className="flex items-center justify-between">
+          <div className="w-64 bg-white dark:bg-transparent rounded-md border">
+            <BranchSelector />
+          </div>
+          <div className="">
+            <StarButton owner={owner} repository={repository} />
+          </div>
+        </div>
+      </div>
+
       <div className="w-full grid grid-cols-4 gap-8">
         {/* File Browser and README */}
         <div className="col-span-3 flex flex-col gap-4">
