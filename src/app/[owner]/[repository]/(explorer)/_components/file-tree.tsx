@@ -191,7 +191,6 @@ function TreeNode({
           <ShallowLink
             href={linkPath}
             className="flex items-center flex-1 no-underline cursor-pointer"
-            prefetch={true}
           >
             <Folder className="h-4 w-4 text-[#6b9eff] mr-2" />
             <span className="text-sm">{node.name}</span>
@@ -228,7 +227,6 @@ function TreeNode({
         // !isSelected && "hover:bg-accent-foreground/20"
       )}
       style={{ paddingLeft: `${level * 16 + 8}px` }}
-      prefetch={true}
     >
       {/* Guide lines on hover */}
       {level > 0 && (

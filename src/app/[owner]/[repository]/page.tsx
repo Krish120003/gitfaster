@@ -68,8 +68,11 @@ export default async function Page({ params }: PageProps) {
         {/* File Browser and README */}
         <div className="col-span-3 flex flex-col gap-4">
           <FolderView
+            hardnav={true}
             data={folderData}
             branch={data.defaultBranchRef?.name ?? "main"}
+            owner={owner}
+            repository={repository}
           />
 
           <div className="border rounded bg-background p-4 w-full">

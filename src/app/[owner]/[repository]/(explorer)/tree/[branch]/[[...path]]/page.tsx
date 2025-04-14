@@ -1,31 +1,7 @@
-import FolderView from "@/app/[owner]/[repository]/_components/repository-file-list";
-import { api } from "@/trpc/server";
+import ExplorerView from "@/app/[owner]/[repository]/(explorer)/_components/ExplorerView";
 
-interface PageProps {
-  params: Promise<{
-    owner: string;
-    repository: string;
-    branch: string;
-    path: string | string[] | undefined;
-  }>;
-}
-
-export default async function Page({ params }: PageProps) {
-  const { owner, repository, branch, path } = await params;
-
-  const formattedPath = decodeURIComponent(
-    (Array.isArray(path) ? path.join("/") : path) ?? ""
-  );
-  const data = await api.github.getFolderView({
-    owner,
-    repository,
-    branch,
-    path: formattedPath ?? "",
-  });
-
-  return (
-    <div>
-      <FolderView data={data} branch={branch} />
-    </div>
-  );
+export default function Page() {
+  // This page simply renders the client component,
+  // which handles data fetching and rendering based on the URL.
+  return <ExplorerView />;
 }

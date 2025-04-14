@@ -28,13 +28,13 @@ export function RepositoryHeader({ owner, repository }: RepositoryHeaderProps) {
           <div className="flex items-center text-md">
             {owner}
             <span className="mx-1">/</span>
-            <ShallowLink
+            <Link
               href={`/${owner}/${repository}`}
               className="hover:underline text-foreground"
               prefetch={true}
             >
               {repository}
-            </ShallowLink>
+            </Link>
           </div>
           <div className="ml-auto">
             {data && (

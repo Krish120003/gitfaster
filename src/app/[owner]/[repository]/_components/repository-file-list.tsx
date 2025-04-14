@@ -11,34 +11,60 @@ import {
 } from "../../../../components/ui/table";
 import { Folder, File } from "lucide-react";
 import ShallowLink from "@/components/shallow-link";
-import { useParams, usePathname } from "next/navigation";
 import { api } from "@/trpc/react";
+import Link from "next/link";
 
+// Define props interface
 interface FolderViewProps {
   data: TreeNode[];
   branch: string;
+  owner: string;
+  repository: string;
+  hardnav?: boolean;
 }
 
-export function FolderView({ data, branch }: FolderViewProps) {
-  const { owner, repository } = useParams();
+export function FolderView({
+  data,
+  branch,
+  owner,
+  repository,
+  hardnav = false,
+}: FolderViewProps) {
   const trpc = api.useUtils();
 
+  // Get current path segments from window location (since usePathname is removed)
+  // This might need adjustment depending on how ExplorerView manages the canonical path
+  const pathSegments =
+    typeof window !== "undefined"
+      ? window.location.pathname.split("/").slice(5)
+      : [];
+  const currentRelativePath = decodeURIComponent(pathSegments.join("/"));
+
+  // Use props for base paths
   const basePath = `/${owner}/${repository}/`;
   const folderBasePath = `${basePath}tree/${branch}/`;
   const fileBasePath = `${basePath}blob/${branch}/`;
 
-  const pathname = decodeURIComponent(usePathname());
+  // Determine parent path based on current relative path
+  const isRoot = currentRelativePath === "";
+  const parentPath = isRoot
+    ? folderBasePath
+    : folderBasePath + currentRelativePath.split("/").slice(0, -1).join("/");
 
-  const isRoot =
-    pathname === `/${owner}/${repository}/tree/${branch}` ||
-    pathname === `/${owner}/${repository}`;
-  const parentPath = pathname.split("/").slice(0, -1).join("/");
+  // Removed isLoading check as data is now a prop
+  if (!data) {
+    return <div>No data available.</div>; // Handle case where data might be null/undefined initially
+  }
 
+  // Use passed data directly
   const nodesWithCommitInfo = data.map((node) => ({
     ...node,
+    // Keep mock data for now
     lastCommitMessage: getMockCommitMessage(node.path),
     lastCommitDate: getMockCommitDate(node.path),
   }));
+
+  const LinkComponent = hardnav ? Link : ShallowLink;
 
   return (
     <div className="rounded-lg border border-border bg-background">
@@ -57,14 +83,13 @@ export function FolderView({ data, branch }: FolderViewProps) {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {/* Parent directory row */}
+          {/* Parent directory row - use calculated parentPath */}
           {isRoot ? null : (
             <TableRow className="hover:bg-muted/30">
               <TableCell className="font-medium">
-                <ShallowLink
+                <LinkComponent
                   className="flex items-center gap-2"
-                  prefetch={true}
-                  href={parentPath}
+                  href={parentPath} // Link to calculated parent folder path
                 >
                   <Folder
                     className="h-5 w-5 text-muted-foreground"
@@ -72,7 +97,7 @@ export function FolderView({ data, branch }: FolderViewProps) {
                     fill="currentColor"
                   />
                   <span>..</span>
-                </ShallowLink>
+                </LinkComponent>
               </TableCell>
               <TableCell></TableCell>
               <TableCell className="text-right"></TableCell>
@@ -82,32 +107,32 @@ export function FolderView({ data, branch }: FolderViewProps) {
           {/* Sort directories first, then files */}
           {nodesWithCommitInfo
             .sort((a, b) => {
-              // Sort by type first (tree before blob)
               if (a.type !== b.type) {
                 return a.type === "tree" ? -1 : 1;
               }
-              // Then sort by path
               return a.path.localeCompare(b.path);
             })
             .map((node) => {
               const link = node.path;
+              // Construct full href using base paths and node info
+              const href = `${
+                node.type === "tree" ? folderBasePath : fileBasePath
+              }${link}`;
 
               return (
                 <TableRow key={node.path} className="hover:bg-muted/30">
                   <TableCell className="font-medium">
-                    <ShallowLink
+                    <LinkComponent
                       className="flex items-center gap-2 hover:underline"
-                      href={`${
-                        node.type === "tree" ? folderBasePath : fileBasePath
-                      }${link}`}
-                      prefetch={true}
+                      href={href} // Use constructed href
                       onMouseOver={
                         node.type === "blob"
                           ? () => {
+                              // Use props for prefetching
                               trpc.github.getFileContent.prefetch({
                                 branch: branch,
-                                owner: owner as string,
-                                repository: repository as string,
+                                owner: owner,
+                                repository: repository,
                                 path: node.path,
                               });
                             }
@@ -124,7 +149,7 @@ export function FolderView({ data, branch }: FolderViewProps) {
                         <File className="h-5 w-5 text-muted-foreground" />
                       )}
                       <span>{getFileName(node.path)}</span>
-                    </ShallowLink>
+                    </LinkComponent>
                   </TableCell>
                   <TableCell>{node.lastCommitMessage}</TableCell>
                   <TableCell className="text-right">
