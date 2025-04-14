@@ -9,7 +9,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ChevronsUpDown } from "lucide-react";
+import { ChevronsUpDown, GitBranch } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export function BranchSelector() {
@@ -88,7 +88,8 @@ export function BranchSelector() {
     <Select value={selectedBranch} onValueChange={handleBranchChange}>
       <SelectTrigger className="w-full h-8 focus:ring-0 focus:ring-offset-0 border-none shadow-none ">
         <div className="flex items-center gap-1 overflow-hidden text-ellipsis whitespace-nowrap">
-          <span className="truncate font-medium max-w-48">
+          <span className="truncate font-medium max-w-48 flex items-center">
+            <GitBranch className="mr-2 h-4 w-4" />
             {selectedBranch}
           </span>
         </div>

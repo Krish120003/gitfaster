@@ -1,6 +1,7 @@
 import { api } from "@/trpc/server";
 import { FileTree } from "./_components/file-tree";
 import { BranchSelector } from "./_components/branch-selector";
+import { Breadcrumbs } from "./_components/breadcrumbs";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -27,7 +28,6 @@ export default async function ExplorerLayout({
     <div className="grid grid-cols-12 w-full h-screen">
       <div className="col-span-3 border-r border-foreground/20 overflow-y-auto flex flex-col">
         <div className="border-b border-foreground/20 flex flex-col items-stretch gap-2 p-2">
-          Branch
           <BranchSelector />
         </div>
 
@@ -35,7 +35,12 @@ export default async function ExplorerLayout({
           <FileTree initialData={fileTreeInitial} />
         </div>
       </div>
-      <div className="col-span-9 p-4 overflow-y-auto">{children}</div>
+      <div className="col-span-9 overflow-y-auto">
+        <div className="p-4 border-b border-foreground/20">
+          <Breadcrumbs />
+        </div>
+        <div className="p-4">{children}</div>
+      </div>
     </div>
   );
 }

@@ -13,6 +13,7 @@ import { Folder, File } from "lucide-react";
 import ShallowLink from "@/components/shallow-link";
 import { api } from "@/trpc/react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 // Define props interface
 interface FolderViewProps {
@@ -31,13 +32,10 @@ export function FolderView({
   hardnav = false,
 }: FolderViewProps) {
   const trpc = api.useUtils();
+  const pathname = usePathname();
 
-  // Get current path segments from window location (since usePathname is removed)
-  // This might need adjustment depending on how ExplorerView manages the canonical path
-  const pathSegments =
-    typeof window !== "undefined"
-      ? window.location.pathname.split("/").slice(5)
-      : [];
+  // Get path segments from pathname
+  const pathSegments = pathname ? pathname.split("/").slice(5) : [];
   const currentRelativePath = decodeURIComponent(pathSegments.join("/"));
 
   // Use props for base paths
