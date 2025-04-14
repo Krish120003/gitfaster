@@ -88,7 +88,7 @@ export default function ExplorerView() {
     branch: string;
     path?: string | string[];
   }>();
-  const pathname = usePathname();
+  const pathname = decodeURIComponent(usePathname());
 
   const owner = params?.owner;
   const repository = params?.repository;
@@ -99,8 +99,8 @@ export default function ExplorerView() {
     pathSegments.length > 5 ? pathSegments.slice(5).join("/") : "";
   const formattedPath = decodeURIComponent(relativePath);
 
-  const isBlobView = useMemo(() => pathname?.includes(`/blob/`), [pathname]);
-  const isTreeView = useMemo(() => pathname?.includes(`/tree/`), [pathname]);
+  const isBlobView = useMemo(() => pathSegments[3] === "blob", [pathSegments]);
+  const isTreeView = useMemo(() => pathSegments[3] === "tree", [pathSegments]);
 
   const queryEnabled = !!owner && !!repository && !!branch;
 
