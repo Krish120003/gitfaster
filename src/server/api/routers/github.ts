@@ -7,6 +7,7 @@ import type { Context } from "@/app/api/trpc/[trpc]/route";
 import { eq } from "drizzle-orm";
 import { users } from "@/server/db/schema";
 import { after } from "next/server";
+import { TRPCError } from "@trpc/server";
 
 const TreeNodeSchema = z.object({
   path: z.string(),
@@ -168,6 +169,10 @@ const TokenSchema = z.object({
   token: z.string(),
 });
 
+const hasAccessSchema = z.object({
+  hasAccess: z.boolean(),
+});
+
 async function fetchRepoTree(
   params: {
     owner: string;
@@ -246,6 +251,35 @@ async function getOctokit(ctx: Context) {
   });
 }
 
+async function userHasAccessToRepository(
+  ctx: Context,
+  owner: string,
+  repository: string
+) {
+  const key = `repoAccess:${owner}:${repository}:${ctx.session?.user?.id}`;
+
+  // Check cache first
+  const cachedAccess = await ctx.redis.get(key);
+  if (cachedAccess !== null) {
+    const parsed = hasAccessSchema.safeParse(cachedAccess);
+    if (parsed.success) {
+      return parsed.data.hasAccess;
+    }
+  }
+
+  const octokit = await getOctokit(ctx);
+
+  const response = await octokit.rest.repos.get({
+    owner,
+    repo: repository,
+  });
+
+  const hasAccess = response.status === 200;
+  await ctx.redis.set(key, { hasAccess }, 3600);
+
+  return hasAccess;
+}
+
 export const githubRouter = createTRPCRouter({
   getRepositoryOverview: protectedProcedure
     .input(
@@ -255,6 +289,14 @@ export const githubRouter = createTRPCRouter({
       })
     )
     .query(async ({ ctx, input: { owner, repository } }) => {
+      const hasAccess = await userHasAccessToRepository(ctx, owner, repository);
+      if (!hasAccess) {
+        throw new TRPCError({
+          message: "Repository not found",
+          code: "NOT_FOUND",
+        });
+      }
+
       const key = `overview:${owner}:${repository}`;
       if (await ctx.redis.has(key)) {
         console.log("Cache Hit for repo overview");
@@ -343,6 +385,17 @@ export const githubRouter = createTRPCRouter({
     )
     .output(TreeDataSchema)
     .query(async ({ ctx, input }) => {
+      const hasAccess = await userHasAccessToRepository(
+        ctx,
+        input.owner,
+        input.repository
+      );
+      if (!hasAccess) {
+        throw new TRPCError({
+          message: "Repository not found",
+          code: "NOT_FOUND",
+        });
+      }
       return fetchRepoTree(input, ctx.redis, ctx);
     }),
 
@@ -358,6 +411,17 @@ export const githubRouter = createTRPCRouter({
     .output(TreeNodeSchema.array())
     .query(
       async ({ ctx, input: { owner, repository, branch, path: dirPath } }) => {
+        const hasAccess = await userHasAccessToRepository(
+          ctx,
+          owner,
+          repository
+        );
+        if (!hasAccess) {
+          throw new TRPCError({
+            message: "Repository not found",
+            code: "NOT_FOUND",
+          });
+        }
         const tree = await fetchRepoTree(
           {
             owner,
@@ -398,6 +462,13 @@ export const githubRouter = createTRPCRouter({
     )
     .output(fileSchema)
     .query(async ({ ctx, input: { owner, repository, branch, path } }) => {
+      const hasAccess = await userHasAccessToRepository(ctx, owner, repository);
+      if (!hasAccess) {
+        throw new TRPCError({
+          message: "Repository not found",
+          code: "NOT_FOUND",
+        });
+      }
       const key = `file:${owner}:${repository}:${branch}:${path}`;
       const octokit = await getOctokit(ctx);
       const cacheHit = await ctx.redis.has(key);
@@ -518,6 +589,13 @@ export const githubRouter = createTRPCRouter({
     )
     .output(z.string())
     .query(async ({ ctx, input: { owner, repository, branch, folder } }) => {
+      const hasAccess = await userHasAccessToRepository(ctx, owner, repository);
+      if (!hasAccess) {
+        throw new TRPCError({
+          message: "Repository not found",
+          code: "NOT_FOUND",
+        });
+      }
       const octokit = await getOctokit(ctx);
       const folderPath = folder
         ? folder.endsWith("/")
