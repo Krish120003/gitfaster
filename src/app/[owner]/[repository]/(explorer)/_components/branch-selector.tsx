@@ -93,12 +93,13 @@ export function BranchSelector() {
           </span>
         </div>
       </SelectTrigger>
-      <SelectContent>
+      <SelectContent className="w-[var(--radix-select-trigger-width)] min-w-[var(--radix-select-trigger-width)]">
         {branches.map((branch) => (
           <SelectItem
             key={branch.name}
             value={branch.name}
-            className="max-w-48 truncate"
+            className="w-full truncate"
+            title={branch.name}
           >
             {branch.name}
           </SelectItem>
