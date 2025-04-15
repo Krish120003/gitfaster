@@ -7,7 +7,7 @@ import { SignIn, SignOut } from "./_components/sign-in-button";
 import { auth } from "@/server/auth";
 import { cn } from "@/lib/utils";
 import type { Session } from "next-auth";
-import { RepositorySearch } from "./_components/repository-search";
+import { RepositoryListSearch } from "./_components/repository-list-search";
 
 function SignedOutPage() {
   const session = null;
@@ -90,50 +90,7 @@ async function SignedInPage({ session }: { session: Session }) {
         <div className="p-4">Hi, {session?.user.name}</div>
         <SignOut className="border-l border-r-0" />
       </div>
-      <div>
-        <div className="p-4 border-b">
-          <h2 className="text-lg font-medium mb-2">Search repositories</h2>
-          <RepositorySearch />
-        </div>
-        <div>
-          <h2 className="text-lg font-medium p-4 border-b">
-            Recently updated repositories
-          </h2>
-          <ul className="">
-            {repos.nodes.map((repo) => (
-              <li key={repo.name} className="">
-                <Link
-                  href={`/${repo.owner.login}/${repo.name}`}
-                  className="text-sm font-medium p-4 border-b block hover:bg-foreground hover:text-background transition-colors"
-                  prefetch={true}
-                >
-                  <div className="flex justify-between items-center gap-4">
-                    <div className="flex flex-col items-start">
-                      <div className="flex gap-1 items-baseline">
-                        <h3>{repo.name}</h3>
-                        <span className="text-xs text-muted-foreground">
-                          {repo.isPrivate ? "private" : "public"}
-                        </span>
-                      </div>
-                      <span className="text-xs text-muted-foreground">
-                        {repo.description}
-                      </span>
-                    </div>
-                    <div className="flex flex-col items-end min-w-32">
-                      <span className="text-xs text-muted-foreground">
-                        {repo.stargazerCount} stars
-                      </span>
-                      <span className="text-xs text-muted-foreground">
-                        {new Date(repo.updatedAt).toLocaleDateString()}
-                      </span>
-                    </div>
-                  </div>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
+      <RepositoryListSearch initialRepos={repos.nodes} />
     </div>
   );
 }

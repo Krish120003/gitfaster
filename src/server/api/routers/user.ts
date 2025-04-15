@@ -178,7 +178,7 @@ export const userRouter = createTRPCRouter({
     }),
 
   // Add the new search repositories endpoint
-  searchRepositories: protectedProcedure
+  searchRepositories: protectedProcedure //search by the thing typed calls github
     .input(
       z.object({
         query: z.string().min(1),
@@ -257,6 +257,7 @@ export const userRouter = createTRPCRouter({
       }
     }),
   getAllRepositories: protectedProcedure.query(async ({ ctx }) => {
+    // gets everything in the background so you can offer fast local search
     const octokit = await getOctokit(ctx);
     const userId = ctx.session.user.id;
     const key = `all-repos:${userId}`;
