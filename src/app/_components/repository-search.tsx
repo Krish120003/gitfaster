@@ -20,7 +20,6 @@ export function RepositorySearch() {
   const [allRepositories, setAllRepositories] = useState<Repository[] | null>(
     null
   );
-  const [isLoadingAll, setIsLoadingAll] = useState(true);
 
   const searchRepositories = api.user.searchRepositories.useMutation();
 
@@ -33,12 +32,10 @@ export function RepositorySearch() {
   useEffect(() => {
     if (repoData) {
       setAllRepositories(repoData);
-      setIsLoadingAll(false);
     }
 
     if (error) {
       console.error("Error fetching all repositories:", error);
-      setIsLoadingAll(false);
     }
   }, [repoData, error]);
 
@@ -123,9 +120,7 @@ export function RepositorySearch() {
         loadOptions={debouncedLoadOptions}
         onInputChange={handleInputChange}
         onChange={handleChange}
-        placeholder={
-          isLoadingAll ? "Loading repositories..." : "Search repositories..."
-        }
+        placeholder={"Search repositories..."}
         noOptionsMessage={() =>
           inputValue.length > 0
             ? "No repositories found"
@@ -134,8 +129,7 @@ export function RepositorySearch() {
         className="repo-select"
         classNamePrefix="repo-select"
         isLoading={
-          searchRepositories.isPending ||
-          (isLoadingAll && inputValue.length > 0)
+          searchRepositories.isPending || (isLoading && inputValue.length > 0)
         }
       />
       {allRepositories && (
