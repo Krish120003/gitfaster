@@ -32,6 +32,7 @@ export function RepositoryHeader({
         <Link
           className="p-4 border-r bg-transparent rounded-none hover:bg-foreground hover:text-background cursor-pointer flex items-center justify-center gap-2 transition-all w-32"
           href={"/"}
+          prefetch={true}
         >
           <GitBranchIcon className="h-4 w-4 text-[#f0883e]" />
           <span className="text-sm font-medium">gitfaster</span>
