@@ -148,12 +148,12 @@ export default async function Home() {
               </div>
             ) : null}
           </div>
-          <div className="grow  relative">
+          {/* <div className="grow  relative">
             <div className="absolute bottom-4 right-4 text-4xl">
               <span className="text-xl">that's </span>
               gitfaster
             </div>
-          </div>
+          </div> */}
         </main>
         <aside className="w-32 border-l" />
       </div>
