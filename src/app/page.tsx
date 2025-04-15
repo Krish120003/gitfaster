@@ -7,7 +7,7 @@ import { SignIn, SignOut } from "./_components/sign-in-button";
 import { auth } from "@/server/auth";
 import { cn } from "@/lib/utils";
 import type { Session } from "next-auth";
-import { RepositorySearchWrapper } from "./_components/repository-search-wrapper";
+import { RepositorySearch } from "./_components/repository-search";
 
 function SignedOutPage() {
   const session = null;
@@ -91,7 +91,10 @@ async function SignedInPage({ session }: { session: Session }) {
         <SignOut className="border-l border-r-0" />
       </div>
       <div>
-        <RepositorySearchWrapper />
+        <div className="p-4 border-b">
+          <h2 className="text-lg font-medium mb-2">Search repositories</h2>
+          <RepositorySearch />
+        </div>
         <div>
           <h2 className="text-lg font-medium p-4 border-b">
             Recently updated repositories

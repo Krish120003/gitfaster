@@ -2,9 +2,11 @@
 
 import { useState, useEffect } from "react";
 import AsyncSelect from "react-select/async";
+import type { SingleValue, ActionMeta } from "react-select";
 import debounce from "lodash.debounce";
 import { api } from "@/trpc/react";
 import type { Repository } from "@/server/api/routers/user";
+import { useRouter } from "next/navigation";
 
 interface RepositoryOption {
   value: string;
@@ -12,28 +14,22 @@ interface RepositoryOption {
   repository: Repository;
 }
 
-export function RepositorySearch({
-  onSelect,
-}: {
-  onSelect: (repo: Repository) => void;
-}) {
+export function RepositorySearch() {
+  const router = useRouter();
   const [inputValue, setInputValue] = useState("");
   const [allRepositories, setAllRepositories] = useState<Repository[] | null>(
     null
   );
   const [isLoadingAll, setIsLoadingAll] = useState(true);
 
-  // API for searching repositories
   const searchRepositories = api.user.searchRepositories.useMutation();
 
-  // Query for fetching all repositories
   const {
     data: repoData,
     isLoading,
     error,
   } = api.user.getAllRepositories.useQuery();
 
-  // Update state when data changes
   useEffect(() => {
     if (repoData) {
       setAllRepositories(repoData);
@@ -108,9 +104,14 @@ export function RepositorySearch({
     return newValue;
   };
 
-  const handleChange = (selected: any) => {
-    if (selected && selected.repository) {
-      onSelect(selected.repository);
+  const handleChange = (
+    selected: SingleValue<RepositoryOption>,
+    actionMeta: ActionMeta<RepositoryOption>
+  ) => {
+    if (selected) {
+      router.push(
+        `/${selected.repository.owner.login}/${selected.repository.name}`
+      );
     }
   };
 
@@ -119,7 +120,7 @@ export function RepositorySearch({
       <AsyncSelect
         cacheOptions
         defaultOptions
-        loadOptions={debouncedLoadOptions as any}
+        loadOptions={debouncedLoadOptions}
         onInputChange={handleInputChange}
         onChange={handleChange}
         placeholder={
