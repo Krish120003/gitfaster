@@ -14,12 +14,19 @@ import {
   throwIfNoAccess,
 } from "@/server/github/auth";
 
-const TreeNodeSchema = z.object({
+// Internal schemas for GitHub API validation
+const InternalTreeNodeSchema = z.object({
   path: z.string(),
   mode: z.string(),
   type: z.enum(["blob", "tree"]),
   sha: z.string(),
   url: z.string(),
+});
+
+// Frontend-only schemas with minimal required data
+const TreeNodeSchema = z.object({
+  path: z.string(),
+  type: z.enum(["blob", "tree"]),
 });
 
 const fileSchema = z.object({
@@ -33,9 +40,16 @@ export type FileType = z.infer<typeof fileSchema>;
 
 export type TreeNode = z.infer<typeof TreeNodeSchema>;
 
-const TreeDataSchema = z.object({
+// Internal schema for GitHub's tree response
+const InternalTreeDataSchema = z.object({
   sha: z.string(),
   url: z.string(),
+  tree: InternalTreeNodeSchema.array(),
+  truncated: z.boolean(),
+});
+
+// Frontend schema for tree data
+const TreeDataSchema = z.object({
   tree: TreeNodeSchema.array(),
   truncated: z.boolean(),
 });
@@ -194,7 +208,7 @@ async function fetchRepoTree(
   },
   redis: RedisCacheType,
   ctx: Context
-): Promise<z.infer<typeof TreeDataSchema>> {
+): Promise<z.infer<typeof InternalTreeDataSchema>> {
   const octokit = await getOctokit(ctx);
 
   const { owner, repository, branch, recursive } = params;
@@ -202,26 +216,27 @@ async function fetchRepoTree(
 
   console.log("Fetching file tree for path:", branch);
 
-  let fileTree;
   if (await redis.has(key)) {
     console.log("Cache Hit!");
-    fileTree = TreeDataSchema.parse(await redis.get(key));
-  } else {
-    console.log("Query GitHub API for file tree");
-    const response = await octokit.rest.git.getTree({
-      owner: owner,
-      repo: repository,
-      tree_sha: branch,
-      recursive: recursive ? "1" : undefined,
-    });
-
-    console.log("Received file tree from GitHub API");
-    console.log("Response headers:", response.headers);
-
-    fileTree = TreeDataSchema.parse(response.data);
-    await redis.set(key, fileTree, 3600);
-    console.log("Cached file tree");
+    const cachedData = await redis.get(key);
+    return InternalTreeDataSchema.parse(cachedData);
   }
+
+  console.log("Query GitHub API for file tree");
+  const response = await octokit.rest.git.getTree({
+    owner: owner,
+    repo: repository,
+    tree_sha: branch,
+    recursive: recursive ? "1" : undefined,
+  });
+
+  console.log("Received file tree from GitHub API");
+  console.log("Response headers:", response.headers);
+
+  // Validate with internal schema first
+  const fileTree = InternalTreeDataSchema.parse(response.data);
+  await redis.set(key, fileTree, 3600);
+  console.log("Cached file tree");
 
   return fileTree;
 }
@@ -388,7 +403,19 @@ export const githubRouter = createTRPCRouter({
           code: "NOT_FOUND",
         });
       }
-      return fetchRepoTree(input, ctx.redis, ctx);
+
+      // Get full tree data and validate against internal schema
+      const fullTreeData = await fetchRepoTree(input, ctx.redis, ctx);
+      const validatedTreeData = InternalTreeDataSchema.parse(fullTreeData);
+
+      // Transform to frontend schema by picking only needed fields
+      return {
+        tree: validatedTreeData.tree.map((node) => ({
+          path: node.path,
+          type: node.type,
+        })),
+        truncated: validatedTreeData.truncated,
+      };
     }),
 
   getFolderView: protectedProcedure
@@ -427,19 +454,26 @@ export const githubRouter = createTRPCRouter({
 
         console.log("Filtering for path:", dirPath);
 
-        // filter to find all files that are direct children of the path
-        const filteredTree = tree.tree.filter((node) => {
-          if (dirPath === "") {
-            return node.path.split("/").length === 1;
-          }
+        // Parse with internal schema first
+        const validatedTree = InternalTreeDataSchema.parse(tree);
 
-          return (
-            node.path.startsWith(dirPath) &&
-            node.path.split("/").length === dirPath.split("/").length + 1
-          );
-        });
+        // Filter and transform to frontend schema
+        const filteredNodes = validatedTree.tree
+          .filter((node) => {
+            if (dirPath === "") {
+              return node.path.split("/").length === 1;
+            }
+            return (
+              node.path.startsWith(dirPath) &&
+              node.path.split("/").length === dirPath.split("/").length + 1
+            );
+          })
+          .map((node) => ({
+            path: node.path,
+            type: node.type,
+          }));
 
-        return filteredTree;
+        return filteredNodes;
       }
     ),
 
@@ -613,7 +647,7 @@ export const githubRouter = createTRPCRouter({
             owner,
             repo: repository,
             ref: branch,
-            dir: folderPath, // Fixed parameter name from 'directory' to 'dir'
+            dir: folderPath,
           });
         } else {
           response = await octokit.rest.repos.getReadme({
@@ -625,7 +659,7 @@ export const githubRouter = createTRPCRouter({
 
         const buff = Buffer.from(response.data.content, "base64");
         const text = buff.toString("utf-8");
-        await ctx.redis.set(key, { content: text }, 3600); // Store as object
+        await ctx.redis.set(key, { content: text }, 3600);
         return text;
       } catch (error) {
         console.error("Error fetching readme:", error);
@@ -640,7 +674,6 @@ export const githubRouter = createTRPCRouter({
         repository: z.string(),
       })
     )
-    .output(GithubStarSchema)
     .query(async ({ ctx, input: { owner, repository } }) => {
       const hasAccess = await userHasAccessToRepository(ctx, owner, repository);
       if (!hasAccess) {
@@ -662,10 +695,10 @@ export const githubRouter = createTRPCRouter({
         }
       `;
 
-      let response = await octokit.graphql(query, { owner, name: repository });
-
-      console.log(response);
-
+      const response = await octokit.graphql(query, {
+        owner,
+        name: repository,
+      });
       const data = z.object({ repository: GithubStarSchema }).parse(response);
 
       return {
