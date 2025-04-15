@@ -7,6 +7,7 @@ import { SignIn, SignOut } from "./_components/sign-in-button";
 import { auth } from "@/server/auth";
 import { cn } from "@/lib/utils";
 import type { Session } from "next-auth";
+import { RepositorySearchWrapper } from "./_components/repository-search-wrapper";
 
 function SignedOutPage() {
   const session = null;
@@ -80,7 +81,7 @@ function SignedOutPage() {
 
 async function SignedInPage({ session }: { session: Session }) {
   const repos = await api.user.listRepositories({
-    limit: 100,
+    limit: 5,
   });
 
   return (
@@ -90,7 +91,11 @@ async function SignedInPage({ session }: { session: Session }) {
         <SignOut className="border-l border-r-0" />
       </div>
       <div>
+        <RepositorySearchWrapper />
         <div>
+          <h2 className="text-lg font-medium p-4 border-b">
+            Recently updated repositories
+          </h2>
           <ul className="">
             {repos.nodes.map((repo) => (
               <li key={repo.name} className="">
