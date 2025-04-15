@@ -9,7 +9,7 @@ import { SessionProvider } from "next-auth/react";
 export const metadata: Metadata = {
   title: "Gitfaster",
   description: "A faster web client for GitHub",
-  icons: [{ rel: "icon", url: "/favicon.ico" }],
+  icons: [{ rel: "icon", url: "/favicon.svg" }],
 };
 
 export default function RootLayout({
