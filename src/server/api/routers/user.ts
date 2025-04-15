@@ -20,6 +20,9 @@ const UserRepositorySchema = z.object({
   }),
 });
 
+// Export the Repository type for use in other files
+export type Repository = z.infer<typeof UserRepositorySchema>;
+
 const UserRepositoriesResponseSchema = z.object({
   viewer: z.object({
     repositories: z.object({
@@ -170,6 +173,86 @@ export const userRouter = createTRPCRouter({
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
           message: "Failed to fetch repositories",
+        });
+      }
+    }),
+
+  // Add the new search repositories endpoint
+  searchRepositories: protectedProcedure
+    .input(
+      z.object({
+        query: z.string().min(1),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const octokit = await getOctokit(ctx);
+      const userId = ctx.session.user.id;
+      const key = `search-repos:${userId}:${input.query}`;
+
+      // Check cache first
+      if (await ctx.redis.has(key)) {
+        console.log("Cache Hit for repository search");
+        const cachedData = await ctx.redis.get(key);
+        return z.array(UserRepositorySchema).parse(cachedData);
+      }
+
+      console.log("Cache miss for repository search, fetching from GitHub API");
+
+      // First, get the authenticated user's login name
+      const userResponse = await octokit.rest.users.getAuthenticated();
+      const username = userResponse.data.login;
+
+      const query = `
+        query SearchRepositories($searchQuery: String!) {
+          search(query: $searchQuery, type: REPOSITORY, first: 20) {
+            nodes {
+              ... on Repository {
+                name
+                description
+                isPrivate
+                stargazerCount
+                updatedAt
+                defaultBranchRef {
+                  name
+                }
+                owner {
+                  login
+                }
+              }
+            }
+          }
+        }
+      `;
+
+      try {
+        const response = await octokit.graphql(query, {
+          searchQuery: `user:${username} ${input.query} in:name`,
+        });
+
+        const repositories = z
+          .object({
+            search: z.object({
+              nodes: z.array(UserRepositorySchema),
+            }),
+          })
+          .parse(response).search.nodes;
+
+        // Cache the result for 5 minutes
+        await ctx.redis.set(key, repositories, 300);
+
+        return repositories;
+      } catch (error) {
+        console.error("GitHub API Error:", error);
+        if (error instanceof Error) {
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: `Failed to search repositories: ${error.message}`,
+            cause: error,
+          });
+        }
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Failed to search repositories",
         });
       }
     }),
