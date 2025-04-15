@@ -22,12 +22,13 @@ export default async function Home() {
           </div>
 
           <div className="flex items-center gap-4 w-32 border-l h-12 justify-center">
-            <Link
+            <a
               href="https://krish.gg"
+              target="_blank"
               className="text-xs font-mono text-muted-foreground hover:underline hover:text-foreground flex items-center gap-1"
             >
               By <span>krish.gg</span>
-            </Link>
+            </a>
           </div>
         </div>
       </header>
@@ -63,8 +64,9 @@ export default async function Home() {
             })}
           >
             <div
-              className={cn("grid grid-cols-1", {
-                "md:grid-cols-3 w-1/2": !session,
+              className={cn("grid grid-cols-1 ", {
+                "md:grid-cols-3 w-full": !session,
+                "w-1/2": session,
               })}
             >
               <div
@@ -102,7 +104,7 @@ export default async function Home() {
                 </p>
               </div>
             </div>
-            {session && (
+            {session ? (
               <div className="border-l w-1/2 ">
                 <div className="p-4">
                   <h2>Try some repos</h2>
@@ -144,7 +146,7 @@ export default async function Home() {
                   ))}
                 </ul>
               </div>
-            )}
+            ) : null}
           </div>
           <div className="grow  relative">
             <div className="absolute bottom-4 right-4 text-4xl">
