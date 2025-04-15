@@ -8,19 +8,12 @@ import { api } from "@/trpc/react";
 import ShallowLink from "@/components/shallow-link";
 
 // ----------- Types -----------
-
 type TreeNode = {
   path: string;
-  mode: string;
   type: "blob" | "tree";
-  sha: string;
-  size?: number;
-  url: string;
 };
 
 type TreeData = {
-  sha: string;
-  url: string;
   tree: TreeNode[];
   truncated: boolean;
 };

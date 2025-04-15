@@ -58,10 +58,7 @@ const deriveFolderContents = (
         ) {
           const subdirNode: TreeNode = {
             path: subdirPath,
-            mode: "040000",
             type: "tree",
-            sha: "",
-            url: "",
           };
           subdirs.set(subdirName, subdirNode);
         }
