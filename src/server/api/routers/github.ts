@@ -145,6 +145,9 @@ const RepositoryOverviewRepositorySchema = z.object({
   isPrivate: z.boolean(),
   description: z.string().nullable(),
   homepageUrl: z.string().nullable(),
+  owner: z.object({
+    login: z.string(),
+  }),
   licenseInfo: RepositoryOverviewLicenseSchema,
   defaultBranchRef: RepositoryOverviewDefaultBranchSchema.nullable(),
   languages: RepositoryOverviewLanguagesSchema,
@@ -260,6 +263,9 @@ export const githubRouter = createTRPCRouter({
             isPrivate
             description
             homepageUrl
+            owner {
+              login
+            }
             licenseInfo {
               name
             }
