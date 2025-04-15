@@ -24,6 +24,10 @@ const UserRepositoriesResponseSchema = z.object({
   viewer: z.object({
     repositories: z.object({
       nodes: z.array(UserRepositorySchema),
+      pageInfo: z.object({
+        endCursor: z.string().nullable(),
+        hasNextPage: z.boolean(),
+      }),
     }),
   }),
 });
@@ -31,7 +35,17 @@ const UserRepositoriesResponseSchema = z.object({
 export const userRouter = createTRPCRouter({
   getRecentRepositories: protectedProcedure.query(async ({ ctx }) => {
     const octokit = await getOctokit(ctx);
+    const userId = ctx.session.user.id;
+    const key = `recent-repos:${userId}`;
 
+    // Check cache first
+    if (await ctx.redis.has(key)) {
+      console.log("Cache Hit for recent repositories");
+      const cachedData = await ctx.redis.get(key);
+      return z.array(UserRepositorySchema).parse(cachedData);
+    }
+
+    console.log("Cache miss for recent repositories, fetching from GitHub API");
     const query = `
         query {
           viewer {
@@ -53,6 +67,10 @@ export const userRouter = createTRPCRouter({
                   name
                 }
               }
+              pageInfo {
+                endCursor
+                hasNextPage
+              }
             }
           }
         }
@@ -60,9 +78,24 @@ export const userRouter = createTRPCRouter({
 
     try {
       const response = await octokit.graphql(query);
+      console.log("GitHub API Response:", response);
+
       const data = UserRepositoriesResponseSchema.parse(response);
-      return data.viewer.repositories.nodes;
+      const repositories = data.viewer.repositories.nodes;
+
+      // Cache the result for 5 minutes
+      await ctx.redis.set(key, repositories, 300);
+
+      return repositories;
     } catch (error) {
+      console.error("GitHub API Error:", error);
+      if (error instanceof Error) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: `Failed to fetch repositories: ${error.message}`,
+          cause: error,
+        });
+      }
       throw new TRPCError({
         code: "INTERNAL_SERVER_ERROR",
         message: "Failed to fetch repositories",
@@ -80,7 +113,18 @@ export const userRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       const octokit = await getOctokit(ctx);
       const { limit = 10, cursor } = input;
+      const userId = ctx.session.user.id;
+      const key = `repos-list:${userId}:${limit}:${cursor || 0}`;
 
+      // Check cache first
+      if (await ctx.redis.has(key)) {
+        console.log("Cache Hit for repository list");
+        const cachedData = await ctx.redis.get(key);
+        return UserRepositoriesResponseSchema.parse(cachedData).viewer
+          .repositories;
+      }
+
+      console.log("Cache miss for repository list, fetching from GitHub API");
       const query = `
       query($limit: Int!) {
         viewer {
@@ -116,6 +160,10 @@ export const userRouter = createTRPCRouter({
           limit,
         });
         const data = UserRepositoriesResponseSchema.parse(response);
+
+        // Cache the validated data
+        await ctx.redis.set(key, data, 300);
+
         return data.viewer.repositories;
       } catch (error) {
         console.error(error);
