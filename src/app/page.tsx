@@ -73,56 +73,7 @@ function SignedOutPage() {
             </p>
           </div>
         </div>
-        {session ? (
-          <div className="border-l w-1/2 ">
-            <div className="p-4">
-              <h2>Try some repos</h2>
-              <p className="text-sm text-muted-foreground">
-                Explore repositories that you might find interesting.
-              </p>
-            </div>
-            <ul className="">
-              {recentRepos.map((repo) => (
-                <li key={repo.name} className="">
-                  <Link
-                    href={`/${repo.owner.login}/${repo.name}`}
-                    className="text-sm font-medium p-4 border-t block hover:bg-foreground hover:text-background transition-colors"
-                    prefetch={true}
-                  >
-                    <div className="flex justify-between items-center gap-4">
-                      <div className="flex flex-col items-start">
-                        <div className="flex gap-1 items-baseline">
-                          <h3>{repo.name}</h3>
-                          <span className="text-xs text-muted-foreground">
-                            {repo.isPrivate ? "private" : "public"}
-                          </span>
-                        </div>
-                        <span className="text-xs text-muted-foreground">
-                          {repo.description}
-                        </span>
-                      </div>
-                      <div className="flex flex-col items-end min-w-32">
-                        <span className="text-xs text-muted-foreground">
-                          {repo.stargazerCount} stars
-                        </span>
-                        <span className="text-xs text-muted-foreground">
-                          {new Date(repo.updatedAt).toLocaleDateString()}
-                        </span>
-                      </div>
-                    </div>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-        ) : null}
       </div>
-      {/* <div className="grow  relative">
-            <div className="absolute bottom-4 right-4 text-4xl">
-              <span className="text-xl">that's </span>
-              gitfaster
-            </div>
-          </div> */}
     </main>
   );
 }
