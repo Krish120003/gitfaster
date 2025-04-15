@@ -39,7 +39,11 @@ export default async function RepositoryLayout({
 
   return (
     <div className="h-full min-h-screen flex flex-col items-stretch">
-      <RepositoryHeader owner={owner} repository={repository} />
+      <RepositoryHeader
+        owner={owner}
+        repository={repository}
+        session={session}
+      />
       <main className="flex-1 flex items-stretch justify-stretch">
         {children}
       </main>
