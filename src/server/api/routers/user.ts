@@ -256,4 +256,86 @@ export const userRouter = createTRPCRouter({
         });
       }
     }),
+  getAllRepositories: protectedProcedure.query(async ({ ctx }) => {
+    const octokit = await getOctokit(ctx);
+    const userId = ctx.session.user.id;
+    const key = `all-repos:${userId}`;
+
+    // Check cache first (5 minute cache)
+    if (await ctx.redis.has(key)) {
+      console.log("Cache Hit for all repositories");
+      const cachedData = await ctx.redis.get(key);
+      return z.array(UserRepositorySchema).parse(cachedData);
+    }
+
+    console.log("Cache miss for all repositories, fetching from GitHub API");
+    // Fetch all repositories using pagination
+    let hasNextPage = true;
+    let endCursor: string | null = null;
+    const allRepositories: Array<z.infer<typeof UserRepositorySchema>> = [];
+
+    while (hasNextPage) {
+      const query = `
+        query($cursor: String) {
+          viewer {
+            repositories(
+              first: 100,
+              after: $cursor,
+              orderBy: {field: UPDATED_AT, direction: DESC},
+              ownerAffiliations: [OWNER]
+            ) {
+              nodes {
+                owner {
+                    login
+                }
+                name
+                description
+                isPrivate
+                stargazerCount
+                updatedAt
+                defaultBranchRef {
+                  name
+                }
+              }
+              pageInfo {
+                endCursor
+                hasNextPage
+              }
+            }
+          }
+        }
+      `;
+
+      try {
+        const response = await octokit.graphql(query, {
+          cursor: endCursor,
+        });
+
+        const data = UserRepositoriesResponseSchema.parse(response);
+        const repos = data.viewer.repositories.nodes;
+        allRepositories.push(...repos);
+
+        hasNextPage = data.viewer.repositories.pageInfo.hasNextPage;
+        endCursor = data.viewer.repositories.pageInfo.endCursor;
+      } catch (error) {
+        console.error("GitHub API Error:", error);
+        if (error instanceof Error) {
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: `Failed to fetch all repositories: ${error.message}`,
+            cause: error,
+          });
+        }
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Failed to fetch all repositories",
+        });
+      }
+    }
+
+    // Cache the result for 5 minutes
+    await ctx.redis.set(key, allRepositories, 300);
+
+    return allRepositories;
+  }),
 });

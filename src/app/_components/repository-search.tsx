@@ -1,8 +1,7 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useEffect } from "react";
 import AsyncSelect from "react-select/async";
-import type { GroupBase, OptionsOrGroups } from "react-select";
 import debounce from "lodash.debounce";
 import { api } from "@/trpc/react";
 import type { Repository } from "@/server/api/routers/user";
@@ -19,40 +18,90 @@ export function RepositorySearch({
   onSelect: (repo: Repository) => void;
 }) {
   const [inputValue, setInputValue] = useState("");
+  const [allRepositories, setAllRepositories] = useState<Repository[] | null>(
+    null
+  );
+  const [isLoadingAll, setIsLoadingAll] = useState(true);
 
+  // API for searching repositories
   const searchRepositories = api.user.searchRepositories.useMutation();
 
-  // Create a standalone loadOptions function
-  const loadOptionsBase = async (
-    inputValue: string
-  ): Promise<RepositoryOption[]> => {
-    if (!inputValue) {
-      return [];
+  // Query for fetching all repositories
+  const {
+    data: repoData,
+    isLoading,
+    error,
+  } = api.user.getAllRepositories.useQuery();
+
+  // Update state when data changes
+  useEffect(() => {
+    if (repoData) {
+      setAllRepositories(repoData);
+      setIsLoadingAll(false);
     }
 
-    try {
-      const results = await searchRepositories.mutateAsync({
-        query: inputValue,
-      });
+    if (error) {
+      console.error("Error fetching all repositories:", error);
+      setIsLoadingAll(false);
+    }
+  }, [repoData, error]);
 
-      return results.map((repo) => ({
+  // Filter repositories on client side
+  const filterRepositories = (input: string): RepositoryOption[] => {
+    if (!input || !allRepositories) return [];
+
+    const lowercasedInput = input.toLowerCase();
+
+    return allRepositories
+      .filter(
+        (repo) =>
+          repo.name.toLowerCase().includes(lowercasedInput) ||
+          (repo.description &&
+            repo.description.toLowerCase().includes(lowercasedInput))
+      )
+      .map((repo) => ({
         value: `${repo.owner.login}/${repo.name}`,
         label: `${repo.owner.login}/${repo.name}`,
         repository: repo,
-      }));
-    } catch (error) {
-      console.error("Error searching repositories:", error);
-      return [];
-    }
+      }))
+      .slice(0, 20); // Limit to 20 results
   };
 
-  // Using the appropriate type for react-select/async
+  // Load options function for AsyncSelect
   const loadOptions = (
     inputValue: string,
     callback: (options: RepositoryOption[]) => void
   ) => {
-    loadOptionsBase(inputValue).then(callback);
+    // If all repositories are loaded, use client-side filtering
+    if (allRepositories) {
+      const filteredOptions = filterRepositories(inputValue);
+      callback(filteredOptions);
+      return;
+    }
+
+    // Otherwise, use API-based search
+    if (!inputValue) {
+      callback([]);
+      return;
+    }
+
+    searchRepositories
+      .mutateAsync({ query: inputValue })
+      .then((results) => {
+        const options = results.map((repo) => ({
+          value: `${repo.owner.login}/${repo.name}`,
+          label: `${repo.owner.login}/${repo.name}`,
+          repository: repo,
+        }));
+        callback(options);
+      })
+      .catch((error) => {
+        console.error("Error searching repositories:", error);
+        callback([]);
+      });
   };
+
+  const debouncedLoadOptions = debounce(loadOptions, 300);
 
   const handleInputChange = (newValue: string) => {
     setInputValue(newValue);
@@ -70,10 +119,12 @@ export function RepositorySearch({
       <AsyncSelect
         cacheOptions
         defaultOptions
-        loadOptions={debounce(loadOptions, 300) as any}
+        loadOptions={debouncedLoadOptions as any}
         onInputChange={handleInputChange}
         onChange={handleChange}
-        placeholder="Search repositories..."
+        placeholder={
+          isLoadingAll ? "Loading repositories..." : "Search repositories..."
+        }
         noOptionsMessage={() =>
           inputValue.length > 0
             ? "No repositories found"
@@ -81,8 +132,16 @@ export function RepositorySearch({
         }
         className="repo-select"
         classNamePrefix="repo-select"
-        isLoading={searchRepositories.isPending}
+        isLoading={
+          searchRepositories.isPending ||
+          (isLoadingAll && inputValue.length > 0)
+        }
       />
+      {allRepositories && (
+        <div className="text-xs text-muted-foreground mt-1">
+          {allRepositories.length} repositories loaded for instant search
+        </div>
+      )}
     </div>
   );
 }
