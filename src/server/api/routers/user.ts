@@ -69,4 +69,60 @@ export const userRouter = createTRPCRouter({
       });
     }
   }),
+
+  listRepositories: protectedProcedure
+    .input(
+      z.object({
+        limit: z.number().min(1).max(100).nullish(),
+        cursor: z.number().nullish(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const octokit = await getOctokit(ctx);
+      const { limit = 10, cursor } = input;
+
+      const query = `
+      query($limit: Int!) {
+        viewer {
+          repositories(
+            first: $limit,
+            orderBy: {field: UPDATED_AT, direction: DESC},
+            ownerAffiliations: [OWNER]
+          ) {
+            nodes {
+              owner {
+                  login
+              }
+              name
+              description
+              isPrivate
+              stargazerCount
+              updatedAt
+              defaultBranchRef {
+                name
+              }
+            }
+            pageInfo {
+              endCursor
+              hasNextPage
+            }
+          }
+        }
+      }
+    `;
+
+      try {
+        const response = await octokit.graphql(query, {
+          limit,
+        });
+        const data = UserRepositoriesResponseSchema.parse(response);
+        return data.viewer.repositories;
+      } catch (error) {
+        console.error(error);
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Failed to fetch repositories",
+        });
+      }
+    }),
 });
