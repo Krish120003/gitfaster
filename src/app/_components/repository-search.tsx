@@ -3,10 +3,11 @@
 import { useState, useEffect } from "react";
 import AsyncSelect from "react-select/async";
 import type { SingleValue, ActionMeta } from "react-select";
+import debounce from "lodash.debounce";
 import { api } from "@/trpc/react";
 import type { Repository } from "@/server/api/routers/user";
 import { useRouter } from "next/navigation";
-import { useDebounce } from "@/lib/hooks/use-debounce";
+
 interface RepositoryOption {
   value: string;
   label: string;
