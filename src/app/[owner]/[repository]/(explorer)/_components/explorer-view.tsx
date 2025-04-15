@@ -214,23 +214,7 @@ export default function ExplorerView() {
     const url = `https://raw.githubusercontent.com/${owner}/${repository}/${branch}/${formattedPath}`;
     return (
       <div className="rounded-lg border border-border bg-background flex flex-col">
-        <div className="flex border-b border-border justify-between">
-          <div className="p-3 text-muted-foreground font-medium flex gap-2 items-center">
-            <File className="h-5 w-5 text-muted-foreground" />
-            <span className="text-sm">
-              {file.name ?? formattedPath.split("/").pop()}
-            </span>
-          </div>
-          <div className="p-3 text-right text-muted-foreground opacity-50">
-            {file.isCached ? (
-              <span className="text-xs text-green-500">Cached</span>
-            ) : (
-              <span className="text-xs text-red-500">Not Cached</span>
-            )}
-          </div>
-        </div>
-
-        <div className="overflow-auto ">
+        <div className="overflow-auto">
           {file ? (
             <ContentViewer file={file} url={url} />
           ) : (

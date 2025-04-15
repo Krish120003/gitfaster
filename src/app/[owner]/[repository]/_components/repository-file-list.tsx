@@ -56,11 +56,11 @@ export function FolderView({
   const LinkComponent = hardnav ? Link : ShallowLink;
 
   return (
-    <div className="rounded-lg border border-border bg-background">
+    <div className="">
       <Table>
         <TableHeader>
           <TableRow className="hover:bg-transparent">
-            <TableHead className="w-full text-muted-foreground">Name</TableHead>
+            {/* <TableHead className="w-full text-muted-foreground">Name</TableHead> */}
           </TableRow>
         </TableHeader>
         <TableBody>

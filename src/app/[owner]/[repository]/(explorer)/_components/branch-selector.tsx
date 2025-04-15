@@ -85,8 +85,8 @@ export function BranchSelector() {
 
   return (
     <Select value={selectedBranch} onValueChange={handleBranchChange}>
-      <SelectTrigger className="w-full h-8 focus:ring-0 focus:ring-offset-0 border-none shadow-none ">
-        <div className="flex items-center gap-1 overflow-hidden text-ellipsis whitespace-nowrap">
+      <SelectTrigger className="w-full h-8 focus:ring-0 focus:ring-offset-0 border-none shadow-none !bg-transparent">
+        <div className="flex items-center gap-1 overflow-hidden text-ellipsis whitespace-nowrap ">
           <span className="truncate font-medium max-w-48 flex items-center">
             <GitBranch className="mr-2 h-4 w-4" />
             {selectedBranch}

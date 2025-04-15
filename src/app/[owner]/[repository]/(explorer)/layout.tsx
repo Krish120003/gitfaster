@@ -39,7 +39,7 @@ export default async function ExplorerLayout({
         <div className="p-4 border-b border-foreground/20">
           <Breadcrumbs />
         </div>
-        <div className="p-4">{children}</div>
+        <div className="">{children}</div>
       </div>
     </div>
   );

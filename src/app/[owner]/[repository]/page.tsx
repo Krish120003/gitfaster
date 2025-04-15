@@ -82,7 +82,7 @@ export default async function Page({ params }: PageProps) {
 
       <div className="w-full grid grid-cols-4 gap-8">
         {/* File Browser and README */}
-        <div className="col-span-3 flex flex-col gap-4">
+        <div className="col-span-3 flex flex-col gap-4 border-x">
           <FolderView
             hardnav={true}
             data={folderData}
@@ -91,7 +91,7 @@ export default async function Page({ params }: PageProps) {
             repository={repository}
           />
 
-          <div className="border rounded bg-background p-4 w-full">
+          <div className="border-t  p-4 w-full ">
             <div className="prose dark:prose-invert max-w-none">
               <Markdown
                 remarkPlugins={[remarkGfm]}

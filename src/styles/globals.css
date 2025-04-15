@@ -124,3 +124,7 @@
     @apply bg-background text-foreground;
   }
 }
+
+.shiki.defaultStyles pre {
+  @apply rounded-none;
+}
