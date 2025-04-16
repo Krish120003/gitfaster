@@ -80,7 +80,7 @@ export function RepositoryListSearch({
       {
         query: debouncedSearchQuery,
       },
-      { enabled: true }
+      { enabled: isSearching }
     );
 
   const inputId = useId();
@@ -158,6 +158,7 @@ export function RepositoryListSearch({
           ))}
         </ul>
       </div>
+      {allRepositories.length}
     </div>
   );
 }
