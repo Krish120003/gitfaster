@@ -94,8 +94,6 @@ async function SignedInPage({ session }: { session: Session }) {
 export default async function Home() {
   const session = await auth();
 
-  const recentRepos = session ? await api.user.getRecentRepositories() : [];
-
   return (
     <HydrateClient>
       <header className="border-b">
