@@ -38,7 +38,11 @@ const BinaryViewer: React.FC<ContentProp> = ({ file, url }) => {
   }
 
   // Default fallback for unsupported binary files
-  return <div>Binary file not supported for preview: {file.name}</div>;
+  return (
+    <div className="p-4 font-mono text-xs">
+      Binary file not supported for preview: {file.name}
+    </div>
+  );
 };
 
 const useThemeDetector = () => {
