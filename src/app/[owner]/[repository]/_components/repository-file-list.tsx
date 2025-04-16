@@ -99,7 +99,10 @@ export function FolderView({
               }${link}`;
 
               return (
-                <TableRow key={node.path} className="hover:bg-muted/30">
+                <TableRow
+                  key={node.path}
+                  className="hover:bg-muted/30 !border-b"
+                >
                   <TableCell className="font-medium">
                     <LinkComponent
                       className="flex items-center gap-2 hover:underline"

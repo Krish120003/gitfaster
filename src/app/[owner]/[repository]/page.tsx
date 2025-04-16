@@ -82,34 +82,38 @@ export default async function Page({ params }: PageProps) {
 
       <div className="w-full grid grid-cols-4 gap-8">
         {/* File Browser and README */}
-        <div className="col-span-3 flex flex-col gap-4 border-x">
-          <FolderView
-            hardnav={true}
-            data={folderData}
-            branch={data.defaultBranchRef?.name ?? "main"}
-            owner={owner}
-            repository={repository}
-          />
-
-          <div className="border-t  p-4 w-full ">
-            <div className="prose dark:prose-invert max-w-none">
-              <Markdown
-                remarkPlugins={[remarkGfm]}
-                rehypePlugins={[rehypeRaw]}
-                components={{
-                  img: ({ src, alt, ...props }) => (
-                    <img
-                      src={transformImgUrl(src, owner, repository, branch)}
-                      alt={alt}
-                      {...props}
-                    />
-                  ),
-                }}
-              >
-                {readmeData}
-              </Markdown>
-            </div>
+        <div className="col-span-3 flex flex-col gap-4">
+          <div className="border-x">
+            <FolderView
+              hardnav={true}
+              data={folderData}
+              branch={data.defaultBranchRef?.name ?? "main"}
+              owner={owner}
+              repository={repository}
+            />
           </div>
+
+          {readmeData && (
+            <div className="border-t p-4 w-full border-x border-b">
+              <div className="prose dark:prose-invert max-w-none">
+                <Markdown
+                  remarkPlugins={[remarkGfm]}
+                  rehypePlugins={[rehypeRaw]}
+                  components={{
+                    img: ({ src, alt, ...props }) => (
+                      <img
+                        src={transformImgUrl(src, owner, repository, branch)}
+                        alt={alt}
+                        {...props}
+                      />
+                    ),
+                  }}
+                >
+                  {readmeData}
+                </Markdown>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Description / Metadata */}
