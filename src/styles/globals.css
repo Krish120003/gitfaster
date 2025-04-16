@@ -125,10 +125,6 @@
   }
 }
 
-.shiki.defaultStyles pre {
-  @apply rounded-none;
-}
-
 /* Shiki Line Numbers */
 /* https://github.com/shikijs/shiki/issues/3 */
 
@@ -145,4 +141,9 @@ code .line::before {
   display: inline-block;
   text-align: right;
   color: rgba(115, 138, 148, 0.4);
+}
+
+#shiki-container.defaultStyles pre {
+  border-radius: 0;
+  border: 0;
 }

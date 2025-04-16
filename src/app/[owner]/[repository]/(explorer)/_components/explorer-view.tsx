@@ -156,7 +156,7 @@ export default function ExplorerView() {
 
   if (isLoading) {
     return (
-      <div className="rounded-lg border border-border bg-background flex flex-col">
+      <div className="rounded-lg bg-background flex flex-col">
         <div className="p-3 border-b border-border">
           <Skeleton className="h-6 w-48" />
         </div>
@@ -213,7 +213,7 @@ export default function ExplorerView() {
     const file = fileQuery.data;
     const url = `https://raw.githubusercontent.com/${owner}/${repository}/${branch}/${formattedPath}`;
     return (
-      <div className="rounded-lg border border-border bg-background flex flex-col">
+      <div className="rounded-lg bg-background flex flex-col">
         <div className="overflow-auto">
           {file ? (
             <ContentViewer file={file} url={url} />
