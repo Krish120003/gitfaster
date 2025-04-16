@@ -81,16 +81,12 @@ function SignedOutPage() {
 
 async function SignedInPage({ session }: { session: Session }) {
   const repos = await api.user.listRepositories({
-    limit: 5,
+    limit: 15,
   });
 
   return (
     <div className="h-full grow flex flex-col">
-      <div className="flex justify-between w-full items-center border-b">
-        <div className="p-4">Hi, {session?.user.name}</div>
-        <SignOut className="border-l border-r-0" />
-      </div>
-      <RepositoryListSearch initialRepos={repos.nodes} />
+      <RepositoryListSearch initialRepos={repos.nodes} session={session} />
     </div>
   );
 }
@@ -121,14 +117,14 @@ export default async function Home() {
         </div>
       </header>
 
-      <div className="flex h-[calc(100vh-3rem)] font-mono w-screen">
-        <aside className="w-32 border-r h-full" />
+      <div className="flex min-h-[calc(100vh-3rem)] font-mono w-screen items-stretch">
+        <aside className="w-32 border-r"></aside>
         {session === null ? (
           <SignedOutPage />
         ) : (
           <SignedInPage session={session} />
         )}
-        <aside className="w-32 border-l h-full" />
+        <aside className="w-32 border-l"></aside>
       </div>
 
       {/* <AuthButtons /> */}
