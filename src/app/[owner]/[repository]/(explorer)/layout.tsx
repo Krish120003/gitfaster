@@ -36,7 +36,7 @@ export default async function ExplorerLayout({
         </div>
       </div>
       <div className="col-span-9 overflow-y-auto">
-        <div className="p-4 border-b border-foreground/20">
+        <div className="border-b border-foreground/20">
           <Breadcrumbs />
         </div>
         <div className="">{children}</div>
