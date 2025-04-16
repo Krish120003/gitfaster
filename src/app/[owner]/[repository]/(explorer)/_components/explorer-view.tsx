@@ -5,9 +5,36 @@ import { api } from "@/trpc/react";
 import type { TreeNode } from "@/server/api/routers/github";
 import FolderView from "@/app/[owner]/[repository]/_components/repository-file-list";
 import ContentViewer from "@/components/content-viewer";
-import { File } from "lucide-react";
+import { File, Folder } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { useMemo } from "react";
+import { cn } from "@/lib/utils";
+
+const skeletonWidths = [
+  "w-32",
+  "w-64",
+  "w-48",
+  "w-56",
+  "w-40",
+  "w-72",
+  "w-80",
+  "w-96",
+  "w-52",
+  "w-60",
+  "w-36",
+  "w-44",
+  "w-68",
+  "w-84",
+  "w-88",
+  "w-92",
+];
 
 // Helper function to derive folder contents from the full repo tree
 const deriveFolderContents = (
@@ -154,16 +181,51 @@ export default function ExplorerView() {
     (isTreeView && !derivedFolderData && folderQuery.isLoading) ||
     (isBlobView && fileQuery.isLoading);
 
-  if (isLoading) {
+  if (isLoading && isTreeView) {
     return (
-      <div className="rounded-lg bg-background flex flex-col">
-        <div className="p-3 border-b border-border">
-          <Skeleton className="h-6 w-48" />
-        </div>
-        <div className="p-3 space-y-2">
-          <Skeleton className="h-4 w-full" />
-          <Skeleton className="h-4 w-full" />
-          <Skeleton className="h-4 w-3/4" />
+      <div className="">
+        <Table>
+          <TableHeader>
+            <TableRow className="hover:bg-transparent">
+              {/* Empty header to match the actual view */}
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {Array.from({ length: 8 }).map((_, i) => (
+              <TableRow key={i}>
+                <TableCell className="font-medium">
+                  <div className="flex items-center gap-2">
+                    {i > 5 ? (
+                      <File className="h-5 w-5 text-muted-foreground" />
+                    ) : (
+                      <Folder
+                        className="h-5 w-5 text-muted-foreground"
+                        stroke="none"
+                        fill="currentColor"
+                      />
+                    )}
+                    <Skeleton className="h-4 w-64 bg-foreground/20" />
+                  </div>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
+    );
+  }
+
+  if (isLoading && isBlobView) {
+    return (
+      <div className="p-4 flex flex-col">
+        <div className="overflow-auto">
+          <div className="flex flex-col gap-1.5 font-mono text-sm">
+            {skeletonWidths.map((v, i) => (
+              <div key={i} className="flex items-center gap-4">
+                <Skeleton className={cn("h-4 bg-foreground/20", v)} />
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     );
