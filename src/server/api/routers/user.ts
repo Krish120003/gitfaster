@@ -184,7 +184,7 @@ export const userRouter = createTRPCRouter({
         query: z.string().min(1),
       })
     )
-    .mutation(async ({ ctx, input }) => {
+    .query(async ({ ctx, input }) => {
       const octokit = await getOctokit(ctx);
       const userId = ctx.session.user.id;
       const key = `search-repos:${userId}:${input.query}`;
@@ -237,8 +237,7 @@ export const userRouter = createTRPCRouter({
           })
           .parse(response).search.nodes;
 
-        // Cache the result for 5 minutes
-        await ctx.redis.set(key, repositories, 300);
+        await ctx.redis.set(key, repositories, 3600);
 
         return repositories;
       } catch (error) {
@@ -347,7 +346,7 @@ export const userRouter = createTRPCRouter({
         query: z.string().min(1),
       })
     )
-    .mutation(async ({ ctx, input }) => {
+    .query(async ({ ctx, input }) => {
       const octokit = await getOctokit(ctx);
       const userId = ctx.session.user.id;
       const key = `third-party-repos:${userId}:${input.query}`;

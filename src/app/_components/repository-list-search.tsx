@@ -1,197 +1,163 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useId, useMemo } from "react";
 import { api } from "@/trpc/react";
 import Link from "next/link";
 import type { Repository } from "@/server/api/routers/user";
-import debounce from "lodash.debounce";
-import { Input } from "@/components/ui/input";
+import { useQueryState } from "nuqs";
+import { useDebounce } from "@/lib/hooks/use-debounce";
+import type { Session } from "next-auth";
+import { SignOut } from "./sign-in-button";
+import { Search } from "lucide-react";
+import { cn } from "@/lib/utils";
+
+function RepositoryListItem({ repo }: { repo: Repository }) {
+  return (
+    <li key={`${repo.owner.login}/${repo.name}`} className="">
+      <Link
+        href={`/${repo.owner.login}/${repo.name}`}
+        className="block p-4 text-sm font-medium transition-colors border-b hover:bg-foreground hover:text-background"
+        prefetch={true}
+      >
+        <div className="flex items-center justify-between gap-4">
+          <div className="flex flex-col items-start">
+            <div className="flex items-baseline gap-1">
+              <h3>
+                {repo.owner.login}/{repo.name}
+              </h3>
+              <span className="text-xs text-muted-foreground">
+                {repo.isPrivate ? "private" : "public"}
+              </span>
+            </div>
+            <span className="pt-2 text-xs text-muted-foreground max-w-96">
+              {repo.description}
+            </span>
+          </div>
+          <div className="flex flex-col items-end min-w-32">
+            <span className="text-xs text-muted-foreground">
+              {repo.stargazerCount} stars
+            </span>
+            <span className="text-xs text-muted-foreground">
+              {new Date(repo.updatedAt).toLocaleDateString()}
+            </span>
+          </div>
+        </div>
+      </Link>
+    </li>
+  );
+}
 
 export function RepositoryListSearch({
   initialRepos,
+  session,
 }: {
   initialRepos: Repository[];
+  session: Session;
 }) {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [displayedRepos, setDisplayedRepos] =
-    useState<Repository[]>(initialRepos);
-  const [thirdPartyRepos, setThirdPartyRepos] = useState<Repository[]>([]);
-  const [searching, setSearching] = useState(false);
-  const [searchingThirdParty, setSearchingThirdParty] = useState(false);
-  const [allRepositories, setAllRepositories] = useState<Repository[] | null>(
-    null
-  );
+  const [searchQuery, setSearchQuery] = useQueryState("q", {
+    defaultValue: "",
+  });
 
-  const searchRepositories = api.user.searchRepositories.useMutation();
-  const searchThirdPartyRepositories =
-    api.user.searchThirdPartyRepositories.useMutation();
+  const debouncedSearchQuery = useDebounce(searchQuery, 150);
+  const isSearching = debouncedSearchQuery.trim().length > 0;
 
   const {
-    data: repoData,
-    isLoading,
+    data: allRepositories,
+    isFetching,
     error,
-  } = api.user.getAllRepositories.useQuery();
+  } = api.user.getAllRepositories.useQuery(undefined, {
+    initialData: initialRepos,
+  });
 
-  useEffect(() => {
-    if (repoData) {
-      setAllRepositories(repoData);
-    }
-
-    if (error) {
-      console.error("Error fetching all repositories:", error);
-    }
-  }, [repoData, error]);
-
-  const performSearch = async (query: string) => {
-    if (!query.trim()) {
-      setDisplayedRepos(initialRepos);
-      setThirdPartyRepos([]);
-      setSearching(false);
-      setSearchingThirdParty(false);
-      return;
-    }
-
-    setSearching(true);
-    setSearchingThirdParty(true);
-
-    // If all repositories are loaded, use client-side filtering for user repos
-    if (allRepositories) {
-      const lowercasedQuery = query.toLowerCase();
-      const filteredRepos = allRepositories.filter(
-        (repo) =>
-          repo.name.toLowerCase().includes(lowercasedQuery) ||
-          (repo.description &&
-            repo.description.toLowerCase().includes(lowercasedQuery))
-      );
-      setDisplayedRepos(filteredRepos.slice(0, 10));
-      setSearching(false);
-    } else {
-      // Otherwise, use API-based search
-      try {
-        const results = await searchRepositories.mutateAsync({ query });
-        setDisplayedRepos(results.slice(0, 10));
-      } catch (error) {
-        console.error("Error searching repositories:", error);
-        setDisplayedRepos([]);
-      } finally {
-        setSearching(false);
-      }
-    }
-
-    // Always use API for third-party repos
-    try {
-      const results = await searchThirdPartyRepositories.mutateAsync({ query });
-      setThirdPartyRepos(results.slice(0, 5));
-    } catch (error) {
-      console.error("Error searching third-party repositories:", error);
-      setThirdPartyRepos([]);
-    } finally {
-      setSearchingThirdParty(false);
-    }
-  };
-
-  const debouncedSearch = debounce(performSearch, 300);
-
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newQuery = e.target.value;
-    setSearchQuery(newQuery);
-    debouncedSearch(newQuery);
-  };
-
-  // Helper function to render repository list
-  const renderRepositoryList = (
-    repos: Repository[],
-    isLoading: boolean,
-    emptyMessage: string
-  ) => (
-    <ul>
-      {repos.length > 0 ? (
-        repos.map((repo) => (
-          <li key={`${repo.owner.login}/${repo.name}`} className="">
-            <Link
-              href={`/${repo.owner.login}/${repo.name}`}
-              className="text-sm font-medium p-4 border-b block hover:bg-foreground hover:text-background transition-colors"
-              prefetch={true}
-            >
-              <div className="flex justify-between items-center gap-4">
-                <div className="flex flex-col items-start">
-                  <div className="flex gap-1 items-baseline">
-                    <h3>
-                      {repo.owner.login}/{repo.name}
-                    </h3>
-                    <span className="text-xs text-muted-foreground">
-                      {repo.isPrivate ? "private" : "public"}
-                    </span>
-                  </div>
-                  <span className="text-xs text-muted-foreground">
-                    {repo.description}
-                  </span>
-                </div>
-                <div className="flex flex-col items-end min-w-32">
-                  <span className="text-xs text-muted-foreground">
-                    {repo.stargazerCount} stars
-                  </span>
-                  <span className="text-xs text-muted-foreground">
-                    {new Date(repo.updatedAt).toLocaleDateString()}
-                  </span>
-                </div>
-              </div>
-            </Link>
-          </li>
-        ))
-      ) : (
-        <li className="p-4 text-center text-muted-foreground">
-          {isLoading ? "Searching..." : emptyMessage}
-        </li>
-      )}
-    </ul>
+  const searchRepositoriesQuery = api.user.searchRepositories.useQuery(
+    {
+      query: debouncedSearchQuery,
+    },
+    { enabled: isFetching && isSearching }
   );
+  const searchThirdPartyRepositories =
+    api.user.searchThirdPartyRepositories.useQuery(
+      {
+        query: debouncedSearchQuery,
+      },
+      { enabled: true }
+    );
+
+  const inputId = useId();
+
+  const isSearchFetching =
+    searchRepositoriesQuery.isFetching ||
+    searchThirdPartyRepositories.isFetching;
+
+  const filteredRepositoriesUser = useMemo(() => {
+    if (!isSearching) {
+      return allRepositories;
+    }
+
+    const clientQueryResults = allRepositories?.filter(
+      (repo) =>
+        repo.name.toLowerCase().includes(debouncedSearchQuery.toLowerCase()) ||
+        repo.description
+          ?.toLowerCase()
+          .includes(debouncedSearchQuery.toLowerCase())
+    );
+    const queryResults = [
+      ...clientQueryResults,
+      ...(searchRepositoriesQuery.data || []),
+      ...(searchThirdPartyRepositories.data || []),
+    ];
+
+    // de-duplicate results using set
+    return [...new Set(queryResults)];
+  }, [
+    isSearching,
+    allRepositories,
+    debouncedSearchQuery,
+    searchRepositoriesQuery.data,
+    searchThirdPartyRepositories.data,
+  ]);
 
   return (
-    <div>
-      <div className="p-4 border-b">
-        <h2 className="text-lg font-medium mb-2">Search repositories</h2>
-        <Input
-          type="text"
-          value={searchQuery}
-          onChange={handleSearchChange}
-          placeholder="Search repositories..."
-          className="w-full"
-        />
-        {allRepositories && (
-          <div className="text-xs text-muted-foreground mt-1">
-            {allRepositories.length} repositories loaded for instant search
-          </div>
-        )}
-      </div>
-
-      <div>
-        <h2 className="text-lg font-medium p-4 border-b">
-          {searchQuery ? "Your repositories" : "Recently updated repositories"}
-          {searching && " (loading...)"}
-        </h2>
-        {renderRepositoryList(
-          displayedRepos,
-          searching,
-          searchQuery
-            ? "No matching repositories found"
-            : "No repositories found"
-        )}
-      </div>
-
-      {searchQuery && (
-        <div>
-          <h2 className="text-lg font-medium p-4 border-b">
-            Third-party repositories
-            {searchingThirdParty && " (loading...)"}
-          </h2>
-          {renderRepositoryList(
-            thirdPartyRepos,
-            searchingThirdParty,
-            "No matching third-party repositories found"
-          )}
+    <div className="border-b">
+      <div className="flex items-stretch justify-between w-full border-b">
+        <div className="p-4 border-r">Hi, {session?.user.name}</div>
+        <div className="relative flex items-center justify-center grow">
+          <label
+            htmlFor={inputId}
+            className="flex items-center justify-center w-8 h-8 pl-4 text-muted-foreground"
+          >
+            <Search className="" />
+          </label>
+          <input
+            type="text"
+            placeholder="Search Repositories..."
+            className="block p-4 border-0 grow outline-0 focus:ring-0 focus-visible:ring-0"
+            id={inputId}
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+          <div
+            className={cn(
+              "absolute w-2 h-2 bg-blue-400 rounded-full right-4 animate-pulse",
+              {
+                hidden: !isSearchFetching,
+                block: isSearchFetching,
+              }
+            )}
+          ></div>
         </div>
-      )}
+        <SignOut className="border-l border-r-0" />
+      </div>
+      <div>
+        <ul>
+          {filteredRepositoriesUser?.map((repo) => (
+            <RepositoryListItem
+              key={repo.owner.login + repo.name}
+              repo={repo}
+            />
+          ))}
+        </ul>
+      </div>
     </div>
   );
 }
