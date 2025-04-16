@@ -1,6 +1,6 @@
 "use client";
 import type { TreeNode } from "@/server/api/routers/github";
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Table,
   TableBody,
@@ -33,6 +33,22 @@ export function FolderView({
 }: FolderViewProps) {
   const trpc = api.useUtils();
   const pathname = usePathname();
+
+  useEffect(() => {
+    trpc.github.getRepoTree
+      .prefetch({
+        branch: branch,
+        owner: owner,
+        repository: repository,
+        recursive: true,
+      })
+      .then((res) => {
+        console.log("Prefetched data:", res);
+      })
+      .catch((err) => {
+        console.error("Error prefetching data:", err);
+      });
+  }, [branch, owner, repository, trpc]);
 
   // Get path segments from pathname
   const pathSegments = pathname ? pathname.split("/").slice(5) : [];
