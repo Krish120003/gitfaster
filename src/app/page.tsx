@@ -15,7 +15,7 @@ function SignedOutPage() {
     <main className="h-full grow flex flex-col">
       <div className="grid grid-cols-3 w-full">
         <div className="max-w-96 pt-16 flex gap-2 flex-col p-4 col-span-2">
-          <div className="">
+          <div className="flex gap-2">
             <span className="p-1 text-xs bg-primary-foreground border">
               Early Beta
             </span>
@@ -118,13 +118,22 @@ export default async function Home() {
             <span className="text-sm font-medium">gitfaster</span>
           </div>
 
-          <div className="flex items-center gap-4 w-32 border-l h-12 justify-center">
+          <div className="flex items-center w-48 border-l h-12 justify-center">
+            <span className="text-muted-foreground text-xs">By</span>
             <a
               href="https://krish.gg"
               target="_blank"
-              className="text-xs font-mono text-muted-foreground hover:underline hover:text-foreground flex items-center gap-1"
+              className="text-xs px-2 font-mono text-muted-foreground hover:underline hover:text-foreground"
             >
-              By <span>krish.gg</span>
+              krish.gg
+            </a>
+            <span className="text-muted-foreground text-xs">&</span>
+            <a
+              href="https://arian.gg"
+              target="_blank"
+              className="text-xs px-2 font-mono text-muted-foreground hover:underline hover:text-foreground"
+            >
+              arian.gg
             </a>
           </div>
         </div>
