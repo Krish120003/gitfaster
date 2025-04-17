@@ -6,7 +6,7 @@ import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 
 interface ContentProp {
-  file: FileType;
+  file: NonNullable<FileType>; // the parent component will ensure that the file is not null
   url: string;
 }
 
