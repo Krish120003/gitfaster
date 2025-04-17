@@ -1,7 +1,7 @@
 <div align="center" style="text-wrap: balance;">
 <!-- ![Gitfaster](./public/project-logo.png) -->
 <img src="./public/project-logo.png" alt="Gitfaster Logo">
-Gitfaster is a minimal, blazing fast client to make GitHub feel modern again.
+<div>Gitfaster is a minimal, blazing fast client to make GitHub feel modern again.</div>
 </div>
 
 ### Installation
