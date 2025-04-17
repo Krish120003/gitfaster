@@ -587,7 +587,6 @@ export const githubRouter = createTRPCRouter({
             expression: `${branch}:${path}`,
           }
         );
-        console.log("DEBUGGGGGGGGGGG", JSON.stringify(response, null, 2));
         const data = GqlFileContentResponseSchema.parse(response);
         console.log("Received file content from GitHub API", data);
         const fileContent = data.repository.object;
