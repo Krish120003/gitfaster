@@ -1,5 +1,6 @@
 import "@/styles/globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
+import { PostHogProvider } from "@/components/PostHogProvider";
 
 import type { Metadata } from "next";
 
@@ -20,20 +21,22 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <head></head>
       <body className="min-h-screen bg-accent text-foreground antialiased">
-        <SessionProvider>
-          <NuqsAdapter>
-            <TRPCReactProvider>
-              <ThemeProvider
-                attribute="class"
-                defaultTheme="system"
-                enableSystem
-                disableTransitionOnChange
-              >
-                {children}
-              </ThemeProvider>
-            </TRPCReactProvider>
-          </NuqsAdapter>
-        </SessionProvider>
+        <PostHogProvider>
+          <SessionProvider>
+            <NuqsAdapter>
+              <TRPCReactProvider>
+                <ThemeProvider
+                  attribute="class"
+                  defaultTheme="system"
+                  enableSystem
+                  disableTransitionOnChange
+                >
+                  {children}
+                </ThemeProvider>
+              </TRPCReactProvider>
+            </NuqsAdapter>
+          </SessionProvider>
+        </PostHogProvider>
       </body>
     </html>
   );
