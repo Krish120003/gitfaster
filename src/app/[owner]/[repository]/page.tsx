@@ -90,7 +90,7 @@ export default async function Page({ params }: PageProps) {
             <BranchSelector />
           </div>
           <div className="">
-            <StarButton owner={owner} repository={repository} />
+            {/* <StarButton owner={owner} repository={repository} /> */}
           </div>
         </div>
       </div>
