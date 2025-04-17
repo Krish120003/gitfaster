@@ -74,7 +74,7 @@ export default async function Page({ params }: PageProps) {
     }
   }
 
-  if (!data || !folderData || !readmeData) {
+  if (!data || !folderData) {
     notFound();
   }
 
