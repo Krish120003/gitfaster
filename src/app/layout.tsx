@@ -21,8 +21,8 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <head></head>
       <body className="min-h-screen bg-accent text-foreground antialiased">
-        <PostHogProvider>
-          <SessionProvider>
+        <SessionProvider>
+          <PostHogProvider>
             <NuqsAdapter>
               <TRPCReactProvider>
                 <ThemeProvider
@@ -35,8 +35,8 @@ export default function RootLayout({
                 </ThemeProvider>
               </TRPCReactProvider>
             </NuqsAdapter>
-          </SessionProvider>
-        </PostHogProvider>
+          </PostHogProvider>
+        </SessionProvider>
       </body>
     </html>
   );
