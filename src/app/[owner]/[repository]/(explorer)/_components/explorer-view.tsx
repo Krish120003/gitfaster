@@ -129,6 +129,18 @@ export default function ExplorerView() {
   const queryEnabled = !!owner && !!repository && !!branch;
 
   // --- Fetch the full repository tree ---
+  const fileQuery = api.github.getFileContent.useQuery(
+    {
+      owner: owner!,
+      repository: repository!,
+      branch: branch!,
+      path: formattedPath,
+    },
+    {
+      enabled: queryEnabled && isBlobView,
+    }
+  );
+
   const repoTreeQuery = api.github.getRepoTree.useQuery(
     {
       owner: owner!,
@@ -153,18 +165,6 @@ export default function ExplorerView() {
     },
     {
       enabled: queryEnabled && isTreeView && !repoTreeQuery.isSuccess,
-    }
-  );
-
-  const fileQuery = api.github.getFileContent.useQuery(
-    {
-      owner: owner!,
-      repository: repository!,
-      branch: branch!,
-      path: formattedPath,
-    },
-    {
-      enabled: queryEnabled && isBlobView,
     }
   );
 
