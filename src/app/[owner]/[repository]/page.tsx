@@ -7,6 +7,8 @@ import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
 import StarButton from "./_components/star-button";
+import { TRPCError } from "@trpc/server";
+import { notFound } from "next/navigation";
 
 export const dynamic = "force-dynamic";
 
@@ -56,18 +58,31 @@ export default async function Page({ params }: PageProps) {
     branch: "HEAD",
   });
 
-  const [data, folderData, readmeData] = await Promise.all([
-    repoOverviewPromise,
-    folderDataPromise,
-    readmeDataPromise,
-  ]);
+  let data;
+  let folderData;
+  let readmeData;
+
+  try {
+    [data, folderData, readmeData] = await Promise.all([
+      repoOverviewPromise,
+      folderDataPromise,
+      readmeDataPromise,
+    ]);
+  } catch (error) {
+    if (error instanceof TRPCError && error.code === "NOT_FOUND") {
+      notFound();
+    }
+  }
+
+  if (!data || !folderData || !readmeData) {
+    notFound();
+  }
 
   const branch = data.defaultBranchRef?.name ?? "main";
 
   return (
     <div className="p-4 mx-auto md:max-w-7xl w-full flex flex-col gap-4">
       {/* Branch selector and repo name row */}
-
       <div className="flex flex-col gap-2">
         <h1 className="text-xl font-semibold text-foreground ">{repository}</h1>
         <div className="flex items-center justify-between">
