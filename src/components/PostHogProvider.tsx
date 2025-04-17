@@ -2,6 +2,7 @@
 
 import posthog from "posthog-js";
 import { PostHogProvider as PHProvider, usePostHog } from "posthog-js/react";
+import { useSession } from "next-auth/react";
 import { Suspense, useEffect } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 
@@ -19,6 +20,7 @@ export function PostHogProvider({ children }: { children: React.ReactNode }) {
   return (
     <PHProvider client={posthog}>
       <SuspendedPostHogPageView />
+      <IdentifyUser />
       {children}
     </PHProvider>
   );
@@ -49,4 +51,22 @@ function SuspendedPostHogPageView() {
       <PostHogPageView />
     </Suspense>
   );
+}
+
+function IdentifyUser() {
+  const { data: session } = useSession();
+  const posthogClient = usePostHog();
+
+  useEffect(() => {
+    if (session?.user && posthogClient) {
+      posthogClient.identify(session.user.id, {
+        email: session.user.email,
+        name: session.user.name,
+      });
+    } else if (!session && posthogClient) {
+      posthogClient.reset();
+    }
+  }, [session, posthogClient]);
+
+  return null;
 }
