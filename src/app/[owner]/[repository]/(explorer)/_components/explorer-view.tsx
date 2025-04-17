@@ -5,7 +5,7 @@ import { api } from "@/trpc/react";
 import type { TreeNode } from "@/server/api/routers/github";
 import FolderView from "@/app/[owner]/[repository]/_components/repository-file-list";
 import ContentViewer from "@/components/content-viewer";
-import { File, Folder } from "lucide-react";
+import { File, FileX, Folder } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
@@ -266,6 +266,18 @@ export default function ExplorerView() {
           owner={owner}
           repository={repository}
         />
+      </div>
+    );
+  }
+
+  if (isBlobView && !fileQuery.data) {
+    return (
+      <div className="flex flex-col items-center justify-center p-12 text-muted-foreground space-y-4">
+        <FileX className="h-12 w-12" />
+        <div className="text-lg font-medium">File not found</div>
+        <div className="text-sm">
+          The requested file could not be located in this repository.
+        </div>
       </div>
     );
   }

@@ -29,12 +29,14 @@ const TreeNodeSchema = z.object({
   type: z.enum(["blob", "tree"]),
 });
 
-const fileSchema = z.object({
-  name: z.string(),
-  text: z.string().nullable(),
-  isBinary: z.boolean().nullish(),
-  isCached: z.boolean().default(false),
-});
+const fileSchema = z
+  .object({
+    name: z.string(),
+    text: z.string().nullable(),
+    isBinary: z.boolean().nullish(),
+    isCached: z.boolean().default(false),
+  })
+  .nullable();
 
 export type FileType = z.infer<typeof fileSchema>;
 
@@ -75,11 +77,13 @@ const GqlObjectSchema = z.object({
 const GqlFileContentResponseSchema = z.object({
   rateLimit: rateLimitSchema,
   repository: z.object({
-    object: z.object({
-      oid: z.string(),
-      text: z.string().nullish(),
-      isBinary: z.boolean().nullish(),
-    }),
+    object: z
+      .object({
+        oid: z.string(),
+        text: z.string().nullish(),
+        isBinary: z.boolean().nullish(),
+      })
+      .nullable(),
   }),
 });
 
@@ -544,7 +548,6 @@ export const githubRouter = createTRPCRouter({
             }
           );
           const data = GqlFileContentListResponseSchema.parse(response);
-          console.log("Received file content from GitHub API", data);
           for (const item of data.repository.object.entries.filter(
             (e) => e.type === "blob"
           )) {
@@ -584,16 +587,20 @@ export const githubRouter = createTRPCRouter({
             expression: `${branch}:${path}`,
           }
         );
-
+        console.log("DEBUGGGGGGGGGGG", JSON.stringify(response, null, 2));
         const data = GqlFileContentResponseSchema.parse(response);
         console.log("Received file content from GitHub API", data);
         const fileContent = data.repository.object;
 
-        return {
-          name: path.split("/").pop() ?? "",
-          text: fileContent.text ?? null,
-          isBinary: fileContent.isBinary,
-        };
+        if (fileContent) {
+          return {
+            name: path.split("/").pop() ?? "",
+            text: fileContent?.text ?? null,
+            isBinary: fileContent?.isBinary ?? false,
+          };
+        } else {
+          return null;
+        }
       }
       const storedItem = GqlFileEntrySchema.parse(await ctx.redis.get(key));
       return {
