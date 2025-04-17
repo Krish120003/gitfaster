@@ -340,51 +340,6 @@ export const githubRouter = createTRPCRouter({
       return data.repository;
     }),
 
-  toggleStar: protectedProcedure
-    .input(
-      z.object({
-        owner: z.string(),
-        repository: z.string(),
-      })
-    )
-    .mutation(async ({ ctx, input: { owner, repository } }) => {
-      const octokit = await getOctokit(ctx);
-
-      // First check if the repository is starred
-      const query = `
-        query ($owner: String!, $name: String!) {
-          repository(owner: $owner, name: $name) {
-            viewerHasStarred
-          }
-        }
-      `;
-      const { repository: repoData } = (await octokit.graphql(query, {
-        owner,
-        name: repository,
-      })) as { repository: { viewerHasStarred: boolean } };
-
-      // Toggle the star status
-      if (repoData.viewerHasStarred) {
-        await octokit.request("DELETE /user/starred/{owner}/{repo}", {
-          owner,
-          repo: repository,
-        });
-      } else {
-        await octokit.request("PUT /user/starred/{owner}/{repo}", {
-          owner,
-          repo: repository,
-        });
-      }
-
-      // Invalidate the cache for this repository
-      const key = `overview:${owner}:${repository}`;
-      await ctx.redis.delete(key);
-
-      return {
-        isStarred: !repoData.viewerHasStarred,
-      };
-    }),
-
   getRepoTree: protectedProcedure
     .input(
       z.object({
@@ -739,6 +694,9 @@ export const githubRouter = createTRPCRouter({
           {
             owner,
             repo: repository,
+            headers: {
+              "Content-Length": "0",
+            },
           }
         );
 
@@ -749,6 +707,9 @@ export const githubRouter = createTRPCRouter({
         const resp = await octokit.request("PUT /user/starred/{owner}/{repo}", {
           owner,
           repo: repository,
+          headers: {
+            "Content-Length": "0",
+          },
         });
         if (resp.status === 204) {
           console.log("Successfully starred the repository");
