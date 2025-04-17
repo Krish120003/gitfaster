@@ -13,22 +13,32 @@ function SignedOutPage() {
   const session = null;
   return (
     <main className="h-full grow flex flex-col">
-      <div className="max-w-96 pt-16 flex gap-2 flex-col p-4">
-        <div className="flex gap-2 items-center">
-          <span className="p-1 text-xs bg-primary-foreground border">
-            Early Beta
-          </span>
-          <a href="https://next-hackathon-2025.vercel.app/" target="_blank">
-            <span className="p-1 text-xs bg-[#f0883e]/10 text-[#ef6401] dark:text-[#f0883e] border border-[#f0883e]/20 hover:underline">
-              Next.js Global Hackathon 2025
+      <div className="grid grid-cols-3 w-full">
+        <div className="max-w-96 pt-16 flex gap-2 flex-col p-4 col-span-2">
+          <div className="">
+            <span className="p-1 text-xs bg-primary-foreground border">
+              Early Beta
             </span>
-          </a>
+            <a href="https://next-hackathon-2025.vercel.app/" target="_blank">
+              <span className="p-1 text-xs bg-[#f0883e]/10 text-[#ef6401] dark:text-[#f0883e] border border-[#f0883e]/20 hover:underline">
+                Next.js Global Hackathon 2025
+              </span>
+            </a>
+          </div>
+          <h1 className="text-balance text-4xl">
+            A really fast GitHub client.
+          </h1>
+          <p className="text-sm text-gray-500">
+            gitfaster is a minimal, blazing fast GitHub client to make github
+            not feel like legacy software.
+          </p>
         </div>
-        <h1 className="text-balance text-4xl">A really fast GitHub client.</h1>
-        <p className="text-sm text-gray-500">
-          gitfaster is a minimal, blazing fast GitHub client to make github not
-          feel like legacy software.
-        </p>
+        <div className="border-l p-1">
+          <img
+            src="https://github.com/Krish120003/gitfaster/blob/main/static/demo.gif?raw=true"
+            alt="Demo of Gitfaster"
+          />
+        </div>
       </div>
       <div className="w-full border-t flex ">
         {session ? <SignOut /> : <SignIn />}
