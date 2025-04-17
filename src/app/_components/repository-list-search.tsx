@@ -58,7 +58,7 @@ export function RepositoryListSearch({
     defaultValue: "",
   });
 
-  const debouncedSearchQuery = useDebounce(searchQuery, 150);
+  const debouncedSearchQuery = useDebounce(searchQuery, 33);
   const isSearching = debouncedSearchQuery.trim().length > 0;
 
   const {
