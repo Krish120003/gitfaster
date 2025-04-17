@@ -14,10 +14,15 @@ function SignedOutPage() {
   return (
     <main className="h-full grow flex flex-col">
       <div className="max-w-96 pt-16 flex gap-2 flex-col p-4">
-        <div>
+        <div className="flex gap-2 items-center">
           <span className="p-1 text-xs bg-primary-foreground border">
             Early Beta
           </span>
+          <a href="https://next-hackathon-2025.vercel.app/" target="_blank">
+            <span className="p-1 text-xs bg-[#f0883e]/10 text-[#ef6401] dark:text-[#f0883e] border border-[#f0883e]/20 hover:underline">
+              Next.js Global Hackathon 2025
+            </span>
+          </a>
         </div>
         <h1 className="text-balance text-4xl">A really fast GitHub client.</h1>
         <p className="text-sm text-gray-500">
