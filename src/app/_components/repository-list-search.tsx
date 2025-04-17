@@ -159,7 +159,11 @@ export function RepositoryListSearch({
         </ul>
         {filteredRepositoriesUser.length === 0 && (
           <div className="flex items-center justify-center w-full p-4 text-sm text-muted-foreground">
-            No Repositories Found
+            {isSearchFetching ? (
+              <span>Loading...</span>
+            ) : (
+              `No Repositories Found`
+            )}
           </div>
         )}
       </div>
