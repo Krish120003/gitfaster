@@ -6,12 +6,10 @@
 
 ## Demo
 
+<!-- https://github.com/user-attachments/assets/ee143c0e-e5d8-417f-a0c7-02da55a9d235 -->
+
 <div align="center">
-    <video controls>
-        <source src="https://github.com/Krish120003/gitfaster/raw/refs/heads/main/static/gitfaster-demo.mp4" type="video/mp4">
-        Your browser does not support the video tag.
-    </video>
-    <p>Gitfaster Demo</p>
+    <video src="https://github.com/user-attachments/assets/ee143c0e-e5d8-417f-a0c7-02da55a9d235" style="max-height: 600px; margin: auto;"></video>
 </div>
 
 ## Installation
