@@ -9,7 +9,7 @@
 <!-- https://github.com/user-attachments/assets/ee143c0e-e5d8-417f-a0c7-02da55a9d235 -->
 
 <div align="center">
-    <video src="/demo.mp4" style="max-height: 600px; margin: auto;"></video>
+    <video src="https://github.com/user-attachments/assets/ee143c0e-e5d8-417f-a0c7-02da55a9d235" style="max-height: 600px; margin: auto;"></video>
 </div>
 
 ## Installation
