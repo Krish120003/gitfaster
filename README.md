@@ -1,8 +1,8 @@
-<div align="center">
+<div align="center" style="text-wrap: balance;">
 <!-- ![Gitfaster](./public/project-logo.png) -->
 <img src="./public/project-logo.png" alt="Gitfaster Logo">
-</div>
 Gitfaster is a minimal, blazing fast client to make GitHub feel modern again.
+</div>
 
 ### Installation
 
@@ -32,7 +32,7 @@ Gitfaster is a minimal, blazing fast client to make GitHub feel modern again.
 
     Make sure to configure the following variables:
 
-    - `AUTH_SECRET`: Generate a new secret using `npx auth secret`.
+    - `AUTH_SECRET`: Generate a new secret using `openssl rand -base64 64`.
     - `GITHUB_ID`: Your GitHub application client ID.
     - `GITHUB_SECRET`: Your GitHub application client secret.
     - `DATABASE_URL`: PostgreSQL database connection URL.
