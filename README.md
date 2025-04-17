@@ -4,6 +4,10 @@
 <div>Gitfaster is a minimal, blazing fast client to make GitHub feel modern again.</div>
 </div>
 
+
+https://github.com/user-attachments/assets/ee143c0e-e5d8-417f-a0c7-02da55a9d235
+
+
 ### Installation
 
 1.  Clone the repository:
