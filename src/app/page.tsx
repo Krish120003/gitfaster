@@ -8,6 +8,7 @@ import { auth } from "@/server/auth";
 import { cn } from "@/lib/utils";
 import type { Session } from "next-auth";
 import { RepositoryListSearch } from "./_components/repository-list-search";
+import { AnimatedName } from "./_components/AnimatedName";
 
 function SignedOutPage() {
   const session = null;
@@ -122,9 +123,9 @@ export default async function Home() {
             <a
               href="https://krish.gg"
               target="_blank"
-              className="text-xs font-mono text-muted-foreground hover:underline hover:text-foreground flex items-center gap-1"
+              className="text-xs font-mono text-muted-foreground hover:text-foreground flex items-center gap-1"
             >
-              By <span>krish.gg</span>
+              <AnimatedName />
             </a>
           </div>
         </div>
