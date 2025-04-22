@@ -8,12 +8,13 @@ import { auth } from "@/server/auth";
 import { cn } from "@/lib/utils";
 import type { Session } from "next-auth";
 import { RepositoryListSearch } from "./_components/repository-list-search";
+import Image from "next/image";
 
 function SignedOutPage() {
   const session = null;
   return (
     <main className="h-full grow flex flex-col">
-      <div className="grid grid-cols-3 w-full">
+      <div className="grid md:grid-cols-3 w-full">
         <div className="max-w-96 pt-16 flex gap-2 flex-col p-4 col-span-2">
           <div className="flex gap-2">
             <span className="p-1 text-xs bg-primary-foreground border">
@@ -34,9 +35,12 @@ function SignedOutPage() {
           </p>
         </div>
         <div className="border-l p-1">
-          <img
-            src="https://github.com/Krish120003/gitfaster/blob/main/static/demo.gif?raw=true"
+          <Image
+            src="/demo.gif"
             alt="Demo of Gitfaster"
+            width={960}
+            height={540}
+            blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR4nGNgYAAAAAMAASsJTYQAAAAASUVORK5CYII="
           />
         </div>
       </div>
