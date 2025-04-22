@@ -34,7 +34,7 @@ function SignedOutPage() {
             not feel like legacy software.
           </p>
         </div>
-        <div className="border-l p-1">
+        <div className="border-l p-1 aspect-video">
           <video
             src="/demo.mp4"
             autoPlay
