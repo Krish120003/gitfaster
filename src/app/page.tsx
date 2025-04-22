@@ -34,14 +34,14 @@ function SignedOutPage() {
             not feel like legacy software.
           </p>
         </div>
-        <div className="border-l p-1 aspect-video">
+        <div className="border-l p-2 flex items-center justify-center">
           <video
             src="/demo.mp4"
             autoPlay
             loop
             muted
             playsInline
-            className="w-full h-full object-cover"
+            className="w-[650px] aspect-video"
           />
         </div>
       </div>
