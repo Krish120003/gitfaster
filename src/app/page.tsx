@@ -35,12 +35,13 @@ function SignedOutPage() {
           </p>
         </div>
         <div className="border-l p-1">
-          <Image
-            src="/demo.gif"
-            alt="Demo of Gitfaster"
-            width={960}
-            height={540}
-            blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR4nGNgYAAAAAMAASsJTYQAAAAASUVORK5CYII="
+          <video
+            src="/demo.mp4"
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="w-full h-full object-cover"
           />
         </div>
       </div>

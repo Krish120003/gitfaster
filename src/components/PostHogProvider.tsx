@@ -20,7 +20,7 @@ export function PostHogProvider({ children }: { children: React.ReactNode }) {
   return (
     <PHProvider client={posthog}>
       <SuspendedPostHogPageView />
-      <IdentifyUser />
+      {/* <IdentifyUser /> */}
       {children}
     </PHProvider>
   );
@@ -53,20 +53,20 @@ function SuspendedPostHogPageView() {
   );
 }
 
-function IdentifyUser() {
-  const { data: session } = useSession();
-  const posthogClient = usePostHog();
+// function IdentifyUser() {
+//   const { data: session } = useSession();
+//   const posthogClient = usePostHog();
 
-  useEffect(() => {
-    if (session?.user && posthogClient) {
-      posthogClient.identify(session.user.id, {
-        email: session.user.email,
-        name: session.user.name,
-      });
-    } else if (!session && posthogClient) {
-      posthogClient.reset();
-    }
-  }, [session, posthogClient]);
+//   useEffect(() => {
+//     if (session?.user && posthogClient) {
+//       posthogClient.identify(session.user.id, {
+//         email: session.user.email,
+//         name: session.user.name,
+//       });
+//     } else if (!session && posthogClient) {
+//       posthogClient.reset();
+//     }
+//   }, [session, posthogClient]);
 
-  return null;
-}
+//   return null;
+// }
