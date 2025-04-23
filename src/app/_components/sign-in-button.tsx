@@ -27,7 +27,7 @@ export function SignOut({ className }: { className?: string }) {
         className
       )}
       onClick={() => {
-        signOut();
+        signOut({ redirectTo: "/" });
       }}
     >
       Sign Out?
