@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { RepositoryHeader } from "./_components/repository-header";
 import { auth } from "@/server/auth";
-import { redirect } from "next/navigation";
+import { SignInRedirect } from "./_components/signin-redirect";
 
 interface RepositoryLayoutProps {
   children: React.ReactNode;
@@ -33,8 +33,7 @@ export default async function RepositoryLayout({
   const session = await auth();
 
   if (!session) {
-    // redirect to /
-    redirect("/");
+    return <SignInRedirect owner={owner} repository={repository} />;
   }
 
   return (
