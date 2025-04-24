@@ -14,7 +14,7 @@
 
 Check it out live at [gitfaster.dev](https://gitfaster.dev)
 
-Once you are logged in, you can also replace any `github.com` URL with `githubf.com` to switch to GithubF[aster].
+You can also try by replacing any `github.com` URL with `githubf.com` to switch to GithubF[aster].
 
 ## Speed
 
