@@ -12,7 +12,7 @@
     <video src="https://github.com/user-attachments/assets/ee143c0e-e5d8-417f-a0c7-02da55a9d235" controls style="max-height: 600px; margin: auto;"></video>
 </div>
 
-Check it out live at [gitfaster.vercel.app](https://gitfaster.vercel.app)
+Check it out live at [gitfaster.vercel.app](https://gitfaster.dev)
 
 Once you are logged in, you can also replace any `github.com` URL with `githubf.com` to switch to GithubF[aster].
 
