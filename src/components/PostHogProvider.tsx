@@ -5,11 +5,12 @@ import { PostHogProvider as PHProvider, usePostHog } from "posthog-js/react";
 import { useSession } from "next-auth/react";
 import { Suspense, useEffect } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
+import { env } from "@/env";
 
 export function PostHogProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
-    posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY!, {
-      api_host: "/ingest",
+    posthog.init(env.NEXT_PUBLIC_POSTHOG_KEY, {
+      api_host: env.NEXT_PUBLIC_POSTHOG_API_HOST ?? "/ingest",
       ui_host: "https://us.posthog.com",
       capture_pageview: false, // We capture pageviews manually
       capture_pageleave: true, // Enable pageleave capture
