@@ -119,6 +119,7 @@ export default async function Page({ params }: PageProps) {
                       <img
                         src={transformImgUrl(src, owner, repository, branch)}
                         alt={alt}
+                        className="inline-block max-w-full"
                         {...props}
                       />
                     ),
