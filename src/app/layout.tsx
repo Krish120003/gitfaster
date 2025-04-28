@@ -11,7 +11,6 @@ import { NuqsAdapter } from "nuqs/adapters/next/app";
 export const metadata: Metadata = {
   title: "Gitfaster",
   description: "A faster web client for GitHub",
-  icons: [{ rel: "icon", url: "/favicon.svg" }],
 };
 
 export default function RootLayout({
